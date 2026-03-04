@@ -1,0 +1,90 @@
+.post-navigation {
+  font-weight: var(--font-weight-body-bold);
+  margin-top: 45px;
+}
+.post-navigation .left svg {
+  transform: rotate(180deg);
+  margin-inline-end: 10px;
+}
+.post-navigation .right svg {
+  margin-inline-start: 10px;
+}
+html[dir=rtl] .post-navigation .left svg {
+  transform: rotate(0deg);
+}
+html[dir=rtl] .post-navigation .right svg {
+  transform: rotate(180deg);
+}
+.post-navigation .left + .right {
+  margin-inline-start: 65px;
+  display: inline-block;
+}
+@media screen and (max-width: 768px), screen and (max-width: 1024px) and (orientation: portrait) {
+  .post-navigation .left + .right {
+    margin-inline-start: 25px;
+  }
+}
+.post-navigation svg * {
+  fill: var(--main-text);
+}
+
+.article-tags {
+  margin-top: 45px;
+}
+
+#comments.comments {
+  margin-top: 100px;
+}
+#comments.comments .comment:first-child {
+  padding-top: 25px;
+}
+#comments.comments .comment:not(:last-child) {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--main-borders);
+}
+#comments.comments .comments-list {
+  list-style: none;
+}
+#comments.comments .form-vertical {
+  margin-top: 100px;
+}
+
+.template-article .tags .tag:not(:last-child):after {
+  content: ", ";
+}
+
+.article-meta {
+  margin-inline-start: -15px;
+}
+.article-meta > span {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.article-right-side-title {
+  margin-bottom: 3em;
+}
+.article-right-side-title .subtitle {
+  margin-top: -1em;
+}
+@media screen and (min-width: 1367px) {
+  .article-right-side-title .title {
+    font-size: calc(40px / 60 * var(--base-headings-size) + 0px);
+  }
+}
+@media screen and (min-width: 1024px) and (max-width: 1367px) {
+  .article-right-side-title .title {
+    font-size: calc(36px / 60 * var(--base-headings-size) + 0px);
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .article-right-side-title .title {
+    font-size: calc(32px / 60 * var(--base-headings-size) + 0px);
+  }
+}
+@media screen and (max-width: 768px) {
+  .article-right-side-title .title {
+    font-size: calc(32px / 60 * var(--base-headings-size) + 0px);
+  }
+}

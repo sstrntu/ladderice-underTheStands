@@ -1,0 +1,104 @@
+{% comment %}
+  Renders product variant picker
+
+  Accepts:
+  - style: {String} type of variant picker. Possible values: 'select', 'block'.
+  - show_color_swatches: {Boolean} show color swatches for 'block' style only.
+  - product: {Object} product object.
+  Usage:
+  {% render 'product-variant-picker', style: 'select', product: product, show_color_swatches: true %}
+{% endcomment %}
+
+{%- if style == 'select' -%}
+
+  <div class="product-variants product-variants--select buttons-holder">
+    {%- for option in product.options_with_values -%}
+      <div class="product-variant" data-js-product-variant="select">
+        <label for="product-{{ option.name | escape | downcase | strip }}-{{ section.id }}">{{ 'products.page.select_variant' | t: variant: option.name }}</label>
+        <select class="product-variant-container" data-js-product-variant-container id="product-{{ option.name | escape | downcase | strip }}-{{ section.id }}">
+          {%- for value in option.values -%}
+            <option class="product-variant-value" value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+              {{ value | escape }}
+            </option>
+          {%- endfor -%}
+        </select>
+      </div>
+    {%- endfor -%}
+  </div>
+
+{%- else -%}
+
+  <div class="product-variants product-variants--radio">
+
+    {%- for option in product.options_with_values -%}
+
+      {%- liquid
+
+        assign option_downcased = option.name | downcase
+        assign color_label = settings.color_swatches_labels | split: ','
+        assign size_label = 'size,format,größe,talla,taille,dimension,mărime,dimensione,tamanho,寸法' | split: ','
+
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+
+        if color_label contains option_downcased and show_color_swatches
+          assign is_color = true
+        elsif show_color_swatches and swatch_count > 0
+          assign is_color = true
+        else
+          assign is_color = false
+        endif
+
+      -%}
+
+      <div class="product-variant" data-js-product-variant data-name="product-{{ option.name | escape | downcase | strip }}-{{ section.id }}">
+
+        <span class="product-variant__name">{{ 'products.page.select_variant' | t: variant: option.name }}</span>
+
+        <div class="product-variant__container" data-js-product-variant-container="radio">
+          {%- for value in option.values -%}
+            <div class="product-variant__item 
+              {% if is_color %} 
+                product-variant__item--color 
+              {% elsif size_label contains downcased_option %}
+                product-variant__item--size
+              {% endif %}
+            ">
+              <input type="radio" name="product-{{ option.name | escape | downcase | strip }}-{{ section.id }}" id="{{ product.handle }}-option-{{ option.name | escape | downcase | strip }}-{{ forloop.index }}-{{ section.id }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} class="product-variant__input product-variant-value">
+              <label for="{{ product.handle }}-option-{{ option.name | escape | downcase | strip }}-{{ forloop.index }}-{{ section.id }}" class="product-variant__label">
+
+                {%- if is_color -%}
+
+                  {%- liquid 
+                    if value.swatch.image
+                      assign color_swatch_image = value.swatch.image
+                    elsif value.swatch.color
+                      assign color_swatch_background = 'rgb(' | append: value.swatch.color.rgb | append: ')'
+                    else
+                      assign color_swatch_name = value | handle | append: '.png'
+                      assign color_swatch_image = images[color_swatch_name]
+                      assign color_swatch_background = value | downcase | escape | replace: ' ', ''
+                    endif
+                  -%}
+
+                  <span aria-hidden="true" style="{% if color_swatch_image != blank %} background-image: url({{ color_swatch_image | image_url: width: 44, height: 44 }} {% else %} background-color: {{ color_swatch_background }} {% endif %}"></span>
+
+                  {{ value }}
+
+                {%- else -%}
+
+                  {{ value }}
+
+                {%- endif -%}
+
+              </label>
+            </div>
+          {%- endfor -%}
+        </div>
+
+      </div>
+
+    {%- endfor -%}
+
+  </div>
+
+{%- endif -%}

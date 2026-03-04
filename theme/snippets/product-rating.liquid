@@ -1,0 +1,81 @@
+{%- liquid
+  if settings.reviews_app == "stamped" or settings.reviews_app == "ali" or settings.reviews_app == "yotpo"
+    assign custom_widget = settings.reviews_app
+  elsif settings.reviews_app == "rapid"
+    assign rating = product.metafields.rapid_reviews.counts.value.r.rating.avg
+    assign reviews_count = product.metafields.rapid_reviews.counts.value.r.counts.core.total
+  elsif settings.reviews_app == "loox"
+    assign rating = product.metafields.loox.avg_rating
+    assign reviews_count = product.metafields.loox.num_reviews
+  elsif settings.reviews_app == "judgeme"
+    assign rating = product.metafields.reviews.rating.value.rating | plus: 0
+    assign reviews_count = product.metafields.reviews.rating_count | plus: 0
+  elsif settings.reviews_app == "air"
+    assign rating = product.metafields.air_reviews_product.review_avg
+    assign reviews_count = product.metafields.air_reviews_product.review_count
+  else
+    if product.metafields.reviews.rating.value != blank
+      assign rating = product.metafields.reviews.rating.value.rating
+      assign reviews_count = product.metafields.reviews.rating_count 
+    endif
+  endif
+  
+  if custom_widget != blank 
+    assign show_rating = true
+  elsif rating != 0 and rating != blank
+    assign show_rating = true
+  else
+    assign show_rating = false
+  endif
+
+-%}
+
+{%- if show_rating -%}
+
+  {%- if type == 'product-item' -%}
+    <span class="product-badge left rating text-size--smallest" 
+      data-desktop-display="{{ settings.reviews_badge_desktop }}" data-mobile-display="{{ settings.reviews_badge_mobile }}"
+      {% if custom_widget == blank %} style="background-color: {{ settings.product_card_badge_regular_background_color }}; color: {{ settings.product_card_badge_regular_text_color }}; border-color: {{ settings.product_card_badge_regular_border_color }}" {% else %} style="background: none !important; border: none !important; --background-color: {{ settings.product_card_badge_regular_background_color }}; --color: {{ settings.product_card_badge_regular_text_color }}; --border-color: {{ settings.product_card_badge_regular_border_color }}" {% endif %}
+    >
+  {%- else -%}
+    <span class="review">
+  {%- endif -%}
+
+    {%- if custom_widget == blank -%}
+      {%- unless rating == 0 or rating == '0' or rating == blank -%}
+
+        <span class="visually-hidden">{{ 'general.accessibility_labels.rating_info' | t: rating_value: rating, rating_max: 5 }}</span>
+
+        <span class="rating-text" aria-hidden="true">
+          {{ rating | round: 1 | remove: '.0' }} / {{ 5 | round: 2 | remove: '.0' }}
+        </span>
+
+        <span class="rating-icon" aria-hidden="true">
+          {%- if type == 'product-item' -%}
+            {%- render 'theme-symbols', icon: 'star', fill: settings.product_card_badge_regular_text_color -%}
+          {%- else -%}
+            <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 0L11.0206 6.21885H17.5595L12.2694 10.0623L14.2901 16.2812L9 12.4377L3.70993 16.2812L5.73056 10.0623L0.440492 6.21885H6.97937L9 0Z" fill="#262627"/></svg>
+          {%- endif -%}
+        </span>
+        
+      {%- endunless -%}
+    {%- else -%}
+      {%- if custom_widget == "stamped" -%}
+        <span 
+          class="stamped-product-reviews-badge" 
+          data-id="{{ product.id }}"
+          data-product-sku="{{ product.handle }}" 
+          data-product-type="{{ product.type }}" 
+          data-product-title="{{ product.title }}" 
+          style="display:block;">
+        </span>
+      {%- elsif custom_widget == "ali" -%}
+        <div product-id="{{ product.id }}" product-handle="{{ product.handle }}" class="alireviews-review-star-rating"></div>
+      {%- elsif custom_widget == "yotpo" -%}
+        <div class="yotpo bottomLine" data-product-id="{{ product.id }}"></div>
+      {%- endif -%}
+    {%- endif -%}
+
+  </span>
+
+{%- endif %}

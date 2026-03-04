@@ -1,0 +1,72 @@
+<div class="product-badges-holder">
+	{%- if product.available == false -%}
+
+		<div class="product-badge product-badge__sold text-size--smaller"
+			style="background-color: {{ settings.product_card_badge_sold_out_color }}; color: {{ settings.product_card_badge_sold_out_text_color }}"
+		><span>{{ 'products.grid.sold_out_product' | t }}</span></div>
+
+	{%- else -%}
+
+		{%- if product.compare_at_price > product.price -%}
+			<span class="product-badge product-badge__sale text-size--smaller"
+				style="background-color: {{ settings.product_card_badge_sale_color }}; color: {{ settings.product_card_badge_sale_text_color }}"
+			> 
+
+				{%- liquid 
+
+					if product.compare_at_price_varies 
+						assign compare_price_nums = 0
+						assign max_compare_at_price = 0
+						assign compare_at_price = 0
+						assign price = 0
+						for variant in product.variants
+							if variant.compare_at_price > variant.price
+								assign variant_compare_at_price = variant.compare_at_price | minus: variant.price
+								if variant_compare_at_price > max_compare_at_price
+									assign max_compare_at_price = variant_compare_at_price
+									assign compare_at_price = variant.compare_at_price
+									assign price = variant.price
+									assign compare_price_nums = compare_price_nums | plus: 1
+								endif
+							endif
+						endfor
+					else
+						assign compare_at_price = product.compare_at_price
+						assign price = product.price
+						assign compare_price_nums = 1
+					endif
+
+					if settings.product_card_badge_sale_type == 'percentage'
+					assign saved = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round | prepend: '-' | append: '%'
+						if compare_price_nums == 1 and product.compare_at_price_varies == false
+							echo saved
+						else 
+							echo 'products.grid.save_percent' | t: percent: saved
+						endif
+					elsif settings.product_card_badge_sale_type == 'amount'
+						assign saved = compare_at_price | minus: price | money
+						if compare_price_nums == 1
+							echo 'products.grid.save_amount_html' | t: amount: saved
+						else
+							echo 'products.grid.save_up_to_amount_html' | t: amount: saved
+						endif
+					else 
+						echo 'products.grid.on_sale_product' | t
+					endif
+					
+				-%}
+			</span>
+		{%- endif -%}
+	{%- endif -%}
+
+	{%- if product.tags contains 'preorder' or product.tags contains 'pre order' or product.tags contains 'Pre Order' %}
+	  <div class="product-badge preorder text-size--smaller"
+			style="background-color: {{ settings.product_card_badge_regular_background_color }}; color: {{ settings.product_card_badge_regular_text_color }}; border-color: {{ settings.product_card_badge_regular_border_color }}"
+		><span>{{ 'products.grid.preorder_product' | t }}</span></div>
+	{%- elsif product.tags contains 'new' -%}
+	  <div class="product-badge new text-size--smaller"
+			style="background-color: {{ settings.product_card_badge_regular_background_color }}; color: {{ settings.product_card_badge_regular_text_color }}; border-color: {{ settings.product_card_badge_regular_border_color }}"
+		><span>{{ 'products.grid.new_product' | t }}</span></div>
+	{%- endif -%}
+
+</div>

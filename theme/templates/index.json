@@ -1,0 +1,397 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "jersey_hero_lace": {
+      "type": "jersey-hero",
+      "settings": {
+        "tagline": "New Collection",
+        "title": "Ladderice x Lace",
+        "subtitle": "A celebration of football culture",
+        "button_label": "Shop Now",
+        "button_link": ""
+      }
+    },
+    "gallery_FcRFK4": {
+      "type": "gallery",
+      "blocks": {
+        "image_VkWWBc": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "image_HWez6j": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "image_ahTzLw": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "image": "shopify://shop_images/12.12sale_ladder_16-9_copy.png",
+            "link": "",
+            "caption": ""
+          }
+        },
+        "image_694DLb": {
+          "type": "image",
+          "disabled": true,
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_VkWWBc",
+        "image_HWez6j",
+        "image_ahTzLw",
+        "image_694DLb"
+      ],
+      "disabled": true,
+      "settings": {
+        "image_height": "full"
+      }
+    },
+    "marquee_DiVfyw": {
+      "type": "marquee",
+      "blocks": {
+        "text_mMqFKU": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "marquee_text": "<strong>Black Friday Sale: Up to 30% off on November 29-30.</strong>"
+          }
+        }
+      },
+      "block_order": [
+        "text_mMqFKU"
+      ],
+      "disabled": true,
+      "settings": {
+        "scroll_direction": "ltr",
+        "speed": 100,
+        "pause_on_hover": true,
+        "horizontal_space": "large-x-2",
+        "text_size": "text-size--large",
+        "has_top_border": true,
+        "has_bottom_border": false,
+        "color_background_main": "rgba(0,0,0,0)",
+        "color_text_main": "rgba(0,0,0,0)"
+      }
+    },
+    "image_MkRAHm": {
+      "type": "image",
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "image": "shopify://shop_images/image_8_6375c711-1bd2-45c0-b8d3-aef4fcdebcfb.png",
+        "link": "",
+        "target": false
+      }
+    },
+    "163825849356f88edc": {
+      "type": "gallery",
+      "blocks": {
+        "1638258493b25d0aa0-0": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/J_League_Merch_08__258.jpg",
+            "link": "",
+            "caption": ""
+          }
+        },
+        "1638258493b25d0aa0-1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/J_League_Merch_08__263.jpg",
+            "link": "",
+            "caption": ""
+          }
+        },
+        "1638258493b25d0aa0-2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/J_League_Merch_08__261_15b87b32-3867-4e51-a934-5ee8e292d427.jpg",
+            "link": "",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "1638258493b25d0aa0-0",
+        "1638258493b25d0aa0-1",
+        "1638258493b25d0aa0-2"
+      ],
+      "disabled": true,
+      "settings": {
+        "image_height": "half"
+      }
+    },
+    "split_screen_slider_TRgjy7": {
+      "type": "split-screen-slider",
+      "blocks": {
+        "slide_dqJmaV": {
+          "type": "slide",
+          "settings": {
+            "tagline": "",
+            "title": "Black Friday Sale: Up to 30% Off!",
+            "subtitle": "",
+            "button_label": "กดซื้อเลย!",
+            "button_link": "shopify://collections/black-friday-sale-up-to-30-off",
+            "image": "shopify://shop_images/image_8_6375c711-1bd2-45c0-b8d3-aef4fcdebcfb.png",
+            "seo_h_tag": "h2"
+          }
+        },
+        "slide_JGkhVG": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "tagline": "X J.League",
+            "title": "สินค้า Collab J.League",
+            "subtitle": "สินค้าสุดเอ็กซ์คลูซีฟจากเจลีก",
+            "button_label": "ชมสินค้าได้แล้วที่นี่",
+            "button_link": "shopify://collections/new-os2-0",
+            "image": "shopify://shop_images/8u8oc4ig.png",
+            "seo_h_tag": "h2"
+          }
+        },
+        "slide_XgbU3g": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "tagline": "",
+            "title": "NIVELCRACK",
+            "subtitle": "แบรนด์เสื้อผ้าสุดคูลจากญี่ปุ่น",
+            "button_label": "ชมสินค้าได้แล้วที่นี่",
+            "button_link": "",
+            "image": "shopify://shop_images/image_1681350314427_1000.jpg",
+            "seo_h_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "slide_dqJmaV",
+        "slide_JGkhVG",
+        "slide_XgbU3g"
+      ],
+      "disabled": true,
+      "settings": {
+        "desktop_layout": "split",
+        "desktop_image_positioning": "image-on-left",
+        "desktop_text": "rgba(0,0,0,0)",
+        "desktop_background": "#ffeed0",
+        "desktop_overlay": "rgba(0,0,0,0)",
+        "mobile_height": "var(--window-height)",
+        "mobile_text": "#ffffff",
+        "mobile_background": "#000000",
+        "heading_size": "h1"
+      }
+    },
+    "16372498804121dda9": {
+      "type": "split-screen-slider",
+      "blocks": {
+        "slide_xEq88i": {
+          "type": "slide",
+          "settings": {
+            "tagline": "Introducing",
+            "title": "Cerezo Osaka Merchandise collection II",
+            "subtitle": "",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/cerezo-osaka-merchandise-collection-ii",
+            "image": "shopify://shop_images/Cerezo-Osaka-Merch-ll-promo_05_1.png",
+            "seo_h_tag": "h2"
+          }
+        },
+        "slide_Vq343t": {
+          "type": "slide",
+          "settings": {
+            "tagline": "Introducing",
+            "title": "EQUIPO FC x AC SAEN SAEP",
+            "subtitle": "",
+            "button_label": "Avaliable Now!",
+            "button_link": "shopify://collections/equipo-fc-x-ac-saen-saep",
+            "image": "shopify://shop_images/Copy_of_1_a2354179-e709-4dd7-9df0-1b7bf2f86bb4.jpg",
+            "seo_h_tag": "h2"
+          }
+        },
+        "slide_cTpiAp": {
+          "type": "slide",
+          "settings": {
+            "tagline": "Introducing",
+            "title": "Ladderice First Collection",
+            "subtitle": "",
+            "button_label": "Click here!!",
+            "button_link": "shopify://collections/legacy-in-motion",
+            "image": "shopify://shop_images/IMG_9539.jpg",
+            "seo_h_tag": "h2"
+          }
+        },
+        "slide_w7FqkY": {
+          "type": "slide",
+          "settings": {
+            "tagline": "Introducing",
+            "title": "“Edgar”",
+            "subtitle": "Special capsule from NIVELCRACK X EVERYDAY IN PROGRESS",
+            "button_label": "Click here",
+            "button_link": "shopify://collections/nivelcrack-x-progress-edgar",
+            "image": "shopify://shop_images/047A9419.jpg",
+            "seo_h_tag": "h2"
+          }
+        },
+        "1637249880c19b891c-2": {
+          "type": "slide",
+          "settings": {
+            "tagline": "ขอแนะนำ",
+            "title": "White Mountaineering x Umbro",
+            "subtitle": "",
+            "button_label": "กดซื้อเลย!",
+            "button_link": "shopify://collections/white-mountaineering-x-umbro",
+            "image": "shopify://shop_images/image_331_copy_d662b358-efaf-4e95-9bc4-c0c89333a33c.png",
+            "seo_h_tag": "h2"
+          }
+        },
+        "1637249880c19b891c-0": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "tagline": "X J.League",
+            "title": "สินค้า Collab J.League",
+            "subtitle": "สินค้าสุดเอ็กซ์คลูซีฟจากเจลีก",
+            "button_label": "ชมสินค้าได้แล้วที่นี่",
+            "button_link": "shopify://collections/new-os2-0",
+            "image": "shopify://shop_images/8u8oc4ig.png",
+            "seo_h_tag": "h2"
+          }
+        },
+        "1637249880c19b891c-1": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "tagline": "",
+            "title": "NIVELCRACK",
+            "subtitle": "แบรนด์เสื้อผ้าสุดคูลจากญี่ปุ่น",
+            "button_label": "ชมสินค้าได้แล้วที่นี่",
+            "button_link": "",
+            "image": "shopify://shop_images/image_1681350314427_1000.jpg",
+            "seo_h_tag": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "slide_xEq88i",
+        "slide_Vq343t",
+        "slide_cTpiAp",
+        "slide_w7FqkY",
+        "1637249880c19b891c-2",
+        "1637249880c19b891c-0",
+        "1637249880c19b891c-1"
+      ],
+      "settings": {
+        "desktop_layout": "split",
+        "desktop_image_positioning": "image-on-left",
+        "desktop_text": "rgba(0,0,0,0)",
+        "desktop_background": "#ffeed0",
+        "desktop_overlay": "rgba(0,0,0,0)",
+        "mobile_height": "var(--window-height)",
+        "mobile_text": "#ffffff",
+        "mobile_background": "#000000",
+        "heading_size": "h1"
+      }
+    },
+    "1637226889f182ad79": {
+      "type": "shop-the-look",
+      "blocks": {
+        "163722688971e0662a-2": {
+          "type": "product",
+          "settings": {
+            "product": "jersey-93-gk-long-sleeve-colorway-i-green-rainbow"
+          }
+        },
+        "163722688971e0662a-0": {
+          "type": "product",
+          "settings": {
+            "product": "jersey-93-black-ss-may-93"
+          }
+        },
+        "81c90af3-854f-48fc-944e-353cb3bf4fbb": {
+          "type": "product",
+          "settings": {
+            "product": "jersey-93-black-ls-may-93"
+          }
+        }
+      },
+      "block_order": [
+        "163722688971e0662a-2",
+        "163722688971e0662a-0",
+        "81c90af3-854f-48fc-944e-353cb3bf4fbb"
+      ],
+      "disabled": true,
+      "settings": {
+        "image": "shopify://shop_images/J_League_Merch_08__263.jpg",
+        "desktop_image_positioning": "image-on-left"
+      }
+    },
+    "collection_list_DmXT9W": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_ftfEHN": {
+          "type": "collection",
+          "settings": {
+            "collection": "ac-saen-saep-doodle-tee-v1"
+          }
+        },
+        "collection_YcMbVg": {
+          "type": "collection",
+          "settings": {
+            "collection": "dirt-roots"
+          }
+        },
+        "collection_mKJE4J": {
+          "type": "collection",
+          "settings": {
+            "collection": "cafe-nivelcrack"
+          }
+        }
+      },
+      "block_order": [
+        "collection_ftfEHN",
+        "collection_YcMbVg",
+        "collection_mKJE4J"
+      ],
+      "settings": {
+        "title": "Collection",
+        "text_alignment": "horizontal-left vertical-bottom",
+        "custom_background": "#ffeed0",
+        "custom_text": "#111111",
+        "bg_overlay": false,
+        "seo_h_tag": "h2"
+      }
+    }
+  },
+  "order": [
+    "jersey_hero_lace",
+    "gallery_FcRFK4",
+    "marquee_DiVfyw",
+    "image_MkRAHm",
+    "163825849356f88edc",
+    "split_screen_slider_TRgjy7",
+    "16372498804121dda9",
+    "1637226889f182ad79",
+    "collection_list_DmXT9W"
+  ]
+}

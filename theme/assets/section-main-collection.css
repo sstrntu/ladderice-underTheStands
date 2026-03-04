@@ -1,0 +1,42 @@
+#main-collection-product-grid.loading .box__collection,
+#main-collection-product-grid.loading .search-item {
+  opacity: 0.36;
+}
+
+#main-collection-product-grid[data-no-bottom-borders] .box__heading {
+  border-bottom: none !important;
+}
+.template-collection #main-collection-product-grid[data-no-bottom-borders] .box--with-scroll .reduce-top-margin:after {
+  min-height: calc(100vh - 1px);
+}
+#main-collection-product-grid[data-no-bottom-borders] .product-grid-border-fix .site-box[data-order="3"], #main-collection-product-grid[data-no-bottom-borders] .product-grid-border-fix .site-box[data-order="4"] {
+  border-bottom: 0;
+}
+#main-collection-product-grid[data-no-bottom-borders][data-no-borders-all] .product-grid-border-fix .site-box[data-order="1"], #main-collection-product-grid[data-no-bottom-borders][data-no-borders-all] .product-grid-border-fix .site-box[data-order="2"] {
+  border-bottom: 0;
+}
+@media screen and (max-width: 768px), screen and (max-width: 1024px) and (orientation: portrait) {
+  #main-collection-product-grid[data-no-bottom-borders] .product-grid-border-fix .site-box:nth-last-child(-n+2) {
+    border-bottom: 0;
+  }
+  #main-collection-product-grid[data-no-bottom-borders][data-no-bottom-borders-mobile] .site-box[data-order="1"], #main-collection-product-grid[data-no-bottom-borders][data-no-bottom-borders-mobile] .site-box[data-order="2"] {
+    border-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 1025px), screen and (min-width: 769px) and (orientation: landscape) {
+  .template-collection .box--with-scroll[data-heading-with-image] .reduce-top-margin:after {
+    display: none;
+  }
+  .template-collection .box--with-scroll[data-heading-with-image] + .box__collection_image {
+    margin-inline-start: -1px;
+  }
+  html[dir=rtl] .template-collection .box--with-scroll[data-heading-with-image] + .box__collection_image:after {
+    left: auto;
+    right: 0;
+  }
+  html[dir=ltr] .template-collection .box--with-scroll[data-heading-with-image] + .box__collection_image:after {
+    right: auto;
+    left: 0;
+  }
+}

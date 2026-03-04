@@ -1,0 +1,76 @@
+.box__map .map-info {
+  background: var(--main-background);
+  position: absolute;
+  bottom: 80px;
+  border: 1px solid var(--main-borders);
+  width: 370px;
+  padding: 50px;
+  max-height: 70vh;
+  overflow-y: scroll;
+}
+html[dir=rtl] .box__map .map-info {
+  left: 80px;
+}
+html[dir=ltr] .box__map .map-info {
+  right: 80px;
+}
+html[dir=rtl] .box__map .map-info {
+  text-align: right;
+}
+html[dir=ltr] .box__map .map-info {
+  text-align: left;
+}
+.box__map .map-info .title {
+  margin-top: 0 !important;
+}
+html[dir=rtl] .box__map .map-info .title {
+  text-align: right !important;
+}
+html[dir=ltr] .box__map .map-info .title {
+  text-align: left !important;
+}
+.box__map .map-info .rte {
+  margin-bottom: 0 !important;
+}
+.box__map .map-info .rte p:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 768px), screen and (max-width: 1024px) and (orientation: portrait) {
+  .box__map {
+    border-bottom: 1px solid var(--main-borders);
+    height: auto !important;
+    min-height: 0;
+  }
+  .box__map .map-info {
+    bottom: auto;
+    box-shadow: none;
+    width: 100%;
+    padding: 50px;
+    height: auto;
+    max-height: none;
+    overflow: hidden;
+    position: relative;
+  }
+  html[dir=rtl] .box__map .map-info {
+    left: auto;
+  }
+  html[dir=ltr] .box__map .map-info {
+    right: auto;
+  }
+  .box__map .contact-map-holder {
+    height: 50vh;
+    position: static;
+  }
+}
+
+.contact-map-holder, .contact-map-object {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.contact-map-object > div {
+  background: var(--main-background) !important;
+}

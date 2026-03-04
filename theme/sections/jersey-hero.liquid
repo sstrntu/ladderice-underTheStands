@@ -1,0 +1,149 @@
+{{ 'section-jersey-hero.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="jersey-hero-section"
+  id="section-jersey-hero-{{ section.id }}"
+>
+  <div class="jersey-hero-inner">
+
+    <div
+      class="jersey-hero-image-wrap"
+      id="jersey-hero-img-{{ section.id }}"
+    >
+      <img
+        src="{{ 'jersey-hero.png' | asset_url }}"
+        alt="{{ section.settings.title | default: 'Ladderice Jersey Collection' }}"
+        class="jersey-hero-image"
+        loading="eager"
+        fetchpriority="high"
+      >
+    </div>
+
+    <div class="jersey-hero-overlay">
+      <div class="jersey-hero-content">
+
+        {%- unless section.settings.tagline == blank -%}
+          <span class="jersey-hero-tagline">{{ section.settings.tagline | escape }}</span>
+        {%- endunless -%}
+
+        {%- unless section.settings.title == blank -%}
+          <h1 class="jersey-hero-title">{{ section.settings.title | escape }}</h1>
+        {%- endunless -%}
+
+        {%- unless section.settings.subtitle == blank -%}
+          <p class="jersey-hero-subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endunless -%}
+
+        {%- unless section.settings.button_label == blank -%}
+          <a
+            class="jersey-hero-button"
+            {% unless section.settings.button_link == blank %}href="{{ section.settings.button_link }}"{% endunless %}
+          >
+            {{ section.settings.button_label | escape }}
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none" aria-hidden="true">
+              <rect x="0" y="4" width="12" height="2" fill="currentColor"/>
+              <path d="M8 0L13.5 5L8 10L6.6 8.6L10.7 5L6.6 1.4L8 0Z" fill="currentColor"/>
+            </svg>
+          </a>
+        {%- endunless -%}
+
+      </div>
+    </div>
+
+    <div class="jersey-hero-scroll-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      <span>Scroll</span>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    var section = document.getElementById('section-jersey-hero-{{ section.id }}');
+    var imageWrap = document.getElementById('jersey-hero-img-{{ section.id }}');
+
+    if (!section || !imageWrap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var ticking = false;
+
+    function updateParallax() {
+      var scrollY = window.scrollY;
+      var sectionTop = section.offsetTop;
+      var sectionH = section.offsetHeight;
+      var relScroll = scrollY - sectionTop;
+
+      // Only animate while section is in view
+      if (scrollY < sectionTop + sectionH) {
+        // Parallax: image drifts up at 35% of scroll speed
+        var shift = Math.max(0, relScroll) * 0.35;
+        imageWrap.style.transform = 'translateY(' + shift + 'px)';
+
+        // Fade section as it scrolls out
+        var fadeStart = sectionH * 0.4;
+        if (relScroll > fadeStart) {
+          var fadeFraction = (relScroll - fadeStart) / (sectionH * 0.6);
+          section.style.opacity = Math.max(0, 1 - fadeFraction).toFixed(3);
+        } else {
+          section.style.opacity = '1';
+        }
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Jersey Hero",
+  "class": "margins-quirk-if-first",
+  "settings": [
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "New Collection"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ladderice x Lace"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "A celebration of football culture"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Jersey Hero"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["custom.overlay", "header"]
+  }
+}
+{% endschema %}

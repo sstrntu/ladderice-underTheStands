@@ -1,0 +1,100 @@
+.store-availability-information {
+  display: flex;
+  margin-top: 38px;
+}
+html[dir=rtl] .store-availability-information {
+  text-align: right;
+}
+html[dir=ltr] .store-availability-information {
+  text-align: left;
+}
+.store-availability-information button {
+  color: var(--main-text);
+}
+.store-availability-information-container {
+  margin-inline-start: 5px;
+}
+.store-availability-information__title {
+  margin-bottom: 0;
+}
+.store-availability-information__stock {
+  margin-bottom: 0;
+}
+.store-availability-information__stores {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+.store-availability-information__stores a {
+  border-bottom: 1px solid;
+}
+.store-availability__link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.store-availability-list__stock .icon {
+  margin-top: 2px;
+  margin-inline-end: 3px;
+}
+.store-availability-container .icon {
+  width: 12px;
+  height: 12px;
+  margin-top: 7px;
+  margin-inline-end: 4px;
+}
+.store-availability-container .icon-in-stock path {
+  fill: #00730B;
+}
+.store-availability-container .icon-out-of-stock path {
+  fill: #DD2200;
+}
+
+.store-availability-list__item {
+  padding-bottom: 16px;
+}
+.store-availability-list__item:after {
+  content: "";
+  display: block;
+  margin: 32px 0 16px 0;
+  border-bottom: 1px solid var(--main-borders);
+}
+.store-availability-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.store-availability-list-header__location, .store-availability-list-header__distance {
+  margin-bottom: 0;
+}
+.store-availability-list__stock {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: block;
+}
+.store-availability-list__address, .store-availability-list__phone, .store-availability-list__invalid {
+  margin-inline-start: 20px;
+}
+.store-availability-list__address p {
+  margin-bottom: 0;
+}
+.store-availability-list__phone {
+  margin-bottom: 0;
+}
+.store-availability-list__invalid .icon {
+  width: 19px;
+  height: 19px;
+  position: relative;
+  top: 5px;
+}
+
+.store-availabilities-modal__variant-title {
+  margin-bottom: 0;
+  display: block;
+}
+.store-availabilities-modal__variant-title span:not(:last-child):after {
+  content: " / ";
+}
+
+body[data-single-variant] .store-availabilities-modal__variant-title {
+  display: none;
+}

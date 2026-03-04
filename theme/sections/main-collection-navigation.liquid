@@ -1,0 +1,174 @@
+{%- liquid
+  render 'custom-colors', id: section.id, background: section.settings.custom_overlay, text: section.settings.custom_text
+
+  assign captured_collection_next = false
+  assign captured_collection_prev = false
+  assign next_collection = ''
+  assign prev_collection = ''
+
+  for collection_nav in collections
+    unless collection_nav.handle == 'frontpage'
+      if captured_collection_next and next_collection == ''
+        assign next_collection = collection_nav
+      elsif collection_nav.handle == collection.handle
+        if forloop.last == true
+          for collection_nav_second in collections
+            unless collection_nav_second.handle == 'frontpage'
+              if next_collection == ''
+                assign next_collection = collection_nav_second
+              endif
+            endunless
+          endfor
+        else
+          assign captured_collection_next = true
+        endif
+      endif
+    endunless
+  endfor
+
+  if section.settings.navigation_style == '2'
+    assign reversed_collections = collections | reverse
+    for collection_nav in reversed_collections
+      unless collection_nav.handle == 'frontpage'
+        if captured_collection_prev and prev_collection == ''
+          assign prev_collection = collection_nav
+        elsif collection_nav.handle == collection.handle
+          if forloop.last == true
+            for collection_nav_second in reversed_collections
+              unless collection_nav_second.handle == 'frontpage'
+                if prev_collection == ''
+                  assign prev_collection = collection_nav_second
+                endif
+              endunless
+            endfor
+          else
+            assign captured_collection_prev = true
+          endif
+        endif
+      endunless
+    endfor
+  endif
+
+  if prev_collection != '' and next_collection != ''
+    assign size_class = 'box--small-lg'
+  else
+    assign size_class = 'box--small-fl'
+  endif
+  unless section.settings.navigation_images
+    assign size_class = size_class | append: ' lap--box--small-fl-auto'
+  else
+    assign size_class = size_class | append: ' lap--box--small-fl'
+  endunless
+-%}
+
+{{ 'section-main-collection-navigation.css' | asset_url | stylesheet_tag }}
+
+{%- if prev_collection != '' or next_collection != '' -%}
+  <div id="section-{{ section.id }}" class="collection-navigation">
+    {%- if prev_collection != '' -%}
+      <div class="collection-navigation__item">
+        <div class="collection-navigation-content">
+          <span class="subtitle">{{ 'collections.navigation.previous' | t }}</span>
+          <a
+            href="{{ prev_collection.url }}"
+            title="{{ prev_collection.title }}"
+          >
+            <span class="title underline-animation-thick underline-mobile">{{ prev_collection.title }}</span>
+          </a>
+
+          {% comment %}
+            {%- if section.settings.navigation_images -%}
+              <span
+                class="site-box-background {% if section.settings.custom_overlay != "rgba(0,0,0,0)" %} with-image {% endif %} no-preloader"
+                aria-hidden="true"
+              >
+                {%- render 'lazy-image',
+                  image: prev_collection.featured_image,
+                  id: 'previous-collection-lazy-image',
+                  sizes: '100vw'
+                -%}
+              </span>
+            {%- endif -%}
+          {% endcomment %}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if next_collection != '' -%}
+      <div class="collection-navigation__item">
+        <div class="collection-navigation-content">
+          <span class="subtitle">{{ 'collections.navigation.next' | t }}</span>
+          <a
+            href="{{ next_collection.url }}"
+            title="{{ next_collection.title }}"
+          >
+            <span class="title underline-animation-thick underline-mobile">{{ next_collection.title }}</span>
+          </a>
+
+          {% comment %}
+            {%- if section.settings.navigation_images -%}
+              <span
+                class="site-box-background {% if section.settings.custom_overlay != "rgba(0,0,0,0)" %} with-image {% endif %} no-preloader"
+                aria-hidden="true"
+              >
+                {%- render 'lazy-image',
+                  image: next_collection.featured_image,
+                  id: 'previous-collection-lazy-image',
+                  sizes: '100vw'
+                -%}
+              </span>
+            {%- endif -%}
+          {% endcomment %}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.split-extra-words.sections.main-collection-navigation.name",
+  "settings": [
+    {
+      "id": "navigation_style",
+      "type": "select",
+      "label": "t:sections.split-extra-words.sections.main-collection-navigation.settings.style.label",
+      "info": "t:sections.split-extra-words.sections.main-collection-navigation.settings.style.info",
+      "options": [
+        {
+          "value": "2",
+          "label": "t:sections.split-extra-words.sections.main-collection-navigation.settings.style.options__1"
+        },
+        {
+          "value": "1",
+          "label": "t:sections.split-extra-words.sections.main-collection-navigation.settings.style.options__2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "id": "navigation_images",
+      "type": "checkbox",
+      "label": "t:sections.split-extra-words.sections.main-collection-navigation.settings.show_image.label",
+      "info": "t:sections.split-extra-words.sections.main-collection-navigation.settings.show_image.info",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.split-extra-words.settings_schema.colors.headings.custom_colors"
+    },
+    {
+      "type": "color",
+      "id": "custom_text",
+      "label": "t:sections.split-extra-words.settings_schema.colors.settings.text",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "color",
+      "id": "custom_overlay",
+      "label": "t:sections.split-extra-words.settings_schema.colors.settings.background",
+      "default": "rgba(0,0,0,0)"
+    }
+  ]
+}
+{% endschema %}

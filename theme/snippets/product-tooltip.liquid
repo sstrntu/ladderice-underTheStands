@@ -1,0 +1,77 @@
+<a href="{{ product.url }}" class="krown-tooltip">
+  <div class="krown-tooltip--product">
+    <div class="box--product-image primary">
+      {%- liquid 
+        unless blank_product
+          render 'lazy-image-small', image: product.featured_media, sizes: '80px'
+        else
+          assign no = index | modulo: 6 | plus: 1
+          echo 'product-X' | replace: 'X', no | placeholder_svg_tag
+        endunless
+      -%}
+    </div>
+
+    {%- assign variant = product.selected_or_first_available_variant -%}
+
+    <div class="caption">
+      <div>
+        <span class="title"><span class="underline-animation">
+          {%- liquid 
+            unless blank_product 
+              echo product.title 
+            else 
+              echo 'general.onboarding.product_title' | t
+            endunless
+          -%}
+        </span></span>
+        <span class="price text-size--smaller">
+          <span>
+
+            {%- liquid
+
+              unless blank_product
+
+                assign price = product.price | money
+
+                if product.price_varies
+                  if product.compare_at_price > product.price
+                    echo 'products.grid.on_sale_from_html' | t: price: price
+                  else
+                    echo 'products.grid.from_text_html' | t: price: price
+                  endif
+                else
+                  if product.compare_at_price > product.price
+                    echo price
+                    echo '<del>'
+                      echo product.compare_at_price | money
+                    echo '</del>'
+                  else 
+                    echo price
+                  endif
+                endif
+
+                if variant.unit_price_measurement
+                  echo '<span class="unit-price text-size--smallest">'
+                  echo variant.unit_price | money
+                  echo ' / '
+                  if variant.unit_price_measurement.reference_value != 1
+                    echo variant.unit_price_measurement.reference_value
+                  endif
+                  echo variant.unit_price_measurement.reference_unit
+                  echo '</span>'
+                endif
+
+              else 
+
+                echo 9999 | money
+
+              endunless
+
+            -%}
+          </span>
+        </span>
+
+      </div>
+    </div>
+  </div>
+</a>

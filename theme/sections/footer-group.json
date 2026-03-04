@@ -1,0 +1,105 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "t:sections.refactor_words.labels.footer_group",
+  "sections": {
+    "text-columns-with-icons": {
+      "type": "text-columns-with-icons",
+      "blocks": {
+        "icon-1": {
+          "type": "text-icon",
+          "settings": {
+            "title": "Shipping",
+            "body": "<p>Share some useful information about shipping, returns or discounts.</p>",
+            "label": "",
+            "link": "",
+            "select_icon": "earth-globe"
+          }
+        },
+        "icon-2": {
+          "type": "text-icon",
+          "settings": {
+            "title": "Returns",
+            "body": "<p>Share some useful information about shipping, returns or discounts.</p>",
+            "label": "",
+            "link": "",
+            "select_icon": "earth-globe"
+          }
+        },
+        "icon-3": {
+          "type": "text-icon",
+          "settings": {
+            "title": "Pickup",
+            "body": "<p>Share some useful information about shipping, returns or discounts.</p>",
+            "label": "",
+            "link": "",
+            "select_icon": "earth-globe"
+          }
+        }
+      },
+      "block_order": [
+        "icon-1",
+        "icon-2",
+        "icon-3"
+      ],
+      "disabled": true,
+      "settings": {
+        "custom_background": "rgba(0,0,0,0)",
+        "custom_text": "rgba(0,0,0,0)",
+        "seo_h_tag": "h3"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu_wxf4UJ": {
+          "type": "menu",
+          "settings": {
+            "title": "About",
+            "menu": "about-menu"
+          }
+        },
+        "menu_KfkagF": {
+          "type": "menu",
+          "settings": {
+            "title": "",
+            "menu": "footer"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "title": "Follow us"
+          }
+        }
+      },
+      "block_order": [
+        "menu_wxf4UJ",
+        "menu_KfkagF",
+        "social"
+      ],
+      "settings": {
+        "show_payment_icons": true,
+        "only_show_custom_icons": false,
+        "show_locale_selector": true,
+        "show_country_selector": true,
+        "enable_follow_on_shop": true,
+        "custom_background": "#1c2b16",
+        "custom_text": "#ffeed0",
+        "seo_h_tag": "h4"
+      }
+    }
+  },
+  "order": [
+    "text-columns-with-icons",
+    "footer"
+  ]
+}

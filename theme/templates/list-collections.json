@@ -1,0 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "shop_the_look_nxt6zF": {
+      "type": "shop-the-look",
+      "blocks": {
+        "product_bCUM9J": {
+          "type": "product",
+          "settings": {
+            "product": "equipo-x-ac-x-kappa-tee-off-white"
+          }
+        },
+        "product_NVUCQw": {
+          "type": "product",
+          "settings": {
+            "product": "equipo-x-ac-x-kappa-tie-dye"
+          }
+        },
+        "product_tjtAc3": {
+          "type": "product",
+          "settings": {
+            "product": "cafe-nivelcrack-latte-jersey"
+          }
+        }
+      },
+      "block_order": [
+        "product_bCUM9J",
+        "product_NVUCQw",
+        "product_tjtAc3"
+      ],
+      "disabled": true,
+      "name": "t:sections.shop-the-look.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/Artboard_12345.png",
+        "desktop_image_positioning": "image-on-left"
+      }
+    },
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "text_alignment": "horizontal-left vertical-bottom",
+        "custom_text": "#000000",
+        "custom_overlay": "rgba(0,0,0,0)",
+        "display_type": "all",
+        "sort": "alphabetical"
+      }
+    }
+  },
+  "order": [
+    "shop_the_look_nxt6zF",
+    "main"
+  ]
+}

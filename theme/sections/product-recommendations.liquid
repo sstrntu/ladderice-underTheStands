@@ -1,0 +1,71 @@
+<product-recommendations id="main-product-recommendations" class="product-recommendations site-box site-box-container" data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4" style="min-height:1px;overflow:visible">
+
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    
+    <div id="section-related-products" style="width:100%">
+
+      <div class="fix-collection-grid-box-design clearfix box--can-stick">
+
+        <div class="site-box box--big lap--box--small-fl-auto palm--box--small-fl box--typo-big box--center-align box--column-flow box__heading" data-order="0" id="fix-height-{{ section.id }}">
+          <div class="site-box-content">
+            <span class="title h1">{{ section.settings.heading | escape }}</span>
+            {%- if settings.headings_hr -%} <hr /> {%- endif -%}
+          </div>
+        </div> 
+
+        <div data-count="{{ recommendations.products.size | modulo: 4 }}" class="product-grid-border-fix fix-borders-split" data-grid-columns="2" id="fix-height-with-{{ section.id }}">
+
+          {%- for product in recommendations.products -%}
+            
+            <div class="site-box box--small lap--box--small-lg box--typo-small box--center-align box--no-padding box--column-flow box__collection active" data-js-product-item>
+              <div class="site-box-content product-holder">
+                {%- render 'product-item', product: product, index: forloop.index0 -%}
+              </div>
+            </div>
+
+          {%- endfor -%}
+
+        </div>
+
+        <style id="css-fix-height-{{ section.id }}"></style>
+        <script class="js-fix-height">
+          fixCollectionHeight = () => {
+            document.getElementById('css-fix-height-{{ section.id }}').innerHTML = `@media screen and (min-width: 1025px), screen and (min-width: 769px) and (orientation: landscape) { 
+              #fix-height-{{ section.id }} {
+                height: ${document.getElementById('fix-height-with-{{ section.id }}').offsetHeight-1}px !important;
+              }
+            }`;
+          }
+          setTimeout(()=>{
+            fixCollectionHeight();
+          }, 100);
+          window.addEventListener('resize', fixCollectionHeight);
+        </script>
+
+      </div>
+
+    </div>
+
+  {%- endif -%}
+
+</product-recommendations>
+
+{% schema %}
+  {
+    "name": "t:sections.product-recommendations.name",
+    "class": "shopify-section-product-recommendations mount-collection",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:sections.product-recommendations.settings.header__1.content",
+        "info": "t:sections.product-recommendations.settings.header__1.info"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "t:sections.product-recommendations.settings.heading.label",
+        "default": "You may also like"
+      }
+    ]
+  }
+{% endschema %}

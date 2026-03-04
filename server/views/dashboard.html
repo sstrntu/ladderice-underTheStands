@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Red Funding Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: #f4f2ee; color: #111; min-height: 100vh; }
+
+    /* ── Header ── */
+    .header {
+      background: #1c2b16; color: #ffeed0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 58px;
+      border-bottom: 1px solid rgba(255,238,208,0.08);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header__logo { font-size: 16px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .header__logo span { color: #E8000D; }
+    .header__right { display: flex; align-items: center; gap: 20px; }
+    .header__tag { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,238,208,0.4); }
+    .header__logout { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,238,208,0.6); text-decoration: none; padding: 6px 14px; border: 1px solid rgba(255,238,208,0.15); border-radius: 30px; transition: all 0.2s; }
+    .header__logout:hover { color: #ffeed0; border-color: rgba(255,238,208,0.4); }
+
+    /* ── Layout ── */
+    .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Section titles ── */
+    .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #E8000D; margin-bottom: 8px; }
+    .section-heading { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; color: #111; margin-bottom: 24px; }
+
+    /* ── Cards ── */
+    .card { background: #fff; border: 1px solid rgba(17,17,17,0.08); border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; }
+
+    /* ── Upload area ── */
+    .upload-zone {
+      border: 2px dashed rgba(17,17,17,0.15); border-radius: 12px; padding: 40px 24px;
+      text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: #E8000D; background: rgba(232,0,13,0.02); }
+    .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 32px; margin-bottom: 12px; }
+    .upload-zone p { font-size: 14px; font-weight: 500; color: rgba(17,17,17,0.5); }
+    .upload-zone strong { color: #111; }
+    .upload-zone small { display: block; margin-top: 6px; font-size: 11px; color: rgba(17,17,17,0.35); }
+
+    .upload-actions { display: flex; gap: 12px; margin-top: 20px; align-items: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 30px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
+    .btn--primary { background: #1c2b16; color: #ffeed0; }
+    .btn--primary:hover { background: #253d1d; }
+    .btn--red { background: #E8000D; color: #fff; }
+    .btn--red:hover { background: #A50009; }
+    .btn--outline { background: transparent; color: #111; border: 1px solid rgba(17,17,17,0.15); }
+    .btn--outline:hover { background: #111; color: #fff; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Preview table ── */
+    .preview-box { margin-top: 20px; background: #fafafa; border: 1px solid rgba(17,17,17,0.07); border-radius: 10px; overflow: hidden; display: none; }
+    .preview-box.visible { display: block; }
+    .preview-header { padding: 12px 20px; border-bottom: 1px solid rgba(17,17,17,0.07); display: flex; align-items: center; justify-content: space-between; }
+    .preview-header span { font-size: 12px; font-weight: 600; color: rgba(17,17,17,0.5); }
+    .preview-header strong { font-size: 14px; font-weight: 700; color: #111; }
+
+    /* ── Upload status ── */
+    .status-msg { padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-top: 14px; display: none; }
+    .status-msg.success { background: rgba(76,175,80,0.08); border: 1px solid rgba(76,175,80,0.25); color: #2e7d32; }
+    .status-msg.error   { background: rgba(232,0,13,0.06); border: 1px solid rgba(232,0,13,0.2); color: #A50009; }
+
+    /* ── Stats row ── */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    @media(max-width:600px){ .stats{grid-template-columns:1fr} }
+    .stat { background: #fff; border: 1px solid rgba(17,17,17,0.08); border-radius: 12px; padding: 22px 24px; }
+    .stat__label { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(17,17,17,0.35); margin-bottom: 8px; }
+    .stat__value { font-size: 32px; font-weight: 800; color: #111; line-height: 1; }
+    .stat__value--red { color: #E8000D; }
+
+    /* ── Vote bars ── */
+    .charity-row { padding: 16px 0; border-bottom: 1px solid rgba(17,17,17,0.06); }
+    .charity-row:last-child { border-bottom: none; }
+    .charity-row__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .charity-row__name { font-size: 14px; font-weight: 700; color: #111; }
+    .charity-row__stats { font-size: 12px; font-weight: 500; color: rgba(17,17,17,0.45); }
+    .charity-row__stats strong { color: #111; }
+    .bar-track { height: 6px; background: rgba(17,17,17,0.07); border-radius: 30px; overflow: hidden; }
+    .bar-fill { height: 100%; background: #1c2b16; border-radius: 30px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .bar-fill--red { background: #E8000D; }
+
+    /* ── Data table ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { text-align: left; padding: 10px 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(17,17,17,0.4); border-bottom: 1px solid rgba(17,17,17,0.08); white-space: nowrap; }
+    tbody td { padding: 12px 14px; border-bottom: 1px solid rgba(17,17,17,0.05); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(17,17,17,0.02); }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 30px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .badge--green { background: rgba(28,43,22,0.08); color: #1c2b16; }
+    .badge--red   { background: rgba(232,0,13,0.08); color: #E8000D; }
+
+    .empty-state { padding: 40px 0; text-align: center; color: rgba(17,17,17,0.35); font-size: 13px; }
+
+    /* ── Tab bar ── */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(17,17,17,0.1); margin-bottom: 24px; }
+    .tab { padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(17,17,17,0.4); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.2s, border-color 0.2s; }
+    .tab.active { color: #1c2b16; border-color: #1c2b16; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .refresh-note { font-size: 11px; color: rgba(17,17,17,0.35); margin-top: 8px; }
+
+    /* ── CMS form ── */
+    .cms-section { margin-bottom: 36px; }
+    .cms-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(17,17,17,0.4); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(17,17,17,0.08); }
+    .cms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media(max-width:640px){ .cms-grid{ grid-template-columns: 1fr; } }
+    .cms-field { display: flex; flex-direction: column; gap: 5px; }
+    .cms-field label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(17,17,17,0.45); }
+    .cms-field input, .cms-field textarea {
+      padding: 10px 14px; border: 1px solid rgba(17,17,17,0.12); border-radius: 8px;
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 500; color: #111;
+      background: #fafafa; outline: none; transition: border-color 0.2s;
+    }
+    .cms-field input:focus, .cms-field textarea:focus { border-color: #1c2b16; background: #fff; }
+    .cms-field textarea { resize: vertical; min-height: 70px; }
+    .cms-field--full { grid-column: 1 / -1; }
+
+    /* ── Image upload slots ── */
+    .img-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .img-slot { border: 1px solid rgba(17,17,17,0.1); border-radius: 12px; overflow: hidden; }
+    .img-slot__preview { aspect-ratio: 4/3; background: #f0ede8; display: flex; align-items: center; justify-content: center; position: relative; }
+    .img-slot__preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-slot__preview .placeholder { font-size: 28px; color: rgba(17,17,17,0.2); }
+    .img-slot__footer { padding: 12px; border-top: 1px solid rgba(17,17,17,0.08); }
+    .img-slot__label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #111; margin-bottom: 8px; }
+    .img-slot__upload { position: relative; display: block; }
+    .img-slot__upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .img-slot__upload .btn { width: 100%; justify-content: center; font-size: 11px; padding: 8px 14px; }
+    .img-slot__status { font-size: 10px; margin-top: 6px; color: rgba(17,17,17,0.4); min-height: 14px; }
+    .img-slot__status.ok  { color: #2e7d32; }
+    .img-slot__status.err { color: #A50009; }
+
+    /* ── Product sections ── */
+    .product-section { border: 1px solid rgba(17,17,17,0.1); border-radius: 16px; padding: 28px 28px 24px; margin-bottom: 24px; }
+    .product-section__head { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(17,17,17,0.07); }
+    .product-section__num { width: 34px; height: 34px; border-radius: 50%; background: #1c2b16; color: #ffeed0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
+    .product-section__num--main { background: #E8000D; }
+    .product-section__titles { flex: 1; }
+    .product-section__name { font-size: 15px; font-weight: 800; color: #111; }
+    .product-section__sub  { font-size: 11px; color: rgba(17,17,17,0.4); font-weight: 500; margin-top: 2px; }
+    .product-img-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+    @media(max-width:700px){ .product-img-grid{ grid-template-columns: repeat(2, 1fr); } }
+    .product-img-slot { border: 1px solid rgba(17,17,17,0.1); border-radius: 10px; overflow: hidden; }
+    .product-img-slot__preview { aspect-ratio: 1; background: #f5f3ef; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .product-img-slot__preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .product-img-slot__preview img.has-img { display: block; }
+    .product-img-slot__preview .slot-placeholder { font-size: 22px; color: rgba(17,17,17,0.2); }
+    .product-img-slot__num { position: absolute; top: 6px; left: 8px; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: rgba(17,17,17,0.3); background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 30px; }
+    .product-img-slot__footer { padding: 8px; }
+    .product-img-slot__upload { position: relative; display: block; }
+    .product-img-slot__upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .product-img-slot__upload .btn { width: 100%; justify-content: center; font-size: 10px; padding: 7px 8px; }
+    .product-img-slot__status { font-size: 10px; text-align: center; margin-top: 4px; min-height: 13px; }
+    .product-img-slot__status.ok  { color: #2e7d32; }
+    .product-img-slot__status.err { color: #A50009; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header__logo">LADDER<span>I</span>CE</div>
+  <div class="header__right">
+    <span class="header__tag">Red Funding Admin</span>
+    <a href="/admin/logout" class="header__logout">Sign Out</a>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat">
+      <div class="stat__label">Total Orders Loaded</div>
+      <div class="stat__value" id="stat-orders">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Total Votes Cast</div>
+      <div class="stat__value stat__value--red" id="stat-votes">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat__label">Participation Rate</div>
+      <div class="stat__value" id="stat-rate">—</div>
+    </div>
+  </div>
+
+  <!-- Upload section -->
+  <div class="card">
+    <div class="section-title">Order Import</div>
+    <div class="section-heading">Upload Orders CSV</div>
+
+    <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:20px;line-height:1.7;">
+      Export orders from <strong>Shopify Admin → Orders → Export</strong>, then upload the CSV here.
+      Required columns: <code>name</code>, <code>email</code>, <code>order_number</code> (or <code>order</code>).
+      Existing orders are updated; new ones are added.
+    </p>
+
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="csv-input" accept=".csv,text/csv">
+      <div class="upload-icon">📄</div>
+      <p><strong>Click to choose</strong> or drag and drop your CSV file here</p>
+      <small>Max 5MB · CSV format only</small>
+    </div>
+
+    <div class="preview-box" id="preview-box">
+      <div class="preview-header">
+        <strong id="preview-title">Preview</strong>
+        <span id="preview-count">0 rows</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody id="preview-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="upload-actions">
+      <button class="btn btn--primary" id="upload-btn" disabled>Upload &amp; Import</button>
+      <button class="btn btn--outline" id="clear-btn" style="display:none">Clear</button>
+      <span id="file-name" style="font-size:12px;color:rgba(17,17,17,0.45);"></span>
+    </div>
+
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <!-- Votes + Orders tabs -->
+  <div class="card">
+
+    <div class="tabs">
+      <div class="tab active" data-tab="votes">Vote Tally</div>
+      <div class="tab" data-tab="orders">Loaded Orders</div>
+      <div class="tab" data-tab="history">Vote History</div>
+      <div class="tab" data-tab="products">Products</div>
+      <div class="tab" data-tab="content">Finances &amp; Causes</div>
+    </div>
+
+    <!-- Votes tally -->
+    <div class="tab-panel active" id="tab-votes">
+      <div id="vote-bars">
+        <div class="empty-state">Loading vote data…</div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="/admin/votes/export" class="btn btn--outline">Download Votes CSV</a>
+        <button class="btn btn--outline" onclick="loadAll()">Refresh</button>
+      </div>
+      <p class="refresh-note">Votes update in real time. Refresh to see latest.</p>
+    </div>
+
+    <!-- Orders table -->
+    <div class="tab-panel" id="tab-orders">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Order Number</th><th>Name</th><th>Email</th><th>Uploaded</th><th>Voted?</th></tr></thead>
+          <tbody id="orders-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Vote history -->
+    <div class="tab-panel" id="tab-history">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Order</th><th>Voter</th><th>Email</th><th>Voted For</th><th>Date</th></tr></thead>
+          <tbody id="votes-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══ PRODUCTS TAB ═══ -->
+    <div class="tab-panel" id="tab-products">
+      <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:24px;line-height:1.7;">
+        Manage product listings. Each product has up to <strong>4 photos</strong> (first photo = main image), a description, price, and a Buy Now link.
+        Product 1 is the main Campaign Kit shown in the featured carousel.
+      </p>
+
+      <!-- ── Product 1 ── -->
+      <div class="product-section">
+        <div class="product-section__head">
+          <div class="product-section__num product-section__num--main">1</div>
+          <div class="product-section__titles">
+            <div class="product-section__name">Product 1 — Campaign Kit</div>
+            <div class="product-section__sub">Main product • Shown in featured carousel • Linked to Red Funding vote</div>
+          </div>
+          <span class="badge badge--red">Main</span>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Photos (up to 4 — used as carousel slides)</div>
+        <div class="product-img-grid" id="p1-img-grid">
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">1</span><img id="p1-img-1-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="1" data-slot="1"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p1-img-1-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">2</span><img id="p1-img-2-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="1" data-slot="2"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p1-img-2-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">3</span><img id="p1-img-3-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="1" data-slot="3"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p1-img-3-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">4</span><img id="p1-img-4-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="1" data-slot="4"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p1-img-4-status"></div></div></div>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Product Info</div>
+        <div class="cms-grid">
+          <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_1_tag" placeholder="Main Jersey"></div>
+          <div class="cms-field"><label>Name</label><input type="text" id="cms-product_1_name" placeholder="The Campaign Kit"></div>
+          <div class="cms-field"><label>Price</label><input type="text" id="cms-product_1_price" placeholder="฿1,590"></div>
+          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_1_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_1_desc" placeholder="Limited edition jersey where 100% of net proceeds go directly to the community…"></textarea></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+          <button class="btn btn--primary" onclick="saveProduct(1)">Save Product 1</button>
+          <div class="product-save-status" id="p1-save-status"></div>
+        </div>
+      </div>
+
+      <!-- ── Product 2 ── -->
+      <div class="product-section">
+        <div class="product-section__head">
+          <div class="product-section__num">2</div>
+          <div class="product-section__titles">
+            <div class="product-section__name">Product 2</div>
+            <div class="product-section__sub">Shown in the jersey collection grid</div>
+          </div>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Photos (up to 4 — first photo shown in grid)</div>
+        <div class="product-img-grid" id="p2-img-grid">
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">1</span><img id="p2-img-1-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="2" data-slot="1"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p2-img-1-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">2</span><img id="p2-img-2-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="2" data-slot="2"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p2-img-2-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">3</span><img id="p2-img-3-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="2" data-slot="3"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p2-img-3-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">4</span><img id="p2-img-4-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="2" data-slot="4"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p2-img-4-status"></div></div></div>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Product Info</div>
+        <div class="cms-grid">
+          <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_2_tag" placeholder="Away Kit"></div>
+          <div class="cms-field"><label>Name</label><input type="text" id="cms-product_2_name" placeholder="Black — No. 07"></div>
+          <div class="cms-field"><label>Price</label><input type="text" id="cms-product_2_price" placeholder="฿1,590"></div>
+          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_2_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_2_desc" placeholder="Blacked-out with red accents…"></textarea></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+          <button class="btn btn--primary" onclick="saveProduct(2)">Save Product 2</button>
+          <div class="product-save-status" id="p2-save-status"></div>
+        </div>
+      </div>
+
+      <!-- ── Product 3 ── -->
+      <div class="product-section">
+        <div class="product-section__head">
+          <div class="product-section__num">3</div>
+          <div class="product-section__titles">
+            <div class="product-section__name">Product 3</div>
+            <div class="product-section__sub">Shown in the jersey collection grid</div>
+          </div>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Photos (up to 4 — first photo shown in grid)</div>
+        <div class="product-img-grid" id="p3-img-grid">
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">1</span><img id="p3-img-1-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="3" data-slot="1"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p3-img-1-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">2</span><img id="p3-img-2-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="3" data-slot="2"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p3-img-2-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">3</span><img id="p3-img-3-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="3" data-slot="3"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p3-img-3-status"></div></div></div>
+          <div class="product-img-slot"><div class="product-img-slot__preview"><span class="product-img-slot__num">4</span><img id="p3-img-4-preview" src="" alt=""><div class="slot-placeholder">🖼</div></div><div class="product-img-slot__footer"><label class="product-img-slot__upload"><input type="file" accept="image/*" data-product="3" data-slot="4"><span class="btn btn--outline">Upload</span></label><div class="product-img-slot__status" id="p3-img-4-status"></div></div></div>
+        </div>
+        <div class="cms-section-title" style="margin-bottom:10px">Product Info</div>
+        <div class="cms-grid">
+          <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_3_tag" placeholder="Special Edition"></div>
+          <div class="cms-field"><label>Name</label><input type="text" id="cms-product_3_name" placeholder="White — No. 10"></div>
+          <div class="cms-field"><label>Price</label><input type="text" id="cms-product_3_price" placeholder="฿1,590"></div>
+          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_3_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_3_desc" placeholder="Jersey description…"></textarea></div>
+        </div>
+        <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+          <button class="btn btn--primary" onclick="saveProduct(3)">Save Product 3</button>
+          <div class="product-save-status" id="p3-save-status"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ FINANCES & CAUSES TAB ═══ -->
+    <div class="tab-panel" id="tab-content">
+
+      <div class="cms-section">
+        <div class="cms-section-title">Financial Figures</div>
+        <div class="cms-grid">
+          <div class="cms-field">
+            <label>Total Revenue (display text)</label>
+            <input type="text" id="cms-fin_revenue_display" placeholder="e.g. ฿10,000">
+          </div>
+          <div class="cms-field">
+            <label>Revenue (number for counter)</label>
+            <input type="number" id="cms-fin_revenue_num" placeholder="e.g. 10000">
+          </div>
+          <div class="cms-field">
+            <label>Revenue description</label>
+            <input type="text" id="cms-fin_revenue_desc" placeholder="e.g. Gross sales from all jersey purchases">
+          </div>
+          <div class="cms-field"><!-- spacer --></div>
+          <div class="cms-field">
+            <label>Total Expenses (display text)</label>
+            <input type="text" id="cms-fin_expenses_display" placeholder="e.g. ฿3,500">
+          </div>
+          <div class="cms-field">
+            <label>Expenses (number for counter)</label>
+            <input type="number" id="cms-fin_expenses_num" placeholder="e.g. 3500">
+          </div>
+          <div class="cms-field">
+            <label>Expenses description</label>
+            <input type="text" id="cms-fin_expenses_desc" placeholder="e.g. Production, fulfilment & operations">
+          </div>
+          <div class="cms-field"><!-- spacer --></div>
+          <div class="cms-field">
+            <label>Net Profit (display text)</label>
+            <input type="text" id="cms-fin_profit_display" placeholder="e.g. ฿6,500">
+          </div>
+          <div class="cms-field">
+            <label>Profit (number for counter)</label>
+            <input type="number" id="cms-fin_profit_num" placeholder="e.g. 6500">
+          </div>
+          <div class="cms-field">
+            <label>Profit description</label>
+            <input type="text" id="cms-fin_profit_desc" placeholder="e.g. 100% directed by your votes">
+          </div>
+          <div class="cms-field">
+            <label>Profit % label (e.g. "65% of revenue")</label>
+            <input type="text" id="cms-fin_profit_pct" placeholder="65% of revenue">
+          </div>
+          <div class="cms-field">
+            <label>Profit % bar fill (number only, e.g. 65)</label>
+            <input type="number" id="cms-fin_profit_pct_num" min="0" max="100" placeholder="65">
+          </div>
+        </div>
+      </div>
+
+      <div class="cms-section">
+        <div class="cms-section-title">Charity / Cause 1</div>
+        <div class="cms-grid">
+          <div class="cms-field">
+            <label>Icon (emoji)</label>
+            <input type="text" id="cms-charity_1_icon" placeholder="⚽">
+          </div>
+          <div class="cms-field">
+            <label>Name</label>
+            <input type="text" id="cms-charity_1_name" placeholder="Youth Sports Fund">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Description</label>
+            <input type="text" id="cms-charity_1_desc" placeholder="Providing equipment and coaching…">
+          </div>
+        </div>
+      </div>
+
+      <div class="cms-section">
+        <div class="cms-section-title">Charity / Cause 2</div>
+        <div class="cms-grid">
+          <div class="cms-field">
+            <label>Icon (emoji)</label>
+            <input type="text" id="cms-charity_2_icon" placeholder="🍞">
+          </div>
+          <div class="cms-field">
+            <label>Name</label>
+            <input type="text" id="cms-charity_2_name" placeholder="Food Security Network">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Description</label>
+            <input type="text" id="cms-charity_2_desc" placeholder="Fighting hunger in local communities…">
+          </div>
+        </div>
+      </div>
+
+      <div class="cms-section">
+        <div class="cms-section-title">Charity / Cause 3</div>
+        <div class="cms-grid">
+          <div class="cms-field">
+            <label>Icon (emoji)</label>
+            <input type="text" id="cms-charity_3_icon" placeholder="🧠">
+          </div>
+          <div class="cms-field">
+            <label>Name</label>
+            <input type="text" id="cms-charity_3_name" placeholder="Mental Health in Sport">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Description</label>
+            <input type="text" id="cms-charity_3_desc" placeholder="Supporting athletes with open conversations…">
+          </div>
+        </div>
+      </div>
+
+      <div class="cms-section">
+        <div class="cms-section-title">Site</div>
+        <div class="cms-grid">
+          <div class="cms-field cms-field--full" style="flex-direction:row;align-items:center;gap:16px;">
+            <div style="flex:1">
+              <label style="display:block;margin-bottom:5px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(17,17,17,.45)">Header Logo</label>
+              <div class="img-slot" data-slot="logo_img" style="max-width:220px">
+                <div class="img-slot__preview" style="aspect-ratio:3/1;background:#1c2b16">
+                  <img src="/public/ladderice-logo.png" alt="" style="object-fit:contain;padding:12px">
+                  <div class="placeholder" style="display:none">🖼</div>
+                </div>
+                <div class="img-slot__footer">
+                  <label class="img-slot__upload">
+                    <input type="file" accept="image/*" data-slot="logo_img">
+                    <span class="btn btn--outline">Replace logo</span>
+                  </label>
+                  <div class="img-slot__status"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn--primary" id="cms-save-btn">Save Finances &amp; Causes</button>
+        <div id="cms-save-status" style="font-size:12px;color:rgba(17,17,17,0.45)"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ── Charity names (match your section block settings) ─────────────────────
+  var CHARITY_NAMES = {
+    '1': 'Youth Sports Fund',
+    '2': 'Food Security Network',
+    '3': 'Mental Health in Sport'
+  };
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.tab, .tab-panel').forEach(function(el) { el.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ── Load all data ─────────────────────────────────────────────────────────
+  function loadAll() {
+    loadCounts();
+    loadOrders();
+    loadVotes();
+  }
+
+  function loadCounts() {
+    fetch('/api/counts').then(function(r){ return r.json(); }).then(function(data) {
+      var total = data.total || 0;
+
+      // Update vote bars
+      var html = '';
+      [['1',''], ['2',''], ['3','red']].forEach(function(pair) {
+        var id   = pair[0];
+        var cls  = pair[1];
+        var name = CHARITY_NAMES[id] || ('Cause ' + id);
+        var count = (data.votes && data.votes[id]) || 0;
+        var pct   = total > 0 ? Math.round(count / total * 100) : 0;
+        html += '<div class="charity-row">' +
+          '<div class="charity-row__top">' +
+            '<span class="charity-row__name">' + name + '</span>' +
+            '<span class="charity-row__stats"><strong>' + pct + '%</strong> &nbsp; ' + count + ' votes</span>' +
+          '</div>' +
+          '<div class="bar-track"><div class="bar-fill ' + (cls ? 'bar-fill--' + cls : '') + '" style="width:' + pct + '%"></div></div>' +
+        '</div>';
+      });
+      document.getElementById('vote-bars').innerHTML = html || '<div class="empty-state">No votes yet.</div>';
+      document.getElementById('stat-votes').textContent = total;
+    });
+  }
+
+  function loadOrders() {
+    fetch('/admin/orders').then(function(r){ return r.json(); }).then(function(orders) {
+      document.getElementById('stat-orders').textContent = orders.length;
+
+      fetch('/admin/votes').then(function(r){ return r.json(); }).then(function(votes) {
+        var votedOrders = new Set(votes.map(function(v){ return v.order_number; }));
+        // Participation rate
+        var rate = orders.length > 0 ? Math.round(votes.length / orders.length * 100) : 0;
+        document.getElementById('stat-rate').textContent = rate + '%';
+
+        if (!orders.length) {
+          document.getElementById('orders-body').innerHTML = '<tr><td colspan="6" class="empty-state">No orders loaded yet. Upload a CSV above.</td></tr>';
+          return;
+        }
+        document.getElementById('orders-body').innerHTML = orders.map(function(o, i) {
+          var voted = votedOrders.has(o.order_number);
+          return '<tr>' +
+            '<td style="color:rgba(17,17,17,.3)">' + (i + 1) + '</td>' +
+            '<td><strong>#' + o.order_number + '</strong></td>' +
+            '<td>' + (o.name || '—') + '</td>' +
+            '<td style="color:rgba(17,17,17,.55)">' + o.email + '</td>' +
+            '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(o.uploaded_at) + '</td>' +
+            '<td>' + (voted ? '<span class="badge badge--green">Voted</span>' : '<span style="color:rgba(17,17,17,.3);font-size:12px">—</span>') + '</td>' +
+          '</tr>';
+        }).join('');
+      });
+    });
+  }
+
+  function loadVotes() {
+    fetch('/admin/votes').then(function(r){ return r.json(); }).then(function(votes) {
+      if (!votes.length) {
+        document.getElementById('votes-body').innerHTML = '<tr><td colspan="6" class="empty-state">No votes yet.</td></tr>';
+        return;
+      }
+      document.getElementById('votes-body').innerHTML = votes.map(function(v, i) {
+        return '<tr>' +
+          '<td style="color:rgba(17,17,17,.3)">' + (i + 1) + '</td>' +
+          '<td><strong>#' + v.order_number + '</strong></td>' +
+          '<td>' + (v.voter_name || '—') + '</td>' +
+          '<td style="color:rgba(17,17,17,.55)">' + (v.email || '—') + '</td>' +
+          '<td><span class="badge badge--red">' + (CHARITY_NAMES[v.charity_id] || v.charity_name) + '</span></td>' +
+          '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(v.voted_at) + '</td>' +
+        '</tr>';
+      }).join('');
+    });
+  }
+
+  function formatDate(str) {
+    if (!str) return '—';
+    return new Date(str).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+
+  // ── CSV Upload ────────────────────────────────────────────────────────────
+  var csvFile = null;
+  var csvInput   = document.getElementById('csv-input');
+  var uploadBtn  = document.getElementById('upload-btn');
+  var clearBtn   = document.getElementById('clear-btn');
+  var uploadZone = document.getElementById('upload-zone');
+  var previewBox = document.getElementById('preview-box');
+  var statusMsg  = document.getElementById('status-msg');
+  var fileNameEl = document.getElementById('file-name');
+
+  function handleFile(file) {
+    if (!file || !file.name.endsWith('.csv')) {
+      showStatus('Please select a CSV file.', 'error');
+      return;
+    }
+    csvFile = file;
+    fileNameEl.textContent = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
+    uploadBtn.disabled = false;
+    clearBtn.style.display = 'inline-flex';
+
+    // Preview first 5 rows
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var lines = e.target.result.trim().split('\n');
+      var header = lines[0].split(',').map(function(h){ return h.trim(); });
+      var rows   = lines.slice(1, 6);
+      var orderIdx = header.findIndex(function(h){ return /order/i.test(h); });
+      var emailIdx = header.findIndex(function(h){ return /email/i.test(h); });
+      var nameIdx  = header.findIndex(function(h){ return /name/i.test(h); });
+
+      document.getElementById('preview-title').textContent = 'Preview (first ' + Math.min(rows.length, 5) + ' rows)';
+      document.getElementById('preview-count').textContent = (lines.length - 1) + ' total rows';
+      document.getElementById('preview-body').innerHTML = rows.map(function(line) {
+        var cols = line.split(',');
+        return '<tr>' +
+          '<td>' + (cols[orderIdx] || '').trim().replace(/^#/,'').replace(/"/g,'') + '</td>' +
+          '<td>' + (cols[nameIdx]  || '').trim().replace(/"/g,'') + '</td>' +
+          '<td>' + (cols[emailIdx] || '').trim().replace(/"/g,'') + '</td>' +
+        '</tr>';
+      }).join('');
+      previewBox.classList.add('visible');
+    };
+    reader.readAsText(file);
+  }
+
+  csvInput.addEventListener('change', function() { handleFile(this.files[0]); });
+
+  // Drag and drop
+  uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', function() { uploadZone.classList.remove('drag-over'); });
+  uploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
+  });
+
+  clearBtn.addEventListener('click', function() {
+    csvFile = null; csvInput.value = '';
+    uploadBtn.disabled = true; clearBtn.style.display = 'none';
+    fileNameEl.textContent = ''; previewBox.classList.remove('visible');
+    statusMsg.style.display = 'none';
+  });
+
+  uploadBtn.addEventListener('click', function() {
+    if (!csvFile) return;
+    var formData = new FormData();
+    formData.append('csv', csvFile);
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Importing…';
+
+    fetch('/admin/upload', { method: 'POST', body: formData })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          showStatus('✓ Successfully imported ' + data.imported + ' orders.', 'success');
+          loadAll();
+        } else {
+          showStatus('Error: ' + data.error, 'error');
+        }
+      })
+      .catch(function() { showStatus('Upload failed. Please try again.', 'error'); })
+      .finally(function() { uploadBtn.disabled = false; uploadBtn.textContent = 'Upload & Import'; });
+  });
+
+  function showStatus(msg, type) {
+    statusMsg.textContent = msg;
+    statusMsg.className   = 'status-msg ' + type;
+    statusMsg.style.display = 'block';
+  }
+
+  // ── Finance & Causes CMS ──────────────────────────────────────────────────
+  var FIN_KEYS = [
+    'fin_revenue_display','fin_revenue_num','fin_revenue_desc',
+    'fin_expenses_display','fin_expenses_num','fin_expenses_desc',
+    'fin_profit_display','fin_profit_num','fin_profit_desc','fin_profit_pct','fin_profit_pct_num',
+    'charity_1_icon','charity_1_name','charity_1_desc',
+    'charity_2_icon','charity_2_name','charity_2_desc',
+    'charity_3_icon','charity_3_name','charity_3_desc',
+  ];
+
+  function loadFinanceSettings() {
+    fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
+      FIN_KEYS.forEach(function(key) {
+        var el = document.getElementById('cms-' + key);
+        if (el && s[key] !== undefined) el.value = s[key];
+      });
+      if (s.logo_img) {
+        var logoSlot = document.querySelector('.img-slot[data-slot="logo_img"]');
+        if (logoSlot) {
+          var img = logoSlot.querySelector('.img-slot__preview img');
+          if (img) { img.src = s.logo_img; img.style.display = 'block'; }
+        }
+      }
+    });
+  }
+
+  document.getElementById('cms-save-btn').addEventListener('click', function() {
+    var pairs = {};
+    FIN_KEYS.forEach(function(key) {
+      var el = document.getElementById('cms-' + key);
+      if (el) pairs[key] = el.value.trim();
+    });
+    var btn = document.getElementById('cms-save-btn');
+    var status = document.getElementById('cms-save-status');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fetch('/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pairs)
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) { status.textContent = '✓ Saved successfully'; status.style.color = '#2e7d32'; }
+      else { status.textContent = 'Error: ' + data.error; status.style.color = '#A50009'; }
+    }).catch(function() {
+      status.textContent = 'Network error.'; status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Save Finances & Causes';
+      setTimeout(function() { status.textContent = ''; }, 3000);
+    });
+  });
+
+  // ── Logo image upload ──────────────────────────────────────────────────────
+  document.querySelectorAll('.img-slot__upload input[type=file]').forEach(function(input) {
+    input.addEventListener('change', function() {
+      var file = input.files[0];
+      if (!file) return;
+      var slot     = input.dataset.slot;
+      var slotEl   = input.closest('.img-slot');
+      var statusEl = slotEl.querySelector('.img-slot__status');
+      var prevImg  = slotEl.querySelector('.img-slot__preview img');
+      statusEl.textContent = 'Uploading…'; statusEl.className = 'img-slot__status';
+
+      var fd = new FormData();
+      fd.append('image', file);
+      fd.append('slot', slot);
+
+      fetch('/admin/upload-image', { method: 'POST', body: fd })
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            statusEl.textContent = '✓ Uploaded'; statusEl.className = 'img-slot__status ok';
+            if (prevImg) { prevImg.src = data.url + '?t=' + Date.now(); prevImg.style.display = 'block'; }
+          } else {
+            statusEl.textContent = 'Error: ' + data.error; statusEl.className = 'img-slot__status err';
+          }
+        })
+        .catch(function() { statusEl.textContent = 'Upload failed.'; statusEl.className = 'img-slot__status err'; });
+    });
+  });
+
+  // ── Products CMS ──────────────────────────────────────────────────────────
+  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','desc'];
+
+  function loadProductSettings() {
+    fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
+      [1,2,3].forEach(function(n) {
+        PRODUCT_TEXT_KEYS.forEach(function(k) {
+          var el = document.getElementById('cms-product_' + n + '_' + k);
+          if (el && s['product_' + n + '_' + k] !== undefined) el.value = s['product_' + n + '_' + k];
+        });
+        [1,2,3,4].forEach(function(m) {
+          var url = s['product_' + n + '_img_' + m];
+          if (url) {
+            var img = document.getElementById('p' + n + '-img-' + m + '-preview');
+            if (img) { img.src = url + '?t=' + Date.now(); img.classList.add('has-img'); }
+          }
+        });
+      });
+    });
+  }
+
+  function saveProduct(n) {
+    var pairs = {};
+    PRODUCT_TEXT_KEYS.forEach(function(k) {
+      var el = document.getElementById('cms-product_' + n + '_' + k);
+      if (el) pairs['product_' + n + '_' + k] = el.value.trim();
+    });
+    var btn = document.querySelector('[onclick="saveProduct(' + n + ')"]');
+    var status = document.getElementById('p' + n + '-save-status');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fetch('/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pairs)
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) { status.textContent = '✓ Saved'; status.style.color = '#2e7d32'; }
+      else { status.textContent = 'Error: ' + data.error; status.style.color = '#A50009'; }
+    }).catch(function() {
+      status.textContent = 'Network error.'; status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Save Product ' + n;
+      setTimeout(function() { status.textContent = ''; }, 3000);
+    });
+  }
+
+  // ── Product image upload ───────────────────────────────────────────────────
+  document.querySelectorAll('input[data-product][data-slot]').forEach(function(input) {
+    input.addEventListener('change', function() {
+      var file = input.files[0];
+      if (!file) return;
+      var p = input.dataset.product;
+      var m = input.dataset.slot;
+      var slotKey  = 'product_' + p + '_img_' + m;
+      var statusEl = document.getElementById('p' + p + '-img-' + m + '-status');
+      var prevImg  = document.getElementById('p' + p + '-img-' + m + '-preview');
+      if (statusEl) { statusEl.textContent = 'Uploading…'; statusEl.className = 'product-img-slot__status'; }
+
+      var fd = new FormData();
+      fd.append('image', file);
+      fd.append('slot', slotKey);
+
+      fetch('/admin/upload-image', { method: 'POST', body: fd })
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            if (statusEl) { statusEl.textContent = '✓ Uploaded'; statusEl.className = 'product-img-slot__status ok'; }
+            if (prevImg)  { prevImg.src = data.url + '?t=' + Date.now(); prevImg.classList.add('has-img'); }
+          } else {
+            if (statusEl) { statusEl.textContent = 'Error: ' + data.error; statusEl.className = 'product-img-slot__status err'; }
+          }
+        })
+        .catch(function() {
+          if (statusEl) { statusEl.textContent = 'Upload failed.'; statusEl.className = 'product-img-slot__status err'; }
+        });
+    });
+  });
+
+  // ── Load CMS settings when relevant tabs opened ───────────────────────────
+  document.querySelectorAll('.tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      if (tab.dataset.tab === 'content')  loadFinanceSettings();
+      if (tab.dataset.tab === 'products') loadProductSettings();
+    });
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadAll();
+</script>
+</body>
+</html>

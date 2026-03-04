@@ -1,0 +1,796 @@
+{{ 'section-red-funding.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign campaign_title    = section.settings.campaign_title | default: 'Red Funding'
+  assign campaign_subtitle = section.settings.campaign_subtitle | default: 'Every jersey sold funds the future. You choose where the profit goes.'
+  assign featured_product  = section.settings.featured_product
+  assign featured_collection = section.settings.featured_collection
+  assign revenue           = section.settings.revenue | default: 0
+  assign expenses          = section.settings.expenses | default: 0
+  assign profit            = revenue | minus: expenses
+  assign campaign_end_date = section.settings.campaign_end_date | default: ''
+
+  assign total_votes = 0
+  for block in section.blocks
+    assign total_votes = total_votes | plus: block.settings.vote_count
+  endfor
+
+  if revenue > 0
+    assign profit_pct = profit | times: 100 | divided_by: revenue
+  else
+    assign profit_pct = 0
+  endif
+-%}
+
+<section id="section-{{ section.id }}" class="red-funding">
+
+  <!-- ══════════════════════════════════
+       PART 1 · CAMPAIGN HERO
+  ══════════════════════════════════ -->
+
+  <div class="rf-hero">
+    <div class="rf-hero__noise" aria-hidden="true"></div>
+    <div class="rf-hero__grid-lines" aria-hidden="true"></div>
+
+    <div class="rf-hero__content">
+
+      <div class="rf-hero__eyebrow">
+        <span class="rf-eyebrow-dot" aria-hidden="true"></span>
+        <span>Campaign — {{ 'now' | date: '%Y' }}</span>
+        {%- if campaign_end_date != blank -%}
+          <span class="rf-eyebrow-sep" aria-hidden="true">|</span>
+          <span>Ends&nbsp;{{ campaign_end_date }}</span>
+        {%- endif -%}
+      </div>
+
+      <h1 class="rf-hero__title">
+        <span class="rf-hero__title-line rf-hero__title-line--accent">
+          <span class="rf-hero__title-inner">{{ campaign_title | upcase }}</span>
+        </span>
+      </h1>
+
+      <p class="rf-hero__subtitle">{{ campaign_subtitle }}</p>
+
+      <div class="rf-hero__stats">
+        <div class="rf-stat-pill">
+          <span class="rf-stat-pill__num">{{ section.blocks | size }}</span>
+          <span class="rf-stat-pill__label">Causes</span>
+        </div>
+        <div class="rf-stat-pill">
+          <span class="rf-stat-pill__num">{{ total_votes }}</span>
+          <span class="rf-stat-pill__label">Votes Cast</span>
+        </div>
+        <div class="rf-stat-pill rf-stat-pill--accent">
+          <span class="rf-stat-pill__num">{{ profit | money }}</span>
+          <span class="rf-stat-pill__label">To Donate</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rf-hero__scroll-hint" aria-hidden="true">
+      <div class="rf-scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       MARQUEE BAND
+  ══════════════════════════════════ -->
+
+  <div class="rf-marquee-band" aria-hidden="true">
+    <div class="rf-marquee-band__inner">
+      {%- for i in (1..10) -%}
+        <span>Campaign Jersey</span><span class="rf-marquee-sep">✦</span>
+        <span>Red Funding</span><span class="rf-marquee-sep">✦</span>
+        <span>Vote for Change</span><span class="rf-marquee-sep">✦</span>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PART 2 · FEATURED JERSEY
+  ══════════════════════════════════ -->
+
+  {%- if featured_product != blank -%}
+    {%- assign fp = featured_product -%}
+    {%- assign fp_variant = fp.selected_or_first_available_variant -%}
+
+    <div class="rf-featured">
+      <div class="rf-featured__layout">
+
+        <!-- Image -->
+        <div class="rf-featured__image-wrap">
+          {%- if fp.featured_media -%}
+            <img
+              src="{{ fp.featured_media | image_url: width: 900 }}"
+              alt="{{ fp.title | escape }}"
+              class="rf-featured__image"
+              loading="eager"
+              width="{{ fp.featured_media.width }}"
+              height="{{ fp.featured_media.height }}"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'rf-featured__placeholder' }}
+          {%- endif -%}
+          <div class="rf-featured__image-caption" aria-hidden="true">
+            <span>Campaign Drop</span>
+            <span>{{ 'now' | date: '%Y' }}</span>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="rf-featured__info">
+          <div class="rf-featured__info-inner">
+
+            <div class="rf-featured__tag">Main Jersey</div>
+
+            <h2 class="rf-featured__title">{{ fp.title }}</h2>
+
+            {%- if fp.description != blank -%}
+              <p class="rf-featured__desc">{{ fp.description | strip_html | truncate: 200 }}</p>
+            {%- endif -%}
+
+            <div class="rf-featured__price-row">
+              {%- if fp_variant.compare_at_price > fp_variant.price -%}
+                <span class="rf-featured__price-compare">
+                  <s>{{ fp_variant.compare_at_price | money }}</s>
+                </span>
+              {%- endif -%}
+              <span class="rf-featured__price">{{ fp_variant.price | money }}</span>
+              {%- if fp_variant.compare_at_price > fp_variant.price -%}
+                {%- assign savings = fp_variant.compare_at_price | minus: fp_variant.price -%}
+                <span class="rf-featured__badge">Save {{ savings | money }}</span>
+              {%- endif -%}
+            </div>
+
+            <div class="rf-featured__notice">
+              <span class="rf-notice-icon" aria-hidden="true">→</span>
+              <p>Every purchase of this jersey comes with <strong>1 vote</strong> to direct campaign profits to your chosen cause.</p>
+            </div>
+
+            <a href="{{ fp.url }}" class="rf-featured__cta">
+              <span class="rf-cta-text">Shop This Jersey</span>
+              <span class="rf-cta-arrow" aria-hidden="true">→</span>
+            </a>
+
+            {%- unless fp.available -%}
+              <p class="rf-featured__soldout">Currently sold out</p>
+            {%- endunless -%}
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- ══════════════════════════════════
+       PART 3 · JERSEY COLLECTION GRID
+  ══════════════════════════════════ -->
+
+  {%- if featured_collection != blank -%}
+    <div class="rf-collection">
+
+      <div class="rf-collection__header">
+        <div>
+          <span class="rf-section-label">The Collection</span>
+          <h2 class="rf-collection__title">All Jerseys</h2>
+        </div>
+        <a href="{{ featured_collection.url }}" class="rf-collection__view-all">
+          View All <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      {%- assign grid_count = featured_collection.products | size | at_most: 8 -%}
+      <div
+        class="rf-collection__grid product-grid-border-fix"
+        data-count="{{ grid_count | modulo: 4 }}"
+      >
+        {%- for product in featured_collection.products limit: 8 -%}
+          <div
+            class="site-box box--small box--typo-small lap--box--small-lg box--center-align box--no-padding box--column-flow box__collection rf-grid-item"
+            data-order="{{ forloop.index }}"
+          >
+            <div class="site-box-content product-holder">
+              {%- render 'product-item',
+                product: product,
+                product_collection: featured_collection,
+                index: forloop.index0
+              -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+    </div>
+  {%- endif -%}
+
+  <!-- ══════════════════════════════════
+       PART 4 · FINANCIALS + VOTE
+  ══════════════════════════════════ -->
+
+  <div class="rf-dashboard">
+    <div class="rf-dashboard__inner">
+
+      <!-- Header -->
+      <div class="rf-dashboard__header">
+        <div>
+          <span class="rf-section-label rf-section-label--light">Campaign Finances</span>
+          <h2 class="rf-dashboard__title">
+            Where the<br><em>money goes.</em>
+          </h2>
+        </div>
+        <p class="rf-dashboard__description">
+          Full transparency. Revenue from jersey sales minus operational costs equals profit.
+          That profit is directed entirely by your votes — 100% to the winning cause.
+        </p>
+      </div>
+
+      <!-- Financial stat cards -->
+      <div class="rf-financials">
+
+        <div class="rf-financial-card rf-financial-card--revenue">
+          <div class="rf-financial-card__icon" aria-hidden="true">↑</div>
+          <div class="rf-financial-card__label">Total Revenue</div>
+          <div class="rf-financial-card__amount">{{ revenue | money }}</div>
+          <p class="rf-financial-card__desc">Gross sales from all jersey purchases</p>
+        </div>
+
+        <div class="rf-financial-sep" aria-hidden="true"><span>−</span></div>
+
+        <div class="rf-financial-card rf-financial-card--expenses">
+          <div class="rf-financial-card__icon" aria-hidden="true">↓</div>
+          <div class="rf-financial-card__label">Total Expenses</div>
+          <div class="rf-financial-card__amount">{{ expenses | money }}</div>
+          <p class="rf-financial-card__desc">Production, fulfilment & operations</p>
+        </div>
+
+        <div class="rf-financial-sep" aria-hidden="true"><span>=</span></div>
+
+        <div class="rf-financial-card rf-financial-card--profit">
+          <div class="rf-financial-card__icon" aria-hidden="true">♥</div>
+          <div class="rf-financial-card__label">Net Profit to Donate</div>
+          <div class="rf-financial-card__amount rf-financial-card__amount--highlight">
+            {{ profit | money }}
+          </div>
+          <p class="rf-financial-card__desc">100% directed by your votes</p>
+          <div class="rf-financial-card__bar">
+            <div
+              class="rf-financial-card__bar-fill"
+              style="--fill-pct: {{ profit_pct }}%"
+            ></div>
+          </div>
+          <span class="rf-financial-card__pct">{{ profit_pct }}% of revenue</span>
+        </div>
+
+      </div>
+
+      <!-- ── VOTING ───────────────────────────────────────── -->
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="rf-vote">
+
+          <div class="rf-vote__header">
+            <span class="rf-section-label rf-section-label--light">Cast Your Vote</span>
+            <h3 class="rf-vote__title">You decide where<br>the profit lands.</h3>
+            <p class="rf-vote__subtitle">
+              One purchase = one vote. Enter your order number below to unlock your vote and choose where the profit goes.
+            </p>
+          </div>
+
+          <!-- Order verification gate -->
+          <div class="rf-vote-gate" id="rf-vote-gate">
+            <label class="rf-vote-gate__label" for="rf-order-input">Your Order Number</label>
+            <div class="rf-vote-gate__row">
+              <input
+                type="text"
+                id="rf-order-input"
+                class="rf-vote-gate__input"
+                placeholder="#10001"
+                autocomplete="off"
+                aria-label="Order number"
+              >
+              <button class="rf-vote-gate__btn" id="rf-verify-btn" type="button">
+                Verify
+              </button>
+            </div>
+            <p class="rf-vote-gate__note" id="rf-gate-note" role="status">
+              Your order number can be found in your confirmation email.
+            </p>
+          </div>
+
+          <!-- Charity options -->
+          <div class="rf-charities" id="rf-charities" role="list" aria-live="polite">
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'charity' -%}
+                {%- assign charity_votes = block.settings.vote_count | default: 0 -%}
+                {%- if total_votes > 0 -%}
+                  {%- assign vote_pct = charity_votes | times: 100 | divided_by: total_votes -%}
+                {%- else -%}
+                  {%- assign vote_pct = 0 -%}
+                {%- endif -%}
+
+                <div
+                  class="rf-charity-card"
+                  role="listitem"
+                  data-charity-id="{{ forloop.index }}"
+                  data-votes="{{ charity_votes }}"
+                  data-pct="{{ vote_pct }}"
+                  {{ block.shopify_attributes }}
+                >
+                  <!-- Radio indicator -->
+                  <div class="rf-charity-card__select-indicator" aria-hidden="true">
+                    <div class="rf-charity-card__radio"></div>
+                  </div>
+
+                  <!-- Body -->
+                  <div class="rf-charity-card__body">
+                    <div class="rf-charity-card__top">
+
+                      {%- if block.settings.charity_logo -%}
+                        <div class="rf-charity-card__logo">
+                          <img
+                            src="{{ block.settings.charity_logo | image_url: width: 84 }}"
+                            alt="{{ block.settings.charity_name | escape }}"
+                            width="42"
+                            height="42"
+                            loading="lazy"
+                          >
+                        </div>
+                      {%- endif -%}
+
+                      <div class="rf-charity-card__text">
+                        <h4 class="rf-charity-card__name">{{ block.settings.charity_name }}</h4>
+                        {%- if block.settings.charity_description != blank -%}
+                          <p class="rf-charity-card__desc">{{ block.settings.charity_description }}</p>
+                        {%- endif -%}
+                      </div>
+
+                    </div>
+
+                    <!-- Vote progress bar -->
+                    <div class="rf-charity-card__vote-bar" aria-label="{{ vote_pct }}% of votes">
+                      <div class="rf-charity-card__vote-track">
+                        <div
+                          class="rf-charity-card__vote-fill"
+                          style="--vote-pct: {{ vote_pct }}%"
+                          data-pct="{{ vote_pct }}"
+                        ></div>
+                      </div>
+                      <div class="rf-charity-card__vote-stats">
+                        <span class="rf-charity-card__vote-pct">{{ vote_pct }}%</span>
+                        <span class="rf-charity-card__vote-count">{{ charity_votes }} votes</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vote button -->
+                  <div class="rf-charity-card__vote-btn-wrap">
+                    <button
+                      class="rf-charity-card__vote-btn"
+                      type="button"
+                      disabled
+                      aria-label="Vote for {{ block.settings.charity_name | escape }}"
+                    >
+                      <span class="rf-vote-btn-label">Vote</span>
+                      <span class="rf-vote-btn-check" aria-hidden="true">✓</span>
+                    </button>
+                  </div>
+
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <!-- Success confirmation -->
+          <div class="rf-vote-confirmation" id="rf-vote-confirmation" hidden role="alert">
+            <div class="rf-vote-confirmation__icon" aria-hidden="true">✓</div>
+            <h4>Vote Recorded!</h4>
+            <p id="rf-confirmation-text">Your vote has been cast for <strong></strong>.</p>
+            <p class="rf-vote-confirmation__note">Thank you for making a difference with your purchase.</p>
+          </div>
+
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  var API_BASE     = {{ section.settings.api_base_url | default: '' | json }};
+  var verifyBtn    = document.getElementById('rf-verify-btn');
+  var orderInput   = document.getElementById('rf-order-input');
+  var gateNote     = document.getElementById('rf-gate-note');
+  var gate         = document.getElementById('rf-vote-gate');
+  var confirmation = document.getElementById('rf-vote-confirmation');
+
+  var verified      = false;
+  var voted         = false;
+  var selected      = null;
+  var verifiedOrder = null;
+
+  var errorMessages = {
+    empty_query:  'Please enter your order number or email.',
+    not_found:    'Order not found. Check your confirmation email.',
+    already_voted:'You have already voted with this order.'
+  };
+
+  // ── Apply live vote counts to bars ──────────────────────────────────────
+
+  function applyVoteCounts(votes, total) {
+    document.querySelectorAll('.rf-charity-card').forEach(function (card) {
+      var id      = card.dataset.charityId;
+      var count   = (votes && votes[id]) || 0;
+      var pct     = total > 0 ? Math.round((count / total) * 100) : 0;
+      card.dataset.votes = count;
+      var fill    = card.querySelector('.rf-charity-card__vote-fill');
+      var pctEl   = card.querySelector('.rf-charity-card__vote-pct');
+      var countEl = card.querySelector('.rf-charity-card__vote-count');
+      if (fill)    fill.style.setProperty('--vote-pct', pct + '%');
+      if (pctEl)   pctEl.textContent   = pct + '%';
+      if (countEl) countEl.textContent = count + ' votes';
+    });
+  }
+
+  // ── Load live counts on page load ───────────────────────────────────────
+
+  if (API_BASE) {
+    fetch(API_BASE + '/api/counts')
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (data.ok) applyVoteCounts(data.votes, data.total); })
+      .catch(function () {});
+  }
+
+  // ── Gate helpers ────────────────────────────────────────────────────────
+
+  function setError(msg) {
+    gateNote.textContent = msg;
+    gateNote.style.color = '#E8000D';
+    orderInput.classList.add('rf-input--error');
+    setTimeout(function () { orderInput.classList.remove('rf-input--error'); }, 500);
+  }
+
+  function setSuccess(msg) {
+    gateNote.textContent = msg;
+    gateNote.style.color = '#4CAF50';
+  }
+
+  // ── Order verification ──────────────────────────────────────────────────
+
+  if (verifyBtn && orderInput) {
+    verifyBtn.addEventListener('click', doVerify);
+    orderInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') doVerify();
+    });
+  }
+
+  function doVerify() {
+    var val = orderInput.value.trim();
+    if (!val) { setError(errorMessages.empty_query); return; }
+    if (!API_BASE) { setError('Voting is not yet configured.'); return; }
+
+    verifyBtn.disabled    = true;
+    verifyBtn.textContent = 'Checking\u2026';
+    gateNote.textContent  = '';
+    gateNote.style.color  = '';
+
+    fetch(API_BASE + '/api/verify', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ query: val })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) {
+        verifyBtn.disabled    = false;
+        verifyBtn.textContent = 'Verify';
+        setError(errorMessages[data.error] || 'Could not verify. Please try again.');
+        return;
+      }
+
+      if (data.alreadyVoted) {
+        gate.classList.add('rf-vote-gate--verified');
+        setSuccess('\u2713 You already voted for ' + (data.votedForName || 'a cause') + '. Thank you!');
+        orderInput.disabled   = true;
+        verifyBtn.disabled    = true;
+        verifyBtn.textContent = 'Voted \u2713';
+        document.querySelectorAll('.rf-charity-card').forEach(function (card) {
+          if (card.dataset.charityId === String(data.votedFor)) {
+            card.classList.add('rf-charity-card--voted');
+          }
+        });
+        return;
+      }
+
+      // Verified — unlock voting
+      verifiedOrder         = data.orderNumber;
+      verified              = true;
+      gate.classList.add('rf-vote-gate--verified');
+      setSuccess('\u2713 Order verified' + (data.voterName ? ', ' + data.voterName : '') + ' \u2014 select a cause below.');
+      orderInput.disabled   = true;
+      verifyBtn.disabled    = true;
+      verifyBtn.textContent = 'Verified \u2713';
+
+      document.querySelectorAll('.rf-charity-card').forEach(function (card) {
+        card.classList.add('rf-charity-card--selectable');
+      });
+      document.querySelectorAll('.rf-charity-card__vote-btn').forEach(function (btn) {
+        btn.disabled = false;
+      });
+    })
+    .catch(function () {
+      verifyBtn.disabled    = false;
+      verifyBtn.textContent = 'Verify';
+      setError('Connection error. Please try again.');
+    });
+  }
+
+  // ── Card selection ──────────────────────────────────────────────────────
+
+  document.querySelectorAll('.rf-charity-card').forEach(function (card) {
+
+    card.addEventListener('click', function () {
+      if (!verified || voted) return;
+      document.querySelectorAll('.rf-charity-card').forEach(function (c) {
+        c.classList.remove('rf-charity-card--selected');
+      });
+      card.classList.add('rf-charity-card--selected');
+      selected = card;
+    });
+
+    var voteBtn = card.querySelector('.rf-charity-card__vote-btn');
+    if (voteBtn) {
+      voteBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!verified || voted) return;
+        if (selected !== card) {
+          document.querySelectorAll('.rf-charity-card').forEach(function (c) {
+            c.classList.remove('rf-charity-card--selected');
+          });
+          card.classList.add('rf-charity-card--selected');
+          selected = card;
+        }
+        castVote(card);
+      });
+    }
+  });
+
+  // ── Cast vote ───────────────────────────────────────────────────────────
+
+  function castVote(card) {
+    if (voted || !verifiedOrder) return;
+
+    var charityId   = card.dataset.charityId;
+    var charityName = (card.querySelector('.rf-charity-card__name') || {}).textContent || '';
+
+    document.querySelectorAll('.rf-charity-card__vote-btn').forEach(function (btn) {
+      btn.disabled = true;
+    });
+
+    fetch(API_BASE + '/api/vote', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ orderNumber: verifiedOrder, charityId: charityId, charityName: charityName })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) {
+        document.querySelectorAll('.rf-charity-card__vote-btn').forEach(function (btn) {
+          btn.disabled = false;
+        });
+        setError(data.error === 'already_voted' ? 'You have already voted.' : 'Vote failed. Please try again.');
+        return;
+      }
+
+      voted = true;
+      card.classList.add('rf-charity-card--voted');
+      applyVoteCounts(data.votes, data.total);
+
+      // Re-animate bars
+      document.querySelectorAll('.rf-charity-card__vote-fill, .rf-financial-card__bar-fill').forEach(function (f) {
+        f.classList.remove('rf-bar--animate');
+        void f.offsetWidth;
+        f.classList.add('rf-bar--animate');
+      });
+
+      var charityNameEl = card.querySelector('.rf-charity-card__name');
+      var strong        = document.querySelector('#rf-confirmation-text strong');
+      if (charityNameEl && strong) strong.textContent = charityNameEl.textContent;
+
+      setTimeout(function () {
+        if (confirmation) {
+          confirmation.removeAttribute('hidden');
+          void confirmation.offsetWidth;
+          confirmation.classList.add('rf-vote-confirmation--visible');
+        }
+      }, 350);
+    })
+    .catch(function () {
+      document.querySelectorAll('.rf-charity-card__vote-btn').forEach(function (btn) {
+        btn.disabled = false;
+      });
+      setError('Connection error. Please try again.');
+    });
+  }
+
+  // ── Animate bars when scrolled into view ───────────────────────────────
+
+  var barEls = document.querySelectorAll(
+    '.rf-charity-card__vote-fill, .rf-financial-card__bar-fill'
+  );
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('rf-bar--animate');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    barEls.forEach(function (el) { io.observe(el); });
+  } else {
+    barEls.forEach(function (el) { el.classList.add('rf-bar--animate'); });
+  }
+
+  // ── Hide scroll hint on scroll ──────────────────────────────────────────
+
+  var scrollHint = document.querySelector('.rf-hero__scroll-hint');
+  if (scrollHint) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 80) scrollHint.style.opacity = '0';
+    }, { passive: true });
+  }
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Red Funding",
+  "tag": "section",
+  "class": "red-funding-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Campaign"
+    },
+    {
+      "type": "text",
+      "id": "campaign_title",
+      "label": "Campaign Title",
+      "default": "Red Funding"
+    },
+    {
+      "type": "textarea",
+      "id": "campaign_subtitle",
+      "label": "Campaign Subtitle",
+      "default": "Every jersey sold funds the future. You choose where the profit goes."
+    },
+    {
+      "type": "text",
+      "id": "campaign_end_date",
+      "label": "Campaign End Date",
+      "info": "Display only — e.g. \"Dec 31, 2025\"",
+      "default": "Dec 31, 2025"
+    },
+    {
+      "type": "header",
+      "content": "Featured Jersey"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured Jersey Product"
+    },
+    {
+      "type": "header",
+      "content": "Jersey Collection"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Jersey Collection",
+      "info": "Up to 8 products will be shown"
+    },
+    {
+      "type": "header",
+      "content": "Campaign Financials"
+    },
+    {
+      "type": "number",
+      "id": "revenue",
+      "label": "Total Revenue (in cents)",
+      "info": "Enter in cents — e.g. 1000000 = $10,000.00",
+      "default": 1000000
+    },
+    {
+      "type": "number",
+      "id": "expenses",
+      "label": "Total Expenses (in cents)",
+      "info": "Enter in cents — e.g. 350000 = $3,500.00",
+      "default": 350000
+    },
+    {
+      "type": "header",
+      "content": "Vote API"
+    },
+    {
+      "type": "text",
+      "id": "api_base_url",
+      "label": "Vote API Base URL",
+      "info": "Your deployed server URL — e.g. https://ladderice-vote.railway.app (no trailing slash). Leave blank until deployed."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "charity",
+      "name": "Charity Option",
+      "settings": [
+        {
+          "type": "text",
+          "id": "charity_name",
+          "label": "Charity Name",
+          "default": "Youth Sports Fund"
+        },
+        {
+          "type": "textarea",
+          "id": "charity_description",
+          "label": "Charity Description",
+          "default": "Providing equipment, coaching and opportunities to kids who can't afford it."
+        },
+        {
+          "type": "image_picker",
+          "id": "charity_logo",
+          "label": "Charity Logo"
+        },
+        {
+          "type": "number",
+          "id": "vote_count",
+          "label": "Current Vote Count",
+          "info": "Update this manually to reflect real vote tallies.",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Red Funding",
+      "blocks": [
+        {
+          "type": "charity",
+          "settings": {
+            "charity_name": "Youth Sports Fund",
+            "charity_description": "Providing equipment and coaching to kids who can't afford it.",
+            "vote_count": 142
+          }
+        },
+        {
+          "type": "charity",
+          "settings": {
+            "charity_name": "Food Security Network",
+            "charity_description": "Fighting hunger in local communities through food banks and education.",
+            "vote_count": 98
+          }
+        },
+        {
+          "type": "charity",
+          "settings": {
+            "charity_name": "Mental Health in Sport",
+            "charity_description": "Supporting athletes with open conversations and free mental health resources.",
+            "vote_count": 201
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

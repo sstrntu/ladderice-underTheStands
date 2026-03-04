@@ -1,0 +1,313 @@
+{%- if section.blocks.size > 0 -%}
+
+	{{ 'section-text-columns-with-icons.css' | asset_url | stylesheet_tag }}
+
+	{%- render 'custom-colors', id: section.id, background: section.settings.custom_background, text: section.settings.custom_text -%}
+
+	<div class="text-columns-with-icons site-box-container" id="section-{{ section.id }}">
+
+		<div class="content-section site-box box--small-fl-auto text-w-icon" data-size="{{ section.blocks.size }}">
+
+			{%- for block in section.blocks -%}
+
+				<div class="text-w-icon__container" {{ block.shopify_attributes }}>
+
+					<div class="text-w-icon__icon">
+						<span>
+							{%- if block.settings.custom_icon != blank -%}
+				        <img 
+									src="{{ block.settings.custom_icon | image_url: width: 64, height: 64, crop: 'center' }}" 
+									alt="{{ block.settings.custom_icon.alt | escape }}" 
+									width="64" height="64" style="width:64px;height:64px;" loading="lazy"
+									srcset="
+										{{ block.settings.custom_icon | image_url: width: 64, height: 64, crop: 'center' }} 64w
+										{% if block.settings.custom_icon.width >= 128 %} ,{{ block.settings.custom_icon | image_url: width: 128, height: 128, crop: 'center' }} 128w, {% endif %} 
+										{% if block.settings.custom_icon.width >= 192 %} ,{{ block.settings.custom_icon | image_url: width: 192, height: 192, crop: 'center' }} 192w, {% endif %} 
+										{% if block.settings.custom_icon.width >= 256 %} ,{{ block.settings.custom_icon | image_url: width: 256, height: 256, crop: 'center' }} 256w, {% endif %} 
+									"
+								/>
+					    {%- else -%}
+								{%- render 'icons-pack', icon: block.settings.select_icon -%}
+							{%- endif -%}
+						</span>
+					</div>
+
+					<div class="text-w-icon__content">
+
+						<{{ section.settings.seo_h_tag }} class="text-w-icon__title h4">{{ block.settings.title | escape }}</{{ section.settings.seo_h_tag }}>
+						<div class="text-w-icon__rte rte">{{ block.settings.body }}</div>
+            {%- unless block.settings.label == blank -%}
+              <a class="button button--solid button--with-icon {{ block.settings.bg_style }}" href="{{ block.settings.link | escape }}">{{ block.settings.label | escape }} <span class="icon">{% render 'theme-symbols', icon: 'arrow_icon_smallest' %}</span></a>
+            {% endunless %}
+
+					</div>
+
+				</div>
+
+			{%- endfor -%}
+
+		</div>
+
+	</div>
+
+{%- endif -%}
+
+{% schema %}
+  {
+		"name": "t:sections.text-columns-with-icons.name",
+    "max_blocks": 3,
+		"class": "mount-text-columns-with-icons",
+    "settings": [
+    	{
+        "type": "header",
+        "content": "t:sections.split-extra-words.settings_schema.colors.headings.custom_colors"
+      },
+      {
+        "type": "color",
+        "id": "custom_background",
+        "label": "t:sections.split-extra-words.settings_schema.colors.settings.background",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "custom_text",
+        "label": "t:sections.split-extra-words.settings_schema.colors.settings.text",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.refactor_words.seo.name"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h3"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text-icon",
+        "name": "Text with icon",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.text-columns-with-icons.blocks.icon.settings.title.label",
+            "default": "Text with icon"
+          },
+          {
+            "type": "richtext",
+            "id": "body",
+            "label": "t:sections.text-columns-with-icons.blocks.icon.settings.text.label",
+            "default": "<p>Share some useful information about shipping, returns or discounts.</p>"
+          },
+          {
+            "type": "text",
+            "id": "label",
+            "label": "t:sections.rich-text.blocks.button.settings.button_label.label"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "t:sections.rich-text.blocks.button.settings.button_link.label"
+          },
+          {
+						"type": "select",
+						"id": "select_icon",
+						"label": "t:sections.text-columns-with-icons.blocks.icon.settings.icon.label",
+						"options": [
+							{
+								"value": "earth-globe",
+								"label": "Earth globe",
+								"group": "Business"
+							},
+							{
+								"value": "flag",
+								"label": "Flag",
+								"group": "Business"
+							},
+							{
+								"value": "helpline",
+								"label": "Helpline",
+								"group": "Business"
+							},
+							{
+								"value": "like-hand",
+								"label": "Like hand",
+								"group": "Business"
+							},
+							{
+								"value": "map-marker",
+								"label": "Map marker",
+								"group": "Business"
+							},
+							{
+								"value": "security-shield",
+								"label": "Security shield",
+								"group": "Business"
+							},
+							{
+								"value": "star",
+								"label": "Star",
+								"group": "Business"
+							},
+							{
+								"value": "appointment",
+								"label": "Appointment",
+								"group": "Commerce"
+							},
+							{
+								"value": "archive-box",
+								"label": "Archive box",
+								"group": "Commerce"
+							},
+							{
+								"value": "box",
+								"label": "Box",
+								"group": "Commerce"
+							},
+							{
+								"value": "checkout-cart",
+								"label": "Checkout cart",
+								"group": "Commerce"
+							},
+							{
+								"value": "currency",
+								"label": "Currency",
+								"group": "Commerce"
+							},
+							{
+								"value": "delivery",
+								"label": "Delivery",
+								"group": "Commerce"
+							},
+							{
+								"value": "delivery-time",
+								"label": "Delivery time",
+								"group": "Commerce"
+							},
+							{
+								"value": "giftbox",
+								"label": "Giftbox",
+								"group": "Commerce"
+							},
+							{
+								"value": "label",
+								"label": "Label",
+								"group": "Commerce"
+							},
+							{
+								"value": "open-24-hours",
+								"label": "Open 24 hurs",
+								"group": "Commerce"
+							},
+							{
+								"value": "open-box",
+								"label": "Open box",
+								"group": "Commerce"
+							},
+							{
+								"value": "paper-bag",
+								"label": "Paper bag",
+								"group": "Commerce"
+							},
+							{
+								"value": "shipping-truck",
+								"label": "Shipping truck",
+								"group": "Commerce"
+							},
+							{
+								"value": "store",
+								"label": "Store",
+								"group": "Commerce"
+							},
+							{
+								"value": "time",
+								"label": "Time",
+								"group": "Commerce"
+							},
+							{
+								"value": "time-limit",
+								"label": "Time limit",
+								"group": "Commerce"
+							},
+							{
+								"value": "wallet",
+								"label": "Wallet",
+								"group": "Commerce"
+							}
+						]
+          },
+          {
+            "type": "image_picker",
+            "id": "custom_icon",
+            "label": "t:sections.split-extra-words.sections.footer.custom-icon.label",
+            "info": "256 x 256px"
+          },
+					{
+						"type": "paragraph",
+						"content": "t:sections.refactor_words.text.icons_info"
+					}
+        ]
+      }
+    ],
+		"presets": [
+			{
+				"name": "t:sections.text-columns-with-icons.name",
+				"blocks": [
+					{
+						"type": "text-icon",
+						"settings": {
+							"title": "Shipping",
+							"body": "<p>Useful information about your shipping details</p>",
+							"select_icon": "delivery"
+						}
+					},
+					{
+						"type": "text-icon",
+						"settings": {
+							"title": "Returns",
+							"body": "<p>Show how much time customers have for testing your products</p>",
+							"select_icon": "time-limit"
+						}
+					},
+					{
+						"type": "text-icon",
+						"settings": {
+							"title": "Pickup",
+							"body": "<p>Let your customers know about local pickup</p>",
+							"select_icon": "store"
+						}
+					}
+				]
+			}
+		],
+		"disabled_on": {
+			"groups": ["custom.overlay", "header"]
+		}
+  }
+{% endschema %}

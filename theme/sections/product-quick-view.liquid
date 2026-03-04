@@ -1,0 +1,246 @@
+<product-quick-view id="product-{{ section.id }}">
+
+  <div class="product-quick-view-container">
+
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+
+    <product-header class="product-header product-quick-view-header">
+
+      <h1 class="product-title h4">{{ product.title }}</h1>
+
+      <div class="price-reviews" id="product-price-{{ product.id }}-{{ section.id }}">
+        <div class="price">
+          <div>
+            <span class="product-price product__price--original" data-js-product-price-original>{{ current_variant.price | money }}</span>
+            <span class="compare-price product__price--compare" data-js-product-price-compare>
+              {%- if current_variant.compare_at_price > current_variant.price -%}
+                {{ current_variant.compare_at_price | money }}
+              {%- endif -%}
+            </span>
+          </div>
+        </div>
+        <span class="unit-price product__price--unit text-size--smaller" data-js-product-price-unit>
+          {%- if current_variant.unit_price_measurement -%}
+            {%- liquid
+              echo current_variant.unit_price | money
+              echo '/'
+              if current_variant.unit_price_measurement.reference_value != 1
+                echo current_variant.unit_price_measurement.reference_value
+              endif
+              echo current_variant.unit_price_measurement.reference_unit
+            -%}
+          {%- endif -%}
+        </span>
+      </div>  
+
+    </product-header>
+
+    <div class="product-quick-view-body">
+
+      <div class="product-images">
+
+        {%- liquid
+          if current_variant.featured_media 
+            assign featured_image = current_variant.featured_media
+          else 
+            assign featured_image = product.featured_image
+          endif
+        -%}
+        <img 
+          alt="{{ featured_image.alt | escape }}"
+          src="{{ featured_image | image_url: width: 600, height: 600 }}"
+          srcset="{{ featured_image | image_url: width: 200, height: 200 }} 200w,
+            {{ featured_image | image_url: width: 400 }} 400w,
+            {{ featured_image | image_url: width: 600 }} 600w,
+            {{ featured_image | image_url: width: 900 }} 900w,
+            {{ featured_image | image_url: width: 1200 }} 1200w
+          "
+          sizes="(max-width: 720px) calc(100vw - 100px), 340px"
+          width="{{ featured_image.width }}" height="{{ featured_image.height }}"
+          onload="this.classList.add('loaded');{%- unless request.design_mode -%} this.srcset = this.srcset {%- endunless -%}"
+          style="object-fit: {% if section.settings.gallery_aspect %} contain {% else %} cover {% endif %}"
+        />
+
+        {%- liquid
+          if settings.show_preloader 
+            render 'preloader'
+          endif
+        -%}
+
+        <script type="application/json"> 
+          {%- capture variant_images -%}
+            {
+              {%- for variant in product.variants -%}
+                {%- if variant.featured_media -%}
+                  ,"{{ variant.id }}": "{{ variant.featured_media | image_url: width: 200 }} 200w, {{ variant.featured_media | image_url: width: 400 }} 400w, {{ variant.featured_media | image_url: width: 600 }} 600w, {{ variant.featured_media | image_url: width: 900 }} 900w, {{ variant.featured_media | image_url: width: 1200 }} 1200w"
+                {%- endif -%}
+              {%- endfor -%}
+            }
+          {%- endcapture -%}
+          {{ variant_images | remove_first: ',' | strip | strip_newlines }}
+        </script>
+
+      </div>
+
+      <div class="product-actions">
+
+      	<product-variants 
+          data-variants="{{ product.options_with_values.size }}"
+          data-type="{{ section.settings.quick_buy_variants_style }}"
+          data-hide-variants="{%- liquid
+            if section.settings.quick_buy_unavailable_variants == 'disable' 
+              echo 'disable'
+            elsif section.settings.quick_buy_unavailable_variants == 'show'
+              echo 'true'
+            else
+              echo 'hide'
+            endif
+          -%}"
+          data-url="{{ product.url }}" data-id="{{ product.id }}-{{ section.id }}"
+          data-style="{{ section.settings.quick_buy_variants_style }}"
+          data-no-history
+          {% unless product.has_only_default_variant %} data-has-variants {% endunless %}
+          {% if product.has_only_default_variant %} style="display:none" {% endif %}
+          {% if product.available == false and section.settings.quick_buy_unavailable_variants == 'hide' %} style="display:none" {% endif %}
+        > 
+
+          {%- render 'product-variant-picker', product: product, style: section.settings.quick_buy_variants_style, show_color_swatches: section.settings.quick_buy_show_color_swatches -%}
+
+          <script type="application/json">
+            {{ product.variants | json }}
+          </script>
+
+        </product-variants>
+
+        <product-form 
+            id="add-to-cart-{{ section.id }}-{{ product.id }}" class="product--add-to-cart-form" {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}
+          > 
+
+            {%- liquid
+              if current_variant.available == false 
+                assign form_class = 'disabled-cart'
+              endif
+            -%}
+
+            {%- assign product_form_id = 'product-form-' | append: product.id | append: '-' | append: section.id -%}
+
+            {%- form 'product', product, id: product_form_id, class: form_class, novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+
+              <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+              {%- liquid
+                if product.gift_card? and block.settings.show_gift_card_recipient
+                  render 'gift-card-recipent-form', product: product
+                endif
+              -%}
+              
+              <div class="cart-functions">
+
+                <div class="buttons-holder-fix">
+                  
+                  <div class="buttons-holder">
+
+                    <button type="submit" name="add" class="product__add-to-cart product--add-to-cart-button button button--solid {% unless current_variant.available %} disabled {% endunless %}" data-js-product-add-to-cart>
+                      <span class="button-scroll-in add-to-cart__text add-to-cart__text" data-js-product-add-to-cart-text>
+                        {%- liquid
+                          if current_variant.available
+                            echo 'products.page.add_to_cart_button' | t
+                          else
+                            echo 'products.page.inventory.sold_out_variant' | t
+                          endif
+                        -%}
+                      </span>
+                      {%- render 'preloader', class: 'add-to-cart__preloader' -%}
+                    </button>
+
+                    <a href="{{ product.url }}" class="button button--outline" style="text-align:center">
+                      <span class="button-scroll-in">{{ 'products.featured_product.view_product_details' | t }}</span>
+                    </a>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            {%- endform -%}
+
+          </product-form>
+
+      </div>
+
+    </div>
+
+    <div class="basicLightboxClose basicLightboxCloseWithIcon">{%- render 'theme-symbols', icon: 'close' -%}</div>
+
+  </div>
+
+</product-quick-view>
+
+{% schema %}
+	{
+    "name": "t:sections.local-extra-words.sections.product-quick-view.name",
+    "class": "product-quick-view",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "gallery_aspect",
+        "label": "t:sections.refactor_words.product-page.gallery_resize.option_1",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "quick_buy_variants_style",
+        "label": "t:sections.split-extra-words.sections.main-product.settings.variants.label",
+        "options": [
+          {
+            "value": "radio",
+            "label": "t:sections.split-extra-words.sections.main-product.settings.variants.options__1"
+          },
+          {
+            "value": "select",
+            "label": "t:sections.split-extra-words.sections.main-product.settings.variants.options__2"
+          }
+        ],
+        "default": "radio"
+      },
+      {
+        "type": "checkbox",
+        "id": "quick_buy_show_color_swatches",
+        "label": "t:sections.split-extra-words.sections.main-product.settings.color_swatches.label",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "t:new_color_swatches"
+      },
+      { 
+        "type": "select",
+        "id": "quick_buy_unavailable_variants",
+        "label": "t:sections.refactor_words.settings.variants_functionality.label",
+        "options": [
+          {
+            "value": "disable",
+            "label": "t:sections.refactor_words.settings.variants_functionality.option_2"
+          },
+          {
+            "value": "hide",
+            "label": "t:sections.refactor_words.settings.variants_functionality.option_1"
+          },
+          {
+            "value": "show",
+            "label": "t:sections.refactor_words.settings.variants_functionality.option_3"
+          }
+        ],
+        "default": "show"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_gift_card_recipient",
+        "default": false,
+        "label": "t:sections.main-product.blocks.buy_buttons.settings.show_gift_card_recipient.label",
+        "info": "t:sections.main-product.blocks.buy_buttons.settings.show_gift_card_recipient.info"
+      }
+    ]
+  }
+{% endschema %}

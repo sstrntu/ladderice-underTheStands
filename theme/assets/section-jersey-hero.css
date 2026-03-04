@@ -1,0 +1,144 @@
+.jersey-hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #1a3323;
+  will-change: opacity;
+}
+
+.jersey-hero-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.jersey-hero-image-wrap {
+  position: absolute;
+  inset: 0;
+  top: -12%;
+  bottom: -12%;
+  will-change: transform;
+}
+
+.jersey-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.jersey-hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 4rem 5rem;
+  background: linear-gradient(
+    to top,
+    rgba(10, 28, 18, 0.65) 0%,
+    rgba(10, 28, 18, 0.1) 40%,
+    rgba(10, 28, 18, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.jersey-hero-content {
+  color: #fff;
+  max-width: 600px;
+  pointer-events: all;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: jerseyHeroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+.jersey-hero-tagline {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.jersey-hero-title {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 700;
+  margin: 0 0 0.6rem;
+  line-height: 1.05;
+}
+
+.jersey-hero-subtitle {
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  margin: 0 0 2rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.jersey-hero-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2.2rem;
+  background: #fff;
+  color: #111;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+
+.jersey-hero-button:hover {
+  background: #1a3323;
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.jersey-hero-scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  right: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  animation: jerseyHeroPulse 2s ease-in-out infinite;
+}
+
+.jersey-hero-scroll-hint svg {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes jerseyHeroFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes jerseyHeroPulse {
+  0%, 100% { opacity: 0.5; transform: translateY(0); }
+  50% { opacity: 0.9; transform: translateY(6px); }
+}
+
+@media (max-width: 768px) {
+  .jersey-hero-overlay {
+    padding: 2rem;
+    align-items: flex-end;
+  }
+
+  .jersey-hero-scroll-hint {
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+}

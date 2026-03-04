@@ -1,0 +1,98 @@
+{%- if block.settings.show_vendor -%}
+  {%- if product != blank -%}
+    {%- capture vendor -%} {{ product.vendor | link_to_vendor }} {%- endcapture -%}
+    <span class="product-vendor text-size--small">{{ 'products.grid.vendor_html' | t: vendor: vendor }}</span>
+  {%- else -%}
+    <span class="product-vendor text-size--small">{{ 'general.onboarding.vendor_name' | t }}</span>
+  {%- endif -%}
+{%- endif -%}
+
+<{% if type == 'section' %}h3{% else %}h1{% endif %} class="product-title {% if block.settings.show_badge %} with-badge {% endif %} {% if title_class %} {{ title_class }} {% else %} h2 {% endif %}">
+  {%- liquid
+    if product != blank
+      echo product.title
+    else 
+      echo 'general.onboarding.product_title' | t
+    endif
+  -%}
+</{% if type == 'section' %}h3{% else %}h1{% endif %}>
+
+{%- liquid
+  if block.settings.show_badge
+    render 'product-badges', product: product, style: 'header'
+  endif
+-%}
+
+<div class="price-reviews" id="product-price-{{ section.id }}" {{ block.shopify_attributes }}>
+  <div class="price">
+    {%- if product != blank -%}
+      <div>
+        <span class="product-price product__price--original {% unless title_class %} text-size--large {% endunless %}" data-js-product-price-original>{{ current_variant.price | money }}</span>
+        <span class="compare-price product__price--compare {% unless title_class %} text-size--larger {% endunless %}" data-js-product-price-compare>
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            {{ current_variant.compare_at_price | money }}
+          {%- endif -%}
+        </span>
+      </div>
+      {%- liquid 
+        if block.settings.show_reviews 
+          render 'product-rating', product: product, type: 'main-product' 
+        endif
+      -%}
+    {%- else -%}
+      <div><span class="product-price product__price--original {% unless title_class %} text-size--large {% endunless %}">{{ 2999 | money }}</span>
+    {%- endif -%}
+  </div>
+  <span class="unit-price product__price--unit text-size--smaller" data-js-product-price-unit>
+    {%- if current_variant.unit_price_measurement -%}
+      {%- liquid
+        echo current_variant.unit_price | money
+        echo '/'
+        if current_variant.unit_price_measurement.reference_value != 1
+          echo current_variant.unit_price_measurement.reference_value
+        endif
+        echo current_variant.unit_price_measurement.reference_unit
+      -%}
+    {%- endif -%}
+  </span>
+</div>  
+
+{%- if block.settings.show_tax_info or block.settings.show_sku or block.settings.show_barcode -%}
+
+  <div class="product-meta">
+
+    {%- if block.settings.show_tax_info -%}
+      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+        <div class="product-policies text-size--smallest" data-product-policies {{ block.shopify_attributes }}>
+          {% if shop.taxes_included %}
+            {{ 'products.page.include_taxes' | t }}
+          {%- endif -%}
+          {%- if shop.shipping_policy.body != blank -%}
+            {{ 'products.page.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if block.settings.show_sku or block.settings.show_barcode -%}
+      <div class="product__sku-barcode text-size--smallest" {{ block.shopify_attributes }}>
+        {%- if block.settings.show_sku -%}
+          <span class="product__sku" data-js-product-sku>
+            {%- if current_variant.sku != empty -%}
+              {{ 'products.page.sku' | t }}{{ current_variant.sku | escape }}
+            {%- endif -%}
+          </span>
+        {%- endif -%}
+        {%- if block.settings.show_barcode -%}
+           <span class="product__barcode" data-js-product-barcode>
+            {%- if current_variant.barcode != empty -%}
+              {{ 'products.page.barcode' | t }}{{ current_variant.barcode | escape }}
+            {%- endif -%}
+          </span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+
+{%- endif -%}

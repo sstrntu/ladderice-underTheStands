@@ -1,0 +1,77 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:sections.refactor_words.labels.header_group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "content": {
+          "type": "content",
+          "settings": {
+            "text": "",
+            "link": "",
+            "target": false
+          }
+        }
+      },
+      "block_order": [
+        "content"
+      ],
+      "disabled": true,
+      "settings": {
+        "visibility": "all",
+        "bar_txtcolor": "#ffffff",
+        "bar_bgcolor": "#111111",
+        "bar_bordercolor": "rgba(0,0,0,0)"
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_src": "shopify://shop_images/Asset_17_288x_1.svg",
+        "logo_height": 50,
+        "main_linklist": "main-menu",
+        "menu_style": "classic",
+        "menu_sticky": "sticky--scroll",
+        "menu_hide_border": false,
+        "collection_linklist": "",
+        "show_collection_image": true,
+        "show_promotion_block": false,
+        "promotion_header": "",
+        "promotion_content": "",
+        "promotion_button_label": "WELCOME1",
+        "promotion_button_link": "",
+        "promotion_color_txt": "#000000",
+        "promotion_color_bg": "#f3f3f3",
+        "show_locale_selector": false,
+        "show_country_selector": false
+      }
+    },
+    "app_8tTwUk": {
+      "type": "app",
+      "disabled": true,
+      "settings": {
+        "no_padding": false
+      }
+    },
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement",
+    "header",
+    "app_8tTwUk",
+    "breadcrumb"
+  ]
+}

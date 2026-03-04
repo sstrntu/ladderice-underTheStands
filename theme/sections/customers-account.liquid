@@ -1,0 +1,95 @@
+{%- capture date_format -%} {{ 'general.date_format.month_day_year' | t }} {%- endcapture -%}
+
+<div id="section-account" class="site-box-container container--fullscreen box--can-stick">
+
+  <div class="site-box box--big lap--box--small-fl-auto box--typo-big box--lots-of-text box--top-align box--column-flow box__heading box--add-hr" data-order="0">
+    <div class="reduce-top-margin">
+      <div class="site-box-content">
+        <h1 class="title h1">{{ 'customers.account_page.title' | t }}</h1>
+        <a href="{{ routes.account_logout_url }}" class="button button--outline">
+          <span class="button-scroll-in">{{ 'general.navigation.logout' | t }}</span>
+        </a>
+      </div> 
+    </div>
+  </div>
+
+  <div class="site-box box--big lap--box--bigger box--top-align box--column-flow box__text" data-order="1">
+
+    <div class="site-box-content reduce-top-margin">
+
+      <div>
+
+        <div class="simple-block">
+
+          <h4 class="simple-title">{{ 'customers.account_page.orders_table.title' | t }}</h4>
+
+          {%- paginate customer.orders by 20 -%}
+
+            {%- if customer.orders.size != 0 -%}
+
+              <div class="table-wrap">
+                <table class="order-table o-history">
+
+                  <tbody>
+                    {%- for order in customer.orders -%}
+                      <tr>
+                        <td>
+                          <span class="label">{{ 'customers.account_page.orders_table.order' | t }}</span>
+                          {{ order.name | link_to: order.customer_url }}
+                        </td>
+                        <td>
+                          <span class="label">{{ 'customers.account_page.orders_table.date' | t }}</span>
+                          {{ order.created_at | date: date_format }}
+                        </td>
+                        <td>
+                          <span class="label">{{ 'customers.account_page.orders_table.payment_status' | t }}</span>
+                          {{ order.financial_status_label }}
+                        </td>
+                        <td>
+                          <span class="label">{{ 'customers.account_page.orders_table.fulfillment_status' | t }}</span>
+                          {{ order.fulfillment_status_label }}
+                        </td>
+                        <td>
+                          <span class="label">{{ 'customers.account_page.orders_table.total' | t }}</span>
+                          {{ order.total_price | money }}
+                        </td>
+                      </tr>
+                    {%- endfor -%}
+                  </tbody>
+                </table>
+              </div>
+
+            {%- else -%}
+
+              <p>{{ 'customers.account_page.no_orders_message' | t }}</p>
+
+            {%- endif -%}
+
+            {%- render 'pagination', paginate: paginate, style: 'small' -%}
+
+          {%- endpaginate -%}
+
+        </div>
+
+        <div class="simple-block">
+
+          <h4 class="simple-title">{{ 'customers.account_page.account_details_title' | t }}</h4>
+          <div class="simple-address">{{ customer.default_address | format_address }}</div>
+          <p><a href="{{ routes.account_addresses_url }}"><strong>{{ 'customers.account_page.view_addresses_link' | t }} ({{ customer.addresses_count }})</strong></a></p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.local-extra-words.sections.customers.account.name",
+    "class": "section--remove-bottom-margin-after"
+  }
+{% endschema %}

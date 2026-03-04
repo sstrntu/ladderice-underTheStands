@@ -1,0 +1,85 @@
+<div id="section-{{ section.id }}" class="site-box-container container--fullscreen">
+  {%- if section.settings.link != blank -%}
+    <a
+      href="{{ section.settings.link }}"
+      {% if section.settings.target %}
+        target="_blank"
+      {% endif %}
+    >
+  {%- endif -%}
+
+  {%- unless section.settings.image == blank -%}
+    {%- assign image = section.settings.image -%}
+
+    {%- liquid
+      if section.index == 1
+        assign preload = true
+      else
+        assign preload = false
+      endif
+    -%}
+    <div class="ldr-hero">
+      <div class="ldr-hero__image-wrapper">
+        <img
+          src="{{ image | image_url: width: 640 }}"
+          alt="{{ image.alt | strip_html | escape }}"
+          srcset="{{ image | image_url: width: 320 }} 320w, {{ image | image_url: width: 480 }} 480w, {{ image | image_url: width: 640 }} 640w, {{ image | image_url: width: 840 }} 840w, {{ image | image_url: width: 1080 }} 1080w, {{ image | image_url: width: 1280 }} 1280w, {{ image | image_url: width: 1540 }} 1540w, {{ image | image_url: width: 1860 }} 1860w, {{ image | image_url: width: 2100 }} 2100w"
+          sizes="100vw"
+          width="{{ image.width }}"
+          height="{{ image.height }}"
+          {% unless preload %}
+            loading="lazy"
+          {% endunless %}
+          onload="this.classList.add('lazyloaded')"
+          class="lazy ldr-hero__image"
+        >
+        {%- liquid
+          if settings.show_preloader
+            render 'preloader'
+          endif
+        -%}
+      </div>
+    </div>
+  {%- else -%}
+    <div class="box__blank-image" style="padding-top:100%">
+      <span class="onboarding-svg section--image-text--item__image onboarding-background">
+        {{ 'image' | placeholder_svg_tag }}
+      </span>
+    </div>
+  {%- endunless -%}
+
+  {%- if section.settings.link != blank -%}</a>{%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.image.name",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image.name"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.link"
+    },
+    {
+      "type": "checkbox",
+      "id": "target",
+      "label": "t:sections.local-extra-words.sections.announcement-bar.blocks.content.settings.target",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image.name"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["custom.overlay", "header"]
+  }
+}
+{% endschema %}

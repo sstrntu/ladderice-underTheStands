@@ -1,0 +1,251 @@
+{%- liquid
+
+  if product.metafields.promo_banner.link != blank
+    assign link = product.metafields.promo_banner.link
+  else 
+    assign link = section.settings.link
+  endif
+
+  if product.metafields.promo_banner.subtitle != blank
+    assign subtitle = product.metafields.promo_banner.subtitle
+  else 
+    assign subtitle = section.settings.subtitle
+  endif
+
+  if product.metafields.promo_banner.title != blank
+    assign title = product.metafields.promo_banner.title
+  else 
+    assign title = section.settings.title
+  endif
+
+  if section.settings.visibility == 'all'
+    assign show_on_homepage = true
+    assign show_on_pages = true
+  elsif section.settings.visibility == 'homepage'
+    assign show_on_homepage = true
+  elsif section.settings.visibility == 'no-homepage'
+    assign show_on_homepage = false
+    assign show_on_pages = true
+  elsif section.settings.visibility == 'product'
+    assign show_on_product = true
+    elsif section.settings.visibility == 'cart'
+    assign show_on_cart = true
+  endif
+
+  if show_on_cart == true and template contains 'cart'
+    assign show = true
+  elsif show_on_product == true and template contains 'product'
+    assign show = true
+  endif
+  if show_on_homepage == true and template == 'index'
+    assign show = true
+  endif
+  if show_on_pages == true and template != 'index'
+    assign show = true
+  endif
+
+-%}
+
+{%- if show -%}
+    
+  {%- if title != blank or subtitle != blank or link != blank -%}
+
+    {{ 'component-banner.css' | asset_url | stylesheet_tag }}
+
+    <modal-box id="modal-{{ section.id }}" class="box__banner style--box" 
+      data-options='{
+        "show": {% unless request.design_mode %} {{ section.settings.popup_delay }} {% else %} 1000 {% endunless %},
+        "frequency": "day",
+        "enabled": {{ section.settings.enable }}
+      }'
+      style="display:none;"
+    >
+
+    {%- liquid 
+
+      if link
+
+        if link contains 'product'
+
+          assign product = link | remove: 'products' | remove : '/'
+          if all_products[product] != blank
+            capture product_object 
+              echo '<div class="box__collection product-holder">'
+                render 'product-item', product: all_products[product], mini: true
+              echo '</div>'
+            endcapture
+          endif
+          if product_object 
+            assign dom = 'div'
+          endif
+
+        elsif link contains 'collection'
+
+          assign collection = link | remove: 'collections' | remove : '/'
+          if collections[collection] != blank
+            capture collection_object
+              echo '<div class="site-box-background" style="background-color:'
+                echo section.settings.bg_color
+              echo '">'
+                render 'lazy-image', image: collections[collection].featured_image, sizes: '350px'
+              echo '</div>'
+            endcapture
+          endif
+
+        endif 
+
+        if product_object == blank
+          assign dom = 'a'
+          assign href = link | prepend: 'href="' | append: '"'
+        endif
+
+      else 
+        assign dom = 'div'
+      endif
+
+    -%}
+
+    <div class="modal-object" style="
+      background-color: {{ section.settings.bg_color }};
+      {% if product_object == blank %} text-align: center; {% endif %}"
+      {% if collection_object != blank %} data-collection {% elsif product_object != blank %} data-product {% endif %}
+      {% if product_object == blank %} data-link {% endif %}
+      {% if link != blank %} data-has-link {% endif %}
+    >
+
+      <{{ dom }} {{ href }}>
+
+        <div class="content" data-content style="color: {{ section.settings.txt_color }}">
+          {%- if title -%}
+            <span class="title text-size--large">
+              <span class="underline-animation-alternative" style="background-image: linear-gradient(to right, {{ section.settings.txt_color }}, {{ section.settings.txt_color }});">{{ title }}</span>
+            </span>
+          {%- endif -%}
+          {%- if subtitle -%}
+            <span class="subtitle">{{ subtitle }}</span>
+          {%- endif -%}
+        </div>
+
+        {{ product_object }}
+        {{ collection_object }}
+
+      </{{ dom }}>
+
+      <button class="site-close-handle" title="{{ 'general.accessibility_labels.close_sidebar' | t }}" data-js-close>
+        <span class="visually-hidden">{{ 'general.accessibility_labels.close_sidebar' | t }}</span>
+        <span class="hamburger-menu" aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+        <style>
+          #modal-{{ section.id }} .site-close-handle * {
+            fill: {{ section.settings.txt_color }};
+          }
+        </style>
+      </button>
+
+    </div>
+
+  {%- endif -%}
+
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "t:sections.refactor_words.promotional_banner.name",
+    "class": "mount-popup stacked-popup",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable",
+        "label": "t:sections.refactor_words.promotional_banner.enable",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "visibility",
+        "label": "t:sections.refactor_words.announcement-bar.visibility.label",
+        "options": [
+          {
+            "value": "all",
+            "label": "t:sections.refactor_words.announcement-bar.visibility.option_1"
+          },
+          {
+            "value": "homepage",
+            "label": "t:sections.refactor_words.announcement-bar.visibility.option_2"
+          },
+          {
+            "value": "product",
+            "label": "t:sections.refactor_words.announcement-bar.visibility.option_4"
+          },
+          {
+            "value": "cart",
+            "label": "t:sections.refactor_words.announcement-bar.visibility.option_5"
+          },
+          {
+            "value": "no-homepage",
+            "label": "t:sections.refactor_words.announcement-bar.visibility.option_3"
+          }
+        ],
+        "default": "all"
+      },
+      {
+        "type": "range",
+        "id": "popup_delay",
+        "label": "t:sections.popup.settings.show_after.label",
+        "min": 3,
+        "max": 60,
+        "step": 1,
+        "unit": "t:sections.popup.settings.show_after.info",
+        "default": 6
+      },
+      {
+        "type": "header",
+        "content": "t:sections.local-extra-words.sections.faq.headings.content"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:sections.split-extra-words.sections.promotions.settings.product_info"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.split-extra-words.settings_schema.headings.title",
+        "default": "Promotional banner"
+      },
+      {
+        "type": "text",
+        "id": "subtitle",
+        "label": "t:sections.split-extra-words.settings_schema.headings.subtitle",
+        "default": "Use this to inform your customers about flash sales or new products!"
+      },
+      {
+        "type": "url",
+        "id": "link",
+        "label": "t:sections.split-extra-words.sections.promotions.settings.link",
+        "info": "t:sections.split-extra-words.sections.promotions.settings.link_info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "t:sections.split-extra-words.sections.promotions.settings.background",
+        "default": "#f7f7f7"
+      },
+      {
+        "type": "color",
+        "id": "txt_color",
+        "label": "t:sections.split-extra-words.sections.promotions.settings.text",
+        "default": "#000000"
+      }
+    ],
+    "presets": [
+      {
+        "name": "t:sections.refactor_words.promotional_banner.name"
+      }
+    ],
+    "enabled_on": {
+      "groups": ["custom.overlay"]
+    }
+  }
+{% endschema %}

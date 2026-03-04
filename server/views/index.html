@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anti Corruption — Ladderice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+
+    /* ── ALD-inspired theme tokens ── */
+    :root {
+      --main-text:                #181818;
+      --main-text-hover:          rgba(24,24,24,0.72);
+      --main-text-muted:          rgba(24,24,24,0.5);
+      --main-text-subtle:         rgba(24,24,24,0.35);
+      --main-background:          #ffffff;
+      --main-background-warm:     #FAFAF8;
+      --main-background-secondary:rgba(24,24,24,0.04);
+      --main-background-third:    rgba(24,24,24,0.02);
+      --main-borders:             rgba(24,24,24,0.08);
+      --grid-borders:             rgba(24,24,24,0.06);
+
+      --header-background:        #FFFFFF;
+      --header-text:              #181818;
+      --header-borders:           rgba(24,24,24,0.08);
+
+      --font-stack-headings:      'Playfair Display', Georgia, serif;
+      --font-weight-headings:     500;
+      --font-stack-body:          'Inter', -apple-system, sans-serif;
+      --font-weight-body:         400;
+      --buttons-radius:           2px;
+
+      /* Campaign accent — muted, warmer red */
+      --rf-red:       #C41E1E;
+      --rf-red-dark:  #9A1818;
+
+      /* Semantic tokens */
+      --success-color: #4CAF50;
+      --error-color:   var(--rf-red);
+
+      /* Standardized easing */
+      --ease-spring:  cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-smooth:  cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-stack-body); background: var(--main-background); color: var(--main-text); }
+    img  { display: block; max-width: 100%; }
+    a    { text-decoration: none; color: inherit; }
+
+    /* ══════════════════════════════════════
+       HEADER (ALD-style minimal)
+    ══════════════════════════════════════ */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: transparent;
+      color: #fff;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      padding: 0 40px; height: 52px;
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s, color 0.4s, border-color 0.4s;
+    }
+    .site-header.is-solid {
+      background: var(--header-background);
+      color: var(--header-text);
+      border-bottom-color: var(--header-borders);
+    }
+    .site-header__left { display: flex; align-items: center; }
+    .site-header__menu {
+      background: none; border: none; cursor: pointer; color: inherit;
+      padding: 8px; margin: -8px;
+      transition: color 0.4s;
+    }
+    .site-header__center { display: flex; justify-content: center; }
+    .site-header__logo { display: flex; align-items: center; }
+    .site-header__logo img {
+      height: 18px; width: auto; display: block;
+      filter: none;
+      transition: filter 0.4s;
+    }
+    .site-header.is-solid .site-header__logo img {
+      filter: invert(1);
+    }
+    .site-header__right { display: flex; justify-content: flex-end; gap: 24px; align-items: center; }
+    .site-header__nav-link {
+      font-family: var(--font-stack-body); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+      transition: color 0.4s;
+    }
+    .site-header__nav-link:hover { color: #fff; }
+    .site-header.is-solid .site-header__nav-link { color: var(--main-text-muted); }
+    .site-header.is-solid .site-header__nav-link:hover { color: var(--main-text); }
+
+    /* Date ticker */
+    .site-ticker {
+      position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      padding: 8px 40px; text-align: center;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .site-ticker.is-solid {
+      background: var(--main-background-warm);
+      border-bottom-color: var(--grid-borders);
+    }
+    .site-ticker__text {
+      font-family: var(--font-stack-body); font-size: 10px; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5);
+      transition: color 0.4s;
+    }
+    .site-ticker.is-solid .site-ticker__text {
+      color: var(--main-text-subtle);
+    }
+
+    /* ══════════════════════════════════════
+       ANTI CORRUPTION — CAMPAIGN HERO
+    ══════════════════════════════════════ */
+
+    .rf-hero {
+      position: relative;
+      height: 300vh;
+    }
+
+    .rf-hero__sticky {
+      position: sticky; top: 0;
+      width: 100%; height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .rf-hero__bg {
+      position: absolute; inset: 0;
+      z-index: 0;
+    }
+    .rf-hero__bg canvas {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      background: var(--main-background-warm);
+    }
+
+    @media (max-width: 768px) {
+      .rf-hero__bg { transform: none; }
+    }
+
+    /* Subtle vignette only — no heavy green overlay */
+    .rf-hero__overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        linear-gradient(180deg,
+          rgba(0,0,0,0.08) 0%,
+          transparent 30%,
+          transparent 70%,
+          rgba(0,0,0,0.2) 100%
+        );
+      pointer-events: none;
+    }
+
+    .rf-hero__content { position: relative; z-index: 3; }
+
+    @media(max-width: 768px) { .rf-hero { height: 150vh; } }
+
+    /* ══════════════════════════════════════
+       BELOW HERO + DIVIDER (replaces marquee)
+    ══════════════════════════════════════ */
+    .rf-below-hero {
+      position: relative;
+      z-index: 10;
+      margin-top: -75vh;
+      transform: translateY(80px);
+      opacity: 0;
+    }
+
+    .rf-divider {
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--grid-borders);
+      background: var(--main-background);
+    }
+    .rf-divider__text {
+      font-family: var(--font-stack-body); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--main-text-muted);
+    }
+    .rf-divider__dot {
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--main-text-muted); flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       FEATURED JERSEY
+    ══════════════════════════════════════ */
+    .rf-featured { background: var(--main-background); }
+    .rf-featured__layout { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; }
+    @media(max-width:768px){ .rf-featured__layout{grid-template-columns:1fr} }
+
+    .rf-featured__img-side {
+      position: relative; background: #F5F3EF; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Carousel */
+    .rf-carousel { position: relative; z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+    .rf-carousel__track { display: flex; height: 100%; transition: transform 0.6s var(--ease-spring); }
+    .rf-carousel__slide { min-width: 100%; height: 100%; position: relative; }
+    .rf-carousel__slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .rf-carousel__nav {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; z-index: 3;
+    }
+    .rf-carousel__dot {
+      width: 6px; height: 6px; border-radius: 50%; border: none; padding: 0;
+      background: rgba(24,24,24,0.3); cursor: pointer; transition: background 0.2s, transform 0.2s;
+    }
+    .rf-carousel__dot.active { background: var(--main-text); transform: none; }
+    .rf-carousel__btn {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+      width: 40px; height: 40px; border-radius: 50%; border: none;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(4px);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #111; transition: background 0.2s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .rf-carousel__btn:hover { background: #fff; transform: translateY(-50%) scale(1.08); }
+    .rf-carousel__btn--prev { left: 14px; }
+    .rf-carousel__btn--next { right: 14px; }
+    .rf-img-caption { position: absolute; bottom: 20px; left: 24px; right: 24px; display: flex; justify-content: space-between; font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(24,24,24,0.3); z-index: 2; }
+    .rf-carousel__slide--hidden { display: none; }
+    .rf-carousel__dot--hidden { display: none; }
+
+    .rf-featured__info { display: flex; align-items: center; padding: 72px 7vw 72px 56px; border-left: 1px solid var(--main-borders); }
+    @media(max-width:768px){ .rf-featured__info{padding:48px 24px;border-left:none;border-top:1px solid var(--main-borders)} }
+    .rf-featured__info-inner { max-width: 440px; }
+
+    .rf-tag {
+      display: inline-block; padding: 4px 0;
+      background: transparent; color: var(--main-text-subtle);
+      font-family: var(--font-stack-body);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      border-radius: 0; border-bottom: 1px solid var(--grid-borders);
+      margin-bottom: 24px;
+    }
+    .rf-featured__title {
+      font-family: var(--font-stack-headings); font-size: clamp(40px,5vw,60px);
+      font-weight: 500; line-height: 1.05; letter-spacing: -0.02em;
+      color: var(--main-text); margin: 0 0 20px;
+    }
+    .rf-featured__desc { font-family: var(--font-stack-body); font-size: 14px; font-weight: 300; line-height: 1.85; color: var(--main-text-muted); margin: 0 0 28px; }
+
+    .rf-notice {
+      display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px;
+      background: rgba(24,24,24,0.06);
+      border-left: 2px solid var(--main-text-subtle);
+      border-radius: 0; margin-bottom: 32px;
+    }
+    .rf-notice-arrow { color: var(--main-text-subtle); font-size: 13px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+    .rf-notice p { font-size: 13px; line-height: 1.6; color: var(--main-text-muted); margin: 0; }
+    .rf-notice strong { color: var(--main-text); }
+
+    /* Buy button — ALD style bordered */
+    .rf-hero-buy-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 20px; padding: 14px 28px;
+      background: transparent;
+      color: var(--main-text);
+      border: 1px solid var(--main-text);
+      border-radius: var(--buttons-radius);
+      font-family: var(--font-stack-body);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.10em; text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+    }
+    .rf-hero-buy-btn:hover { background: var(--main-text); color: #fff; transform: none; }
+    .rf-hero-buy-btn .btn-arrow { font-size: 13px; letter-spacing: 0; transition: transform 0.2s; }
+    .rf-hero-buy-btn:hover .btn-arrow { transform: translateX(4px); }
+
+    .rf-label { display: block; font-family: var(--font-stack-body); font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 8px; }
+
+    /* ══════════════════════════════════════
+       FINANCIAL DASHBOARD (light theme)
+    ══════════════════════════════════════ */
+    .rf-dashboard { background: var(--main-background-warm); color: var(--main-text); padding: 96px 0; position: relative; overflow: hidden; border-top: 1px solid var(--grid-borders); }
+
+    .rf-dashboard__wrap { max-width: 1200px; margin: 0 auto; padding: 0 7vw; }
+
+    .rf-dashboard__header { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 64px; align-items: start; }
+    @media(max-width:768px){ .rf-dashboard__header{grid-template-columns:1fr;gap:20px} .rf-dashboard{padding:60px 0} .rf-dashboard__wrap{padding:0 24px} }
+
+    .rf-dashboard__title { font-family: var(--font-stack-headings); font-size: clamp(32px,4vw,48px); font-weight: 500; line-height: 1.1; color: var(--main-text); margin: 8px 0 0; letter-spacing: -0.01em; }
+    .rf-dashboard__title em { color: var(--rf-red); font-style: italic; }
+    .rf-dashboard__desc { font-family: var(--font-stack-body); font-size: 14px; font-weight: 300; line-height: 1.85; color: var(--main-text-muted); margin: 8px 0 0; border-left: 1px solid var(--grid-borders); padding-left: 24px; text-align: left; align-self: start; }
+
+    /* Financial cards */
+    .rf-financials { display: flex; align-items: stretch; border: 1px solid var(--main-borders); border-radius: 0; overflow: hidden; margin-bottom: 80px; }
+    @media(max-width:900px){ .rf-financials{flex-direction:column} .rf-fin-sep{transform:rotate(90deg);padding:4px 0} }
+
+    .rf-fin-card { flex: 1; padding: 48px 40px; border-right: 1px solid var(--main-borders); }
+    .rf-fin-card:last-child { border-right: none; }
+    .rf-fin-card--profit { background: rgba(196,30,30,0.05); }
+    .rf-fin-sep { display: flex; align-items: center; justify-content: center; padding: 0 4px; flex-shrink: 0; }
+    .rf-fin-sep span { font-size: 28px; font-weight: 300; color: var(--main-text-subtle); }
+    .rf-fin-card__icon { font-size: 18px; margin-bottom: 16px; color: var(--main-text-subtle); }
+    .rf-fin-card--profit .rf-fin-card__icon { color: var(--rf-red); }
+    .rf-fin-card__label { font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 12px; }
+    .rf-fin-card__amount { font-family: var(--font-stack-headings); font-size: clamp(28px,3.5vw,44px); font-weight: 500; color: var(--main-text); margin-bottom: 8px; letter-spacing: -0.02em; line-height: 1; transition: opacity 0.3s; }
+    .rf-fin-card__amount--red { color: var(--rf-red); }
+    .rf-fin-card__amount.counting { opacity: 0.7; }
+    .rf-fin-card__desc { font-size: 12px; color: var(--main-text-subtle); margin: 0 0 16px; line-height: 1.5; }
+    .rf-fin-card__bar { height: 2px; background: var(--main-borders); border-radius: 30px; overflow: hidden; margin-top: 16px; }
+    .rf-fin-card__bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rf-red-dark), var(--rf-red)); transition: width 1.3s var(--ease-smooth) 0.3s; }
+    .rf-fin-card__bar-fill.animate { width: var(--fill, 0%); }
+    .rf-fin-card__pct { display: block; font-size: 11px; font-weight: 500; color: var(--rf-red); margin-top: 8px; }
+
+    /* ══════════════════════════════════════
+       CAST YOUR VOTE (light theme)
+    ══════════════════════════════════════ */
+    .rf-vote-section {
+      background: var(--main-background);
+      color: var(--main-text);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--grid-borders);
+    }
+    .rf-vote-section__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+    @media(max-width:900px){ .rf-vote-section__inner{ grid-template-columns: 1fr; } }
+
+    .rf-vote-section__left {
+      padding: 96px 7vw;
+      display: flex; flex-direction: column; justify-content: center;
+      border-right: 1px solid var(--grid-borders);
+      position: sticky; top: 0; height: 100vh;
+    }
+    @media(max-width:900px){ .rf-vote-section__left{ position:static; height:auto; padding:64px 24px 48px; border-right:none; border-bottom:1px solid var(--grid-borders); } }
+
+    .rf-vote-section__eyebrow {
+      font-family: var(--font-stack-body);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--main-text-subtle); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+    }
+    .rf-vote-section__eyebrow::before {
+      content: ''; width: 24px; height: 1px; background: var(--main-text-subtle); flex-shrink: 0;
+    }
+    .rf-vote-section__heading {
+      font-family: var(--font-stack-headings); font-weight: 500;
+      font-size: clamp(32px, 4.5vw, 56px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--main-text); margin: 0 0 32px;
+    }
+    .rf-vote-section__heading em { color: var(--rf-red); font-style: italic; }
+    .rf-vote-section__body {
+      font-family: var(--font-stack-body);
+      font-size: 14px; font-weight: 300; line-height: 1.8; color: var(--main-text-muted);
+      max-width: 380px; margin: 0 0 48px;
+    }
+    .rf-vote-section__stat {
+      display: flex; gap: 40px; flex-wrap: wrap;
+    }
+    .rf-vote-section__stat-item { display: flex; flex-direction: column; gap: 4px; }
+    .rf-vote-section__stat-num {
+      font-family: var(--font-stack-headings); font-size: 32px; font-weight: 500;
+      color: var(--main-text); letter-spacing: -0.02em; line-height: 1;
+    }
+    .rf-vote-section__stat-label { font-family: var(--font-stack-body); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--main-text-subtle); }
+
+    .rf-vote-section__right {
+      padding: 96px 7vw 96px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    @media(max-width:900px){ .rf-vote-section__right{ padding: 48px 24px 64px; } }
+
+    /* Gate — ALD underline input style */
+    .rf-gate { background: transparent; border: none; border-bottom: 1px solid var(--grid-borders); border-radius: 0; padding: 0 0 16px; margin-bottom: 32px; transition: border-color 0.3s; }
+    .rf-gate.verified { border-color: rgba(76,175,80,0.3); }
+    .rf-gate__label { display: block; font-family: var(--font-stack-body); font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 12px; }
+    .rf-gate__row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .rf-gate__input {
+      flex: 1; min-width: 180px; max-width: 280px; padding: 12px 0;
+      background: transparent;
+      border: none; border-bottom: 1px solid var(--main-borders);
+      border-radius: 0;
+      font-family: var(--font-stack-body); font-size: 14px; font-weight: 400;
+      color: var(--main-text); outline: none; transition: border-color 0.2s;
+    }
+    .rf-gate__input::placeholder { color: var(--main-text-subtle); }
+    .rf-gate__input:focus { border-bottom-color: var(--main-text); }
+    .rf-gate__input.error { border-bottom-color: var(--rf-red); animation: shake 0.3s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    .rf-gate__btn {
+      padding: 12px 24px; background: var(--main-text); color: #fff;
+      border: none; border-radius: var(--buttons-radius);
+      font-family: var(--font-stack-body); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .rf-gate__btn:hover:not(:disabled) { background: var(--main-text-hover); }
+    .rf-gate__btn:disabled { opacity: 0.5; cursor: default; }
+    .rf-gate__note { font-size: 11px; color: var(--main-text-subtle); margin: 0; transition: color 0.3s; }
+
+    /* Charity cards — light theme */
+    .rf-charities { display: flex; flex-direction: column; gap: 10px; }
+
+    .rf-charity {
+      display: flex; align-items: center; gap: 18px; padding: 22px 24px;
+      border: 1px solid var(--main-borders); border-radius: 0;
+      background: transparent;
+      transition: border-color 0.2s, background 0.2s, transform 0.18s cubic-bezier(0.16,1,0.3,1);
+      position: relative; overflow: hidden;
+    }
+    .rf-charity::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--rf-red); transform: scaleY(0); transform-origin: bottom; transition: transform 0.22s cubic-bezier(0.16,1,0.3,1); }
+    .rf-charity.selectable { cursor: pointer; }
+    .rf-charity.selectable:hover { border-color: var(--main-text-subtle); background: var(--main-background-third); transform: translateX(4px); }
+    .rf-charity.selected { border-color: var(--rf-red) !important; background: rgba(196,30,30,0.03) !important; transform: translateX(5px) !important; }
+    .rf-charity.selected::before { transform: scaleY(1); }
+    .rf-charity.voted { opacity: 0.6; }
+
+    .rf-radio { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--main-borders); flex-shrink: 0; position: relative; transition: border-color 0.2s; }
+    .rf-radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--rf-red); transform: scale(0); transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
+    .rf-charity.selected .rf-radio { border-color: var(--rf-red); }
+    .rf-charity.selected .rf-radio::after { transform: scale(1); }
+
+    .rf-charity__body { flex: 1; min-width: 0; }
+    .rf-charity__top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .rf-charity__icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 8px; background: rgba(24,24,24,0.08); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .rf-charity__name { font-family: var(--font-stack-headings); font-size: 16px; font-weight: 500; color: var(--main-text); margin: 0 0 3px; letter-spacing: -0.01em; }
+    .rf-charity__desc { font-size: 12px; color: var(--main-text-muted); margin: 0; line-height: 1.5; }
+
+    .rf-bar-track { height: 2px; background: var(--main-borders); border-radius: 30px; overflow: hidden; margin-bottom: 7px; }
+    .rf-bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rf-red-dark), var(--rf-red)); transition: width 0.9s var(--ease-smooth) 0.1s; }
+    .rf-bar-fill.animate { width: var(--pct, 0%); }
+    .rf-bar-stats { display: flex; justify-content: space-between; }
+    .rf-bar-pct { font-size: 14px; font-weight: 500; color: var(--main-text); }
+    .rf-bar-count { font-size: 11px; color: var(--main-text-subtle); }
+
+    .rf-vote-btn {
+      width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid var(--main-borders); background: transparent;
+      color: var(--main-text-subtle); font-family: var(--font-stack-body);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.10em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rf-vote-btn:not(:disabled):hover { background: var(--rf-red); border-color: var(--rf-red); color: #fff; }
+    .rf-vote-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .rf-vote-btn-check { display: none; font-size: 18px; }
+    .rf-charity.voted .rf-vote-btn { background: rgba(76,175,80,0.08); border-color: rgba(76,175,80,0.25); color: #4CAF50; opacity: 1; }
+    .rf-charity.voted .rf-vote-btn-label { display: none; }
+    .rf-charity.voted .rf-vote-btn-check { display: block; }
+
+    /* Confirmation */
+    .rf-confirm { margin-top: 24px; padding: 32px; background: rgba(76,175,80,0.04); border: 1px solid rgba(76,175,80,0.15); border-radius: 0; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity 0.4s, transform 0.4s; }
+    .rf-confirm[hidden] { display: none !important; }
+    .rf-confirm.show { opacity: 1; transform: translateY(0); }
+    .rf-confirm__icon { width: 50px; height: 50px; border-radius: 50%; background: rgba(76,175,80,0.08); border: 1px solid rgba(76,175,80,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; color: #4CAF50; margin: 0 auto 16px; }
+    .rf-confirm h4 { font-family: var(--font-stack-headings); font-size: 22px; font-weight: 500; color: var(--main-text); margin: 0 0 8px; }
+    .rf-confirm p { font-size: 13px; color: var(--main-text-muted); margin: 0; }
+
+    /* ══════════════════════════════════════
+       JERSEY COLLECTION SECTION
+    ══════════════════════════════════════ */
+    .rf-collection {
+      background: var(--main-background);
+      border-top: 1px solid var(--grid-borders);
+    }
+    .rf-collection__header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 64px 7vw 40px;
+      border-bottom: 1px solid var(--grid-borders);
+    }
+    @media(max-width:768px){ .rf-collection__header{flex-direction:column;align-items:flex-start;gap:16px;padding:40px 24px 24px} }
+    .rf-collection__title { font-family: var(--font-stack-headings); font-size: clamp(28px, 3.5vw, 40px); font-weight: 500; letter-spacing: -0.01em; color: var(--main-text); margin: 0; line-height: 1.1; }
+    .rf-collection__sub { font-family: var(--font-stack-body); font-size: 12px; color: var(--main-text-muted); font-weight: 400; }
+
+    .rf-jerseys-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+    @media(max-width:500px){ .rf-jerseys-grid{ grid-template-columns: 1fr; } }
+
+    .rf-section-fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
+      will-change: opacity, transform;
+    }
+    .rf-section-fade.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .rf-jersey-card {
+      border-right: 1px solid var(--grid-borders);
+      border-bottom: 1px solid var(--grid-borders);
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: background 0.2s;
+    }
+    .rf-jerseys-grid .rf-jersey-card:nth-child(2n) { border-right: none; }
+    @media(max-width:500px){ .rf-jerseys-grid .rf-jersey-card{ border-right: none; } }
+    .rf-jersey-card:hover { background: var(--main-background-third); }
+    .rf-jersey-card__img {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      height: auto;
+      background: var(--main-background-warm);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+      --rf-jersey-image-inset: 0px;
+    }
+    @supports not (aspect-ratio: 1 / 1) {
+      .rf-jersey-card__img {
+        height: 0;
+        padding-top: calc(100% * 5 / 4);
+      }
+    }
+    .rf-jersey-card__img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(24,24,24,0.06);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .rf-jersey-card__img svg { width: 45%; max-width: 180px; flex-shrink: 0; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); z-index: 0; }
+    .rf-jersey-card:hover .rf-jersey-card__img svg { transform: translateY(-8px) scale(1.04); }
+    .rf-jersey-card__info { padding: 20px 24px 28px; border-top: 1px solid var(--grid-borders); }
+    .rf-jersey-card__tag { display: inline-block; font-family: var(--font-stack-body); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 8px; }
+    .rf-jersey-card__name { font-family: var(--font-stack-headings); font-size: clamp(16px,1.8vw,22px); font-weight: 500; color: var(--main-text); letter-spacing: 0; margin-bottom: 6px; }
+    .rf-jersey-card__desc { font-family: var(--font-stack-body); font-size: 12px; color: var(--main-text-muted); margin: 0 0 16px; line-height: 1.6; }
+    .rf-jersey-card__price { font-family: var(--font-stack-headings); font-size: 18px; font-weight: 500; color: var(--main-text); }
+    .rf-jersey-card__link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 14px; padding: 10px 0;
+      font-family: var(--font-stack-body);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--main-text); background: transparent; border-radius: 0;
+      border-bottom: 1px solid var(--main-text);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .rf-jersey-card__link.is-disabled {
+      opacity: 0.3;
+      border-bottom-color: var(--main-text-subtle);
+      pointer-events: none;
+    }
+    .rf-jersey-card__link:hover { opacity: 0.6; background: transparent; transform: none; }
+
+    /* ── Mini carousel inside jersey cards ── */
+    .rf-mini-carousel__track {
+      position: absolute; inset: var(--rf-jersey-image-inset, 0);
+      display: flex; width: 100%; height: 100%;
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+      will-change: transform; z-index: 1;
+    }
+    .rf-mini-carousel__slide {
+      flex-shrink: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center top; display: block;
+    }
+    .rf-mini-carousel__btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.88); border: none; border-radius: 50%;
+      width: 32px; height: 32px; cursor: pointer; z-index: 3;
+      display: none; align-items: center; justify-content: center;
+      font-size: 18px; line-height: 1; padding: 0; color: #111;
+      transition: background 0.15s;
+    }
+    .rf-jersey-card__img:hover .rf-mini-carousel__btn { display: flex; }
+    .rf-mini-carousel__btn--prev { left: 10px; }
+    .rf-mini-carousel__btn--next { right: 10px; }
+    .rf-mini-carousel__btn:hover { background: #fff; }
+    .rf-mini-carousel__dots {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; z-index: 3;
+    }
+    .rf-mini-carousel__dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(24,24,24,0.2); border: none; cursor: pointer; padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .rf-mini-carousel__dot.active { background: var(--main-text); transform: scale(1.35); }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .site-footer {
+      background: var(--main-background-warm);
+      border-top: 1px solid var(--grid-borders);
+      padding: 40px 7vw;
+    }
+    .site-footer__inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-footer__brand {
+      font-family: var(--font-stack-headings); font-size: 14px; font-weight: 500;
+      color: var(--main-text);
+    }
+    .site-footer__copy {
+      font-family: var(--font-stack-body); font-size: 10px; font-weight: 400;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--main-text-subtle);
+    }
+    .site-footer__link {
+      font-family: var(--font-stack-body); font-size: 11px; font-weight: 400;
+      color: var(--main-text-muted); text-decoration: underline;
+      text-underline-offset: 3px; transition: color 0.2s;
+    }
+    .site-footer__link:hover { color: var(--main-text); }
+    @media(max-width:768px) { .site-footer__inner { flex-direction: column; gap: 16px; text-align: center; } }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="site-header__left">
+      <button class="site-header__menu" aria-label="Menu">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+          <line x1="0" y1="1" x2="20" y2="1" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="0" y1="13" x2="20" y2="13" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="site-header__center">
+      <a href="/" class="site-header__logo">
+        <img src="/public/ladderice-logo.png" alt="Ladderice" id="header-logo-img">
+      </a>
+    </div>
+    <div class="site-header__right">
+      <a href="#rf-vote-section" class="site-header__nav-link">Vote</a>
+    </div>
+  </header>
+
+  <!-- ── DATE TICKER ── -->
+  <div class="site-ticker">
+    <span class="site-ticker__text" id="site-ticker-text"></span>
+  </div>
+
+  <!-- ── HERO ── -->
+  <div class="rf-hero" id="rf-hero">
+    <div class="rf-hero__sticky">
+      <div class="rf-hero__bg" id="hero-bg">
+        <canvas id="hero-canvas" width="1280" height="720"></canvas>
+      </div>
+      <div class="rf-hero__overlay"></div>
+      <div class="rf-hero__content">
+        <!-- Clean full-bleed hero — no text overlay -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BELOW HERO (transitions in at ~75% scroll) ── -->
+  <div class="rf-below-hero" id="rf-below-hero">
+
+  <!-- ── DIVIDER (replaces marquee) ── -->
+  <div class="rf-divider" aria-hidden="true">
+    <span class="rf-divider__text">Anti Corruption</span>
+    <span class="rf-divider__dot"></span>
+    <span class="rf-divider__text">One Purchase, One Vote</span>
+    <span class="rf-divider__dot"></span>
+    <span class="rf-divider__text">100% To Community</span>
+  </div>
+
+  <span id="hero-vote-count" hidden>0</span>
+
+  <!-- ── DASHBOARD ── -->
+  <div class="rf-dashboard rf-section-fade">
+    <div class="rf-dashboard__wrap">
+
+      <div class="rf-dashboard__header">
+        <div>
+          <span class="rf-label">Campaign Finances</span>
+          <h2 class="rf-dashboard__title">Where the<br><em>money goes.</em></h2>
+        </div>
+        <p class="rf-dashboard__desc">Full transparency. Revenue from jersey sales minus operational costs equals profit. That profit is directed 100% by your votes — to the cause you choose.</p>
+      </div>
+
+      <div class="rf-financials">
+        <div class="rf-fin-card">
+          <div class="rf-fin-card__icon">&#8593;</div>
+          <div class="rf-fin-card__label">Total Revenue</div>
+          <div class="rf-fin-card__amount" data-count="10000" id="cms-fin-revenue">฿10,000</div>
+          <p class="rf-fin-card__desc" id="cms-fin-revenue-desc">Gross sales from all jersey purchases</p>
+        </div>
+        <div class="rf-fin-sep"><span>&minus;</span></div>
+        <div class="rf-fin-card">
+          <div class="rf-fin-card__icon">&#8595;</div>
+          <div class="rf-fin-card__label">Total Expenses</div>
+          <div class="rf-fin-card__amount" data-count="3500" id="cms-fin-expenses">฿3,500</div>
+          <p class="rf-fin-card__desc" id="cms-fin-expenses-desc">Production, fulfilment &amp; operations</p>
+        </div>
+        <div class="rf-fin-sep"><span>=</span></div>
+        <div class="rf-fin-card rf-fin-card--profit">
+          <div class="rf-fin-card__icon">&hearts;</div>
+          <div class="rf-fin-card__label">Net Profit to Donate</div>
+          <div class="rf-fin-card__amount rf-fin-card__amount--red" data-count="6500" id="cms-fin-profit">฿6,500</div>
+          <p class="rf-fin-card__desc" id="cms-fin-profit-desc">100% directed by your votes</p>
+          <div class="rf-fin-card__bar">
+            <div class="rf-fin-card__bar-fill" id="cms-fin-bar" style="--fill: 65%"></div>
+          </div>
+          <span class="rf-fin-card__pct" id="cms-fin-pct">65% of revenue</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FEATURED JERSEY (Product 1) ── -->
+  <div class="rf-featured rf-section-fade">
+    <div class="rf-featured__layout">
+      <div class="rf-featured__img-side">
+        <div class="rf-carousel" id="rf-carousel">
+          <div class="rf-carousel__track" id="rf-carousel-track">
+            <div class="rf-carousel__slide" data-slide="0"><img src="/public/jersey-flat.jpg" alt=""></div>
+            <div class="rf-carousel__slide" data-slide="1"><img src="/public/jersey-model-front.png" alt=""></div>
+            <div class="rf-carousel__slide" data-slide="2"><img src="/public/jersey-model-back.png" alt=""></div>
+            <div class="rf-carousel__slide rf-carousel__slide--hidden" data-slide="3"><img src="" alt=""></div>
+          </div>
+          <button class="rf-carousel__btn rf-carousel__btn--prev" id="carousel-prev" aria-label="Previous">&#8249;</button>
+          <button class="rf-carousel__btn rf-carousel__btn--next" id="carousel-next" aria-label="Next">&#8250;</button>
+          <div class="rf-carousel__nav" id="rf-carousel-nav">
+            <button class="rf-carousel__dot active" data-idx="0" aria-label="Slide 1"></button>
+            <button class="rf-carousel__dot" data-idx="1" aria-label="Slide 2"></button>
+            <button class="rf-carousel__dot" data-idx="2" aria-label="Slide 3"></button>
+            <button class="rf-carousel__dot rf-carousel__dot--hidden" data-idx="3" aria-label="Slide 4"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rf-featured__info">
+        <div class="rf-featured__info-inner">
+          <div class="rf-tag" id="p1-tag">Main Jersey</div>
+          <h2 class="rf-featured__title" id="p1-name">The Campaign Kit</h2>
+          <p class="rf-featured__desc" id="p1-desc">Limited edition jersey where 100% of the net proceeds go directly to the community. Bold, purposeful, and tied to the cause you vote for.</p>
+          <div class="rf-notice">
+            <span class="rf-notice-arrow">&rarr;</span>
+            <p>Purchased on <strong>ladderice.co</strong>? Every order comes with <strong>1 vote</strong> to direct the campaign profit to your chosen cause — scroll down to cast it.</p>
+          </div>
+          <a id="p1-buy-btn" href="https://ladderice.co" target="_blank" rel="noopener" class="rf-hero-buy-btn" style="margin-top:20px;display:inline-flex;">
+            Buy Now <span class="btn-arrow">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CAST YOUR VOTE ── -->
+  <div class="rf-vote-section rf-section-fade" id="rf-vote-section">
+    <div class="rf-vote-section__inner">
+
+      <div class="rf-vote-section__left">
+        <div class="rf-vote-section__eyebrow">Cast Your Vote</div>
+        <h2 class="rf-vote-section__heading" id="cms-vote-heading">You decide<br>where the<br><em>profit lands.</em></h2>
+        <p class="rf-vote-section__body" id="cms-vote-body">One purchase = one vote. Enter your order number or email to unlock your vote.</p>
+        <div class="rf-vote-section__stat">
+          <div class="rf-vote-section__stat-item">
+            <div class="rf-vote-section__stat-num" id="vote-stat-total">&mdash;</div>
+            <div class="rf-vote-section__stat-label">Votes Cast</div>
+          </div>
+          <div class="rf-vote-section__stat-item">
+            <div class="rf-vote-section__stat-num">3</div>
+            <div class="rf-vote-section__stat-label">Causes</div>
+          </div>
+          <div class="rf-vote-section__stat-item">
+            <div class="rf-vote-section__stat-num" id="cms-donate-amount">฿6,500</div>
+            <div class="rf-vote-section__stat-label">To Donate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rf-vote-section__right">
+        <div class="rf-gate" id="rf-gate">
+          <label class="rf-gate__label" for="rf-order">Your Order Number or Email</label>
+          <div class="rf-gate__row">
+            <input type="text" id="rf-order" class="rf-gate__input" placeholder="#10001 or email" autocomplete="off">
+            <button class="rf-gate__btn" id="rf-verify" type="button">Verify</button>
+          </div>
+          <p class="rf-gate__note" id="rf-note">Your order number can be found in your confirmation email.</p>
+        </div>
+
+        <div class="rf-charities" id="rf-charities">
+
+          <div class="rf-charity" data-id="1" data-votes="0">
+            <div class="rf-radio"></div>
+            <div class="rf-charity__body">
+              <div class="rf-charity__top">
+                <div class="rf-charity__icon" id="cms-charity-1-icon">&#9917;</div>
+                <div>
+                  <div class="rf-charity__name" id="cms-charity-1-name">Youth Sports Fund</div>
+                  <div class="rf-charity__desc" id="cms-charity-1-desc">Providing equipment and coaching to kids who can't afford it.</div>
+                </div>
+              </div>
+              <div class="rf-bar-track"><div class="rf-bar-fill" style="--pct: 0%"></div></div>
+              <div class="rf-bar-stats">
+                <span class="rf-bar-pct">0%</span>
+                <span class="rf-bar-count">0 votes</span>
+              </div>
+            </div>
+            <button class="rf-vote-btn" type="button" disabled aria-label="Vote for Youth Sports Fund">
+              <span class="rf-vote-btn-label">Vote</span>
+              <span class="rf-vote-btn-check">&#10003;</span>
+            </button>
+          </div>
+
+          <div class="rf-charity" data-id="2" data-votes="0">
+            <div class="rf-radio"></div>
+            <div class="rf-charity__body">
+              <div class="rf-charity__top">
+                <div class="rf-charity__icon" id="cms-charity-2-icon">&#127838;</div>
+                <div>
+                  <div class="rf-charity__name" id="cms-charity-2-name">Food Security Network</div>
+                  <div class="rf-charity__desc" id="cms-charity-2-desc">Fighting hunger in local communities through food banks and education.</div>
+                </div>
+              </div>
+              <div class="rf-bar-track"><div class="rf-bar-fill" style="--pct: 0%"></div></div>
+              <div class="rf-bar-stats">
+                <span class="rf-bar-pct">0%</span>
+                <span class="rf-bar-count">0 votes</span>
+              </div>
+            </div>
+            <button class="rf-vote-btn" type="button" disabled aria-label="Vote for Food Security Network">
+              <span class="rf-vote-btn-label">Vote</span>
+              <span class="rf-vote-btn-check">&#10003;</span>
+            </button>
+          </div>
+
+          <div class="rf-charity" data-id="3" data-votes="0">
+            <div class="rf-radio"></div>
+            <div class="rf-charity__body">
+              <div class="rf-charity__top">
+                <div class="rf-charity__icon" id="cms-charity-3-icon">&#129504;</div>
+                <div>
+                  <div class="rf-charity__name" id="cms-charity-3-name">Mental Health in Sport</div>
+                  <div class="rf-charity__desc" id="cms-charity-3-desc">Supporting athletes with open conversations and free mental health resources.</div>
+                </div>
+              </div>
+              <div class="rf-bar-track"><div class="rf-bar-fill" style="--pct: 0%"></div></div>
+              <div class="rf-bar-stats">
+                <span class="rf-bar-pct">0%</span>
+                <span class="rf-bar-count">0 votes</span>
+              </div>
+            </div>
+            <button class="rf-vote-btn" type="button" disabled aria-label="Vote for Mental Health in Sport">
+              <span class="rf-vote-btn-label">Vote</span>
+              <span class="rf-vote-btn-check">&#10003;</span>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="rf-confirm" id="rf-confirm" hidden>
+          <div class="rf-confirm__icon">&#10003;</div>
+          <h4>Vote Recorded!</h4>
+          <p id="rf-confirm-text">Your vote has been cast for <strong></strong>. Thank you for making a difference.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JERSEY COLLECTION ── -->
+  <div class="rf-collection rf-section-fade">
+    <div class="rf-collection__header">
+      <div>
+        <span class="rf-label">The Collection</span>
+        <h2 class="rf-collection__title">Same Drop,<br>Different Energy</h2>
+      </div>
+      <span class="rf-collection__sub">All jerseys in this campaign</span>
+    </div>
+    <div class="rf-jerseys-grid">
+
+      <!-- Jersey 2 — Product 2 -->
+      <div class="rf-jersey-card" id="jersey-card-2">
+        <div class="rf-jersey-card__img" id="jersey-2-img-wrap">
+          <div class="rf-mini-carousel__track" id="jersey-2-track"></div>
+          <svg id="jersey-2-svg" viewBox="0 0 300 360" fill="none">
+            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#C41E1E"/>
+            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="80" font-weight="500" fill="#fff" opacity="0.35">07</text>
+            <rect x="30" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
+            <rect x="240" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
+          </svg>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+          <div class="rf-mini-carousel__dots" id="jersey-2-dots"></div>
+        </div>
+        <div class="rf-jersey-card__info">
+          <span class="rf-jersey-card__tag" id="jersey-2-tag">Away Kit</span>
+          <div class="rf-jersey-card__name" id="jersey-2-name">Black — No. 07</div>
+          <p class="rf-jersey-card__desc" id="jersey-2-desc">Blacked-out with red accents. Understated, sharp, undeniable.</p>
+          <div class="rf-jersey-card__price" id="jersey-2-price">฿1,590</div>
+          <a class="rf-jersey-card__link is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
+        </div>
+      </div>
+
+      <!-- Jersey 3 — Product 3 -->
+      <div class="rf-jersey-card" id="jersey-card-3">
+        <div class="rf-jersey-card__img" id="jersey-3-img-wrap">
+          <div class="rf-mini-carousel__track" id="jersey-3-track"></div>
+          <svg id="jersey-3-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
+            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
+            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+          </svg>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+          <div class="rf-mini-carousel__dots" id="jersey-3-dots"></div>
+        </div>
+        <div class="rf-jersey-card__info">
+          <span class="rf-jersey-card__tag" id="jersey-3-tag">Coming Soon</span>
+          <div class="rf-jersey-card__name" id="jersey-3-name">Third Jersey</div>
+          <p class="rf-jersey-card__desc" id="jersey-3-desc">Add details via the admin panel.</p>
+          <div class="rf-jersey-card__price" id="jersey-3-price" style="display:none"></div>
+          <a class="rf-jersey-card__link is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  </div><!-- /.rf-below-hero -->
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">Ladderice</div>
+      <span class="site-footer__copy">&copy; 2026 Ladderice. All rights reserved.</span>
+      <a href="https://ladderice.co" target="_blank" rel="noopener" class="site-footer__link">ladderice.co</a>
+    </div>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // Same origin — use relative paths (works on localhost AND production)
+  var API_BASE = '';
+
+  var verifyBtn = document.getElementById('rf-verify');
+  var input     = document.getElementById('rf-order');
+  var note      = document.getElementById('rf-note');
+  var gate      = document.getElementById('rf-gate');
+
+  var verified      = false;
+  var voted         = false;
+  var selected      = null;
+  var verifiedOrder = null;
+
+  var errorMessages = {
+    empty_query:  'Please enter your order number or email.',
+    not_found:    'Order not found. Check your confirmation email for the exact number.',
+    already_voted:'You have already voted with this order.'
+  };
+
+  // ── Apply live vote counts ────────────────────────────
+  function applyVoteCounts(votes, total) {
+    document.querySelectorAll('.rf-charity').forEach(function (card) {
+      var id      = card.dataset.id;
+      var count   = (votes && votes[id]) || 0;
+      var pct     = total > 0 ? Math.round((count / total) * 100) : 0;
+      card.dataset.votes = count;
+      var fill    = card.querySelector('.rf-bar-fill');
+      var pctEl   = card.querySelector('.rf-bar-pct');
+      var countEl = card.querySelector('.rf-bar-count');
+      if (fill)    fill.style.setProperty('--pct', pct + '%');
+      if (pctEl)   pctEl.textContent   = pct + '%';
+      if (countEl) countEl.textContent = count + ' votes';
+    });
+    var heroCount = document.getElementById('hero-vote-count');
+    if (heroCount) heroCount.textContent = total;
+    var statTotal = document.getElementById('vote-stat-total');
+    if (statTotal) statTotal.textContent = total;
+  }
+
+  // ── Load live counts on page load ────────────────────
+  fetch(API_BASE + '/api/counts')
+    .then(function (r) { return r.json(); })
+    .then(function (data) { if (data.ok) applyVoteCounts(data.votes, data.total); })
+    .catch(function () {});
+
+  // ── Bar animation on scroll ──────────────────────────
+  var bars = document.querySelectorAll('.rf-bar-fill, .rf-fin-card__bar-fill');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('animate'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.4 });
+    bars.forEach(function (b) { io.observe(b); });
+  } else {
+    bars.forEach(function (b) { b.classList.add('animate'); });
+  }
+
+  // ── Section fade transitions ─────────────────────────
+  var fadeSections = document.querySelectorAll('.rf-section-fade');
+  if (fadeSections.length) {
+    if ('IntersectionObserver' in window) {
+      var sectionObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          } else {
+            entry.target.classList.remove('is-visible');
+          }
+        });
+      }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
+      fadeSections.forEach(function (section) { sectionObserver.observe(section); });
+    } else {
+      fadeSections.forEach(function (section) { section.classList.add('is-visible'); });
+    }
+  }
+
+  // ── Featured carousel ──────────────────────────────────
+  (function () {
+    var track = document.getElementById('rf-carousel-track');
+    var nav   = document.getElementById('rf-carousel-nav');
+    var prev  = document.getElementById('carousel-prev');
+    var next  = document.getElementById('carousel-next');
+    if (!track) return;
+    var idx = 0;
+
+    function visibleSlides() {
+      return Array.prototype.slice.call(track.children).filter(function(s) {
+        return !s.classList.contains('rf-carousel__slide--hidden');
+      });
+    }
+
+    function goTo(i) {
+      var total = visibleSlides().length;
+      if (!total) return;
+      idx = ((i % total) + total) % total;
+      track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+      if (nav) nav.querySelectorAll('.rf-carousel__dot:not(.rf-carousel__dot--hidden)').forEach(function(d, j) {
+        d.classList.toggle('active', j === idx);
+      });
+    }
+
+    // Event delegation — survives dynamic DOM updates from CMS settings
+    if (nav) nav.addEventListener('click', function(e) {
+      var d = e.target.closest('.rf-carousel__dot');
+      if (d && !d.classList.contains('rf-carousel__dot--hidden')) goTo(+d.dataset.idx);
+    });
+    if (prev) prev.addEventListener('click', function () { goTo(idx - 1); });
+    if (next) next.addEventListener('click', function () { goTo(idx + 1); });
+
+    // Swipe support
+    var startX = 0;
+    track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      var diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) goTo(idx + (diff > 0 ? 1 : -1));
+    });
+
+    // Expose for external reinit after settings load
+    window._carouselGoTo = goTo;
+  })();
+
+  // ── Scroll-driven frame animation (Apple-style) ──────────
+  (function () {
+    var canvas  = document.getElementById('hero-canvas');
+    var heroEl  = document.getElementById('rf-hero');
+    var content = heroEl ? heroEl.querySelector('.rf-hero__content') : null;
+    if (!canvas || !heroEl) return;
+
+    var ctx        = canvas.getContext('2d');
+    var TOTAL      = 151;
+    var frames     = new Array(TOTAL);
+    var loaded     = 0;
+    var currentIdx = -1;
+    var ticking    = false;
+
+    // Draw a frame to canvas (cover-fit)
+    function drawFrame(idx) {
+      if (idx === currentIdx) return;
+      var img = frames[idx];
+      if (!img || !img.complete) return;
+      currentIdx = idx;
+
+      var cw = canvas.width;
+      var ch = canvas.height;
+      var iw = img.naturalWidth;
+      var ih = img.naturalHeight;
+
+      // Cover algorithm
+      var scale = Math.max(cw / iw, ch / ih);
+      var sw = cw / scale;
+      var sh = ch / scale;
+      var sx = (iw - sw) / 2;
+      var sy = (ih - sh) / 2;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+    }
+
+    // Resize canvas to viewport for crisp rendering
+    function resizeCanvas() {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width  = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      currentIdx = -1; // force redraw
+    }
+
+    // Below-hero element that transitions in
+    var belowHero = document.getElementById('rf-below-hero');
+
+    // Map scroll to frame index + update content opacity
+    function onScroll() {
+      var scrollY    = window.scrollY;
+      var heroH      = heroEl.offsetHeight;
+      var scrollable = heroH - window.innerHeight;
+      if (scrollable <= 0) return;
+
+      var progress = Math.max(0, Math.min(1, scrollY / scrollable));
+
+      // Frame sequencing
+      var idx = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
+      drawFrame(idx);
+
+      // Content fade-out in first 35% of scroll
+      if (content) {
+        var fadeProgress = Math.min(1, progress / 0.35);
+        content.style.opacity = Math.max(0, 1 - fadeProgress).toFixed(3);
+        content.style.transform = 'translateY(-' + (fadeProgress * 60) + 'px)';
+      }
+
+      // Below-hero sections transition in from 75% onward
+      if (belowHero) {
+        if (progress >= 0.75) {
+          var revealProgress = Math.min(1, (progress - 0.75) / 0.25);
+          var eased = 1 - Math.pow(1 - revealProgress, 3);
+          belowHero.style.opacity = eased.toFixed(3);
+          belowHero.style.transform = 'translateY(' + (60 * (1 - eased)) + 'px)';
+          if (progress >= 0.82) {
+            belowHero.classList.add('is-visible');
+          } else {
+            belowHero.classList.remove('is-visible');
+          }
+        } else {
+          belowHero.style.opacity = '0';
+          belowHero.style.transform = 'translateY(60px)';
+          belowHero.classList.remove('is-visible');
+        }
+      }
+
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
+    }, { passive: true });
+
+    window.addEventListener('resize', function () { resizeCanvas(); onScroll(); });
+
+    // Load frames — first frame eagerly, rest in background
+    function loadFrame(i) {
+      var img = new Image();
+      img.onload = function () {
+        frames[i] = img;
+        loaded++;
+        if (i === 0) { resizeCanvas(); drawFrame(0); }
+      };
+      img.src = '/public/frames/ezgif-frame-' + String(i + 1).padStart(3, '0') + '.jpg';
+    }
+
+    // Load frame 1 first for instant display
+    loadFrame(0);
+    // Then load the rest
+    for (var i = 1; i < TOTAL; i++) { loadFrame(i); }
+
+    resizeCanvas();
+  })();
+
+  // ── Gate helpers ─────────────────────────────────────
+  function setGateError(msg) {
+    note.textContent = msg;
+    note.style.color = 'var(--error-color)';
+    input.classList.add('error');
+    setTimeout(function () { input.classList.remove('error'); }, 400);
+  }
+
+  // ── Verify ───────────────────────────────────────────
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', doVerify);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doVerify(); });
+  }
+
+  function doVerify() {
+    var val = input.value.trim();
+    if (!val) { setGateError(errorMessages.empty_query); return; }
+
+    verifyBtn.disabled    = true;
+    verifyBtn.textContent = 'Checking\u2026';
+    note.textContent      = '';
+    note.style.color      = '';
+
+    fetch(API_BASE + '/api/verify', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ query: val })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) {
+        verifyBtn.disabled    = false;
+        verifyBtn.textContent = 'Verify';
+        setGateError(errorMessages[data.error] || 'Could not verify. Please try again.');
+        return;
+      }
+
+      if (data.alreadyVoted) {
+        gate.classList.add('verified');
+        note.textContent = '\u2713 You already voted for ' + (data.votedForName || 'a cause') + '. Thank you!';
+        note.style.color = '#4CAF50';
+        input.disabled = verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Voted \u2713';
+        document.querySelectorAll('.rf-charity').forEach(function (card) {
+          if (card.dataset.id === String(data.votedFor)) card.classList.add('voted');
+        });
+        return;
+      }
+
+      verifiedOrder         = data.orderNumber;
+      verified              = true;
+      gate.classList.add('verified');
+      note.textContent      = '\u2713 Order verified' + (data.voterName ? ', ' + data.voterName : '') + ' \u2014 select a cause and cast your vote.';
+      note.style.color      = '#4CAF50';
+      input.disabled        = verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verified \u2713';
+      document.querySelectorAll('.rf-charity').forEach(function (c) { c.classList.add('selectable'); });
+      document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
+    })
+    .catch(function () {
+      verifyBtn.disabled    = false;
+      verifyBtn.textContent = 'Verify';
+      setGateError('Connection error. Please try again.');
+    });
+  }
+
+  // ── Card selection ───────────────────────────────────
+  document.querySelectorAll('.rf-charity').forEach(function (card) {
+    card.addEventListener('click', function () {
+      if (!verified || voted) return;
+      document.querySelectorAll('.rf-charity').forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selected = card;
+    });
+
+    var btn = card.querySelector('.rf-vote-btn');
+    if (btn) btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!verified || voted) return;
+      if (selected !== card) {
+        document.querySelectorAll('.rf-charity').forEach(function (c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+        selected = card;
+      }
+      castVote(card);
+    });
+  });
+
+  // ── Cast vote ─────────────────────────────────────────
+  function castVote(card) {
+    if (voted || !verifiedOrder) return;
+
+    var charityId   = card.dataset.id;
+    var charityName = (card.querySelector('.rf-charity__name') || {}).textContent || '';
+
+    document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = true; });
+
+    fetch(API_BASE + '/api/vote', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ orderNumber: verifiedOrder, charityId: charityId, charityName: charityName })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.ok) {
+        document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
+        setGateError(data.error === 'already_voted' ? 'You have already voted.' : 'Vote failed. Please try again.');
+        return;
+      }
+
+      voted = true;
+      card.classList.add('voted');
+      applyVoteCounts(data.votes, data.total);
+
+      document.querySelectorAll('.rf-bar-fill').forEach(function (f) {
+        f.classList.remove('animate'); void f.offsetWidth; f.classList.add('animate');
+      });
+
+      var strong = document.querySelector('#rf-confirm-text strong');
+      if (strong) strong.textContent = charityName;
+
+      setTimeout(function () {
+        var confirm = document.getElementById('rf-confirm');
+        if (confirm) { confirm.removeAttribute('hidden'); void confirm.offsetWidth; confirm.classList.add('show'); }
+      }, 300);
+    })
+    .catch(function () {
+      document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
+      setGateError('Connection error. Please try again.');
+    });
+  }
+
+})();
+
+  // ── Number counter animation ──────────────────────────────────────────────
+  (function () {
+    var counters = document.querySelectorAll('[data-count]');
+    if (!counters.length || !('IntersectionObserver' in window)) return;
+
+    function animateCount(el) {
+      var target = parseInt(el.dataset.count, 10);
+      if (isNaN(target)) return;
+      var duration = 1800;
+      var start    = null;
+      var prefix   = '\u0E3F';
+
+      function format(n) {
+        return prefix + n.toLocaleString('en-US');
+      }
+
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        var elapsed  = timestamp - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased    = 1 - Math.pow(1 - progress, 3);
+        el.textContent = format(Math.round(eased * target));
+        if (progress < 1) window.requestAnimationFrame(step);
+      }
+      window.requestAnimationFrame(step);
+    }
+
+    var io2 = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          animateCount(e.target);
+          io2.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(function (el) { io2.observe(el); });
+  })();
+
+  // ── Load CMS settings ────────────────────────────────────────────────────
+  (function () {
+    fetch('/api/settings')
+      .then(function (r) { return r.json(); })
+      .then(function (s) {
+        if (!s) return;
+
+        function set(id, val) {
+          if (!val) return;
+          var el = document.getElementById(id);
+          if (el) el.textContent = val;
+        }
+
+        function formatTHB(val) {
+          if (val === undefined || val === null) return '';
+          var raw = String(val).trim();
+          if (!raw) return '';
+          if (raw.indexOf('\u0E3F') !== -1 || raw.toLowerCase().indexOf('thb') !== -1) return raw;
+          var numeric = raw.replace(/[^0-9.]/g, '');
+          if (!numeric) return '\u0E3F' + raw;
+          var num = Number(numeric);
+          if (!isFinite(num)) return '\u0E3F' + raw;
+          return new Intl.NumberFormat('th-TH', {
+            style: 'currency',
+            currency: 'THB',
+            maximumFractionDigits: Number.isInteger(num) ? 0 : 2
+          }).format(num);
+        }
+
+        // ── Financial figures ───────────────────────────────────────────────
+        set('cms-fin-revenue',       s.fin_revenue_display);
+        set('cms-fin-expenses',      s.fin_expenses_display);
+        set('cms-fin-profit',        s.fin_profit_display);
+        set('cms-fin-revenue-desc',  s.fin_revenue_desc);
+        set('cms-fin-expenses-desc', s.fin_expenses_desc);
+        set('cms-fin-profit-desc',   s.fin_profit_desc);
+        set('cms-fin-pct',           s.fin_profit_pct);
+        set('cms-donate-amount',     s.fin_profit_display);
+        if (s.fin_profit_pct_num) {
+          var bar = document.getElementById('cms-fin-bar');
+          if (bar) bar.style.setProperty('--fill', s.fin_profit_pct_num + '%');
+        }
+        ['revenue','expenses','profit'].forEach(function(k) {
+          var num = s['fin_' + k + '_num'];
+          var el  = document.getElementById('cms-fin-' + k);
+          if (num && el) el.dataset.count = num;
+        });
+
+        // ── Charities ───────────────────────────────────────────────────────
+        [1, 2, 3].forEach(function(n) {
+          set('cms-charity-' + n + '-name', s['charity_' + n + '_name']);
+          set('cms-charity-' + n + '-desc', s['charity_' + n + '_desc']);
+          set('cms-charity-' + n + '-icon', s['charity_' + n + '_icon']);
+        });
+
+        // ── Product 1 — Featured carousel + info ────────────────────────────
+        set('p1-tag',  s.product_1_tag);
+        set('p1-name', s.product_1_name);
+        set('p1-desc', s.product_1_desc);
+        if (s.product_1_link) {
+          var p1buy = document.getElementById('p1-buy-btn');
+          if (p1buy) p1buy.href = s.product_1_link;
+        }
+
+        // Carousel: update images and show/hide 4th slot
+        var track = document.getElementById('rf-carousel-track');
+        var navEl  = document.getElementById('rf-carousel-nav');
+        if (track && navEl) {
+          var imgKeys = ['product_1_img_1','product_1_img_2','product_1_img_3','product_1_img_4'];
+          var anyImg  = imgKeys.some(function(k){ return !!s[k]; });
+          if (anyImg) {
+            imgKeys.forEach(function(key, i) {
+              var slide = track.querySelector('[data-slide="' + i + '"]');
+              var dot   = navEl.querySelector('[data-idx="' + i + '"]');
+              if (!slide || !dot) return;
+              if (s[key]) {
+                slide.querySelector('img').src = s[key];
+                slide.classList.remove('rf-carousel__slide--hidden');
+                dot.classList.remove('rf-carousel__dot--hidden');
+              } else {
+                slide.classList.add('rf-carousel__slide--hidden');
+                dot.classList.add('rf-carousel__dot--hidden');
+              }
+            });
+            if (window._carouselGoTo) window._carouselGoTo(0);
+          }
+        }
+
+        // ── Products 2 & 3 — Collection card mini carousels ─────────────────
+        [2, 3].forEach(function(n) {
+          var track   = document.getElementById('jersey-' + n + '-track');
+          var svg     = document.getElementById('jersey-' + n + '-svg');
+          var dotsEl  = document.getElementById('jersey-' + n + '-dots');
+          var linkEl  = document.getElementById('jersey-' + n + '-link');
+          var priceEl = document.getElementById('jersey-' + n + '-price');
+          var wrap    = document.getElementById('jersey-' + n + '-img-wrap');
+
+          set('jersey-' + n + '-tag',  s['product_' + n + '_tag']);
+          set('jersey-' + n + '-name', s['product_' + n + '_name']);
+          set('jersey-' + n + '-desc', s['product_' + n + '_desc']);
+
+          if (s['product_' + n + '_price'] && priceEl) {
+            priceEl.textContent = formatTHB(s['product_' + n + '_price']);
+            priceEl.style.display = '';
+          }
+          if (linkEl) {
+            if (s['product_' + n + '_link']) {
+              linkEl.href = s['product_' + n + '_link'];
+              linkEl.classList.remove('is-disabled');
+              linkEl.removeAttribute('aria-disabled');
+            } else {
+              linkEl.href = '#';
+              linkEl.classList.add('is-disabled');
+              linkEl.setAttribute('aria-disabled', 'true');
+            }
+          }
+
+          // Collect uploaded images
+          var imgs = [1,2,3,4].map(function(m){ return s['product_' + n + '_img_' + m]; }).filter(Boolean);
+          if (!imgs.length || !track) return;
+
+          // Hide SVG fallback
+          if (svg) svg.style.display = 'none';
+
+          // Build slides
+          imgs.forEach(function(src) {
+            var img = document.createElement('img');
+            img.className = 'rf-mini-carousel__slide';
+            img.src = src;
+            img.alt = '';
+            track.appendChild(img);
+          });
+
+          // State
+          var idx = 0;
+
+          // Build dots (only when > 1 image)
+          if (imgs.length > 1 && dotsEl) {
+            imgs.forEach(function(_, i) {
+              var dot = document.createElement('button');
+              dot.className = 'rf-mini-carousel__dot' + (i === 0 ? ' active' : '');
+              dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+              dot.dataset.i = i;
+              dotsEl.appendChild(dot);
+            });
+          }
+
+          function goTo(i) {
+            idx = ((i % imgs.length) + imgs.length) % imgs.length;
+            track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+            if (dotsEl) dotsEl.querySelectorAll('.rf-mini-carousel__dot').forEach(function(d, j) {
+              d.classList.toggle('active', j === idx);
+            });
+          }
+
+          // Dot clicks
+          if (dotsEl) {
+            dotsEl.addEventListener('click', function(e) {
+              var dot = e.target.closest('.rf-mini-carousel__dot');
+              if (dot) { e.stopPropagation(); goTo(+dot.dataset.i); }
+            });
+          }
+
+          // Prev / next buttons (only show when > 1 image)
+          if (wrap && imgs.length > 1) {
+            var prevBtn = wrap.querySelector('.rf-mini-carousel__btn--prev');
+            var nextBtn = wrap.querySelector('.rf-mini-carousel__btn--next');
+            if (prevBtn) prevBtn.addEventListener('click', function(e) { e.stopPropagation(); goTo(idx - 1); });
+            if (nextBtn) nextBtn.addEventListener('click', function(e) { e.stopPropagation(); goTo(idx + 1); });
+          }
+        });
+
+        // ── Site logo ────────────────────────────────────────────────────────
+        if (s.logo_img) {
+          var headerLogo = document.getElementById('header-logo-img');
+          if (headerLogo) headerLogo.src = s.logo_img;
+        }
+      })
+      .catch(function () {});
+  })();
+
+  // ── Date ticker ────────────────────────────────────────────────────────
+  (function () {
+    var el = document.getElementById('site-ticker-text');
+    if (!el) return;
+    var now = new Date();
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var h = now.getHours(); var m = now.getMinutes();
+    el.textContent = 'Bangkok, TH  |  ' + days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + String(now.getDate()).padStart(2,'0') + ', ' + now.getFullYear() + '  |  ' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ' ICT';
+  })();
+
+  // ── Header transparent → solid on scroll past hero ─────────────────────
+  (function () {
+    var header = document.querySelector('.site-header');
+    var ticker = document.querySelector('.site-ticker');
+    var hero   = document.getElementById('rf-hero');
+    if (!header || !hero) return;
+    var solid = false;
+
+    var featured = document.querySelector('.rf-featured');
+    var triggerEl = featured || hero;
+
+    function check() {
+      var rect = triggerEl.getBoundingClientRect();
+      var shouldBeSolid = rect.top <= 200;
+      if (shouldBeSolid !== solid) {
+        solid = shouldBeSolid;
+        header.classList.toggle('is-solid', solid);
+        if (ticker) ticker.classList.toggle('is-solid', solid);
+      }
+    }
+
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+  })();
+</script>
+</body>
+</html>

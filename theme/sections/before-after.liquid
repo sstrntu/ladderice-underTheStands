@@ -1,0 +1,232 @@
+{{ 'section-before-after.css' | asset_url | stylesheet_tag }}
+
+<div id="section-{{ section.id }}" class="site-box-container container--fullscreen">
+  
+  <before-after data-layout="{{ section.settings.layout }}" class="{%- if section.settings.invert_layout -%}invert-layout{%- endif -%}">
+
+    {%- if section.blocks.size > 0 -%}
+
+      <div class="site-box before-after {{ section.settings.desktop_height }} {{ section.settings.mobile_height }} before-after--color-style-{{ section.settings.color_style }}">
+
+        {%- for block in section.blocks -%}
+
+          <div class="img {% if forloop.index == 2 %} foreground-img {% else %} background-img {% endif %}" id="{{ block.id }}" {{ block.shopify_attributes }}> 
+
+            <div class="before-after__label-wrapper">
+
+              {%- if block.settings.label != blank -%}
+                <span class="before-after__label">
+                  {{ block.settings.label | escape }}
+                </span>
+              {%- endif -%}
+            
+              {%- liquid
+                assign desktop_image_class = ""
+                if block.settings.image_mobile != blank
+                  assign desktop_image_class = "element--hide-on-small"
+                endif
+              -%}
+
+              {%- liquid
+                if section.index == 1
+                  assign preload = true
+                else
+                  assign preload = false
+                endif
+              -%}
+              
+              <div class="site-box-background">
+                <div class="{{ desktop_image_class }}" style="position:relative;height:100%">
+                  {%- unless block.settings.image == blank -%}
+                    {%- liquid
+                      assign image_block = block.id | prepend: 'desktop-image-'
+                      render 'lazy-image', image: block.settings.image, type: 'background', image_alignment: true, id: image_block, sizes: 'sizes="100vw"', preload: preload
+                    -%}
+                  {%- else -%}
+                    <span class="onboarding-svg">{{ 'image' | placeholder_svg_tag }}</span>
+                  {%- endunless -%}
+                </div>
+
+                <div class="element--hide-on-desk" style="position:relative;height:100%">
+                  {%- liquid
+                    if block.settings.image_mobile != blank
+                      assign image_block = block.id | prepend: 'mobile-image-'
+                      render 'lazy-image', image: block.settings.image_mobile, type: 'background', image_alignment: true, id: image_block, sizes: 'sizes="100vw"', preload: preload
+                    endif
+                  -%}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        {%- endfor -%}
+
+        <input type="range" min="0" max="100" value="50" class="before-after__slider" orient="{{ section.settings.layout }}">
+        <span class="before-after--handle">
+          <span class="before-after--handle-icon">
+            {%- render 'theme-symbols', icon: 'arrow-left-right' -%}
+          </span>
+        </span>
+
+      </div>
+
+    {%- endif -%}
+
+  </before-after>
+  
+</div>
+
+{%- if section.settings.section_background_color != "rgba(0,0,0,0)" -%}
+  {% style %}
+    #shopify-section-{{ section.id }} .container--has-background {
+      --color-background-section: {{ section.settings.section_background_color }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
+{%- if section.settings.section_heading_color != "rgba(0,0,0,0)" -%}
+  {% style %}
+    #shopify-section-{{ section.id }} .section-heading {
+      --color-text-main: {{ section.settings.section_heading_color }};
+    }
+  {% endstyle %}
+{%- endif -%}
+
+<script src="{{ 'component-before-after.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "t:sections.refactor_words.before_after.name",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.local-extra-words.settings_schema.layout.name",
+      "options": [
+        {
+          "value": "horizontal",
+          "label": "t:sections.refactor_words.before_after.layout.option__1"
+        },
+        {
+          "value": "vertical",
+          "label": "t:sections.refactor_words.before_after.layout.option__2"
+        }
+      ],
+      "default": "horizontal"
+    },
+    {
+      "type": "checkbox",
+      "id": "invert_layout",
+      "label": "t:sections.refactor_words.late_edits.before-after.layout.invert",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "options": [
+        {
+          "value": "before-after--desktop-small",
+          "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+        },
+        {
+          "value": "before-after--desktop-medium",
+          "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+        },
+        {
+          "value": "before-after--desktop-large",
+          "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+        }
+      ],
+      "default": "before-after--desktop-medium"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "options": [
+        {
+          "value": "before-after--mobile-small",
+          "label": "t:sections.image-with-text.settings.image_height.options__1.label"
+        },
+        {
+          "value": "before-after--mobile-medium",
+          "label": "t:sections.image-with-text.settings.image_height.options__2.label"
+        },
+        {
+          "value": "before-after--mobile-large",
+          "label": "t:sections.image-with-text.settings.image_height.options__3.label"
+        }
+      ],
+      "default": "before-after--mobile-medium"
+    },
+    {
+      "type": "header",
+      "content": "t:settings_schema.colors.name"
+    },
+    {
+      "type": "select",
+      "id": "color_style",
+      "label": "t:sections.refactor_words.before_after.style.label",
+      "options": [
+        {
+          "value": "dark",
+          "label": "t:sections.refactor_words.before_after.style.option__2"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.refactor_words.before_after.style.option__1"
+        }
+      ],
+      "default": "dark"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "limit": 2,
+      "name": "t:sections.local-extra-words.sections.media-with-text-overlay.blocks.image.name",
+      "settings": [
+        {
+          "id": "image",
+          "type": "image_picker",
+          "label": "t:sections.gallery.blocks.image.settings.image.label"
+        },
+        {
+          "id": "image_mobile",
+          "type": "image_picker",
+          "label": "t:sections.refactor_words.late_edits.image_with_hotspots.image_on_mobile"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.local-extra-words.sections.headings.text_content"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "t:sections.refactor_words.before_after.image.label__3",
+          "default": "Label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.refactor_words.before_after.name",
+      "blocks": [
+        { "type": "image", "settings": {
+          "label": "Before"
+        } },
+        { "type": "image", "settings": {
+          "label": "After"
+        } }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

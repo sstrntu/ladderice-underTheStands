@@ -1,0 +1,397 @@
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+
+<main-header
+  id="site-header"
+  class="site-header desktop-view--{{ section.settings.menu_style }} {% if section.settings.menu_hide_border %} site-header--no-border {% endif %}"
+  data-logo_height="{{ section.settings.logo_height }}"
+  data-sticky="{{ section.settings.menu_sticky }}"
+>
+  <!-- logo -->
+
+  <span class="logo">
+    {%- if section.settings.logo_src -%}
+      <a
+        class="logo-img"
+        href="{{ routes.root_url }}"
+        style="height:var(--header-logo);display:flex;align-items:center"
+      >
+        <img
+          src="{{ section.settings.logo_src | image_url }}"
+          alt="{{ shop.name | escape }}"
+          style="max-height:{{ section.settings.logo_height }}px"
+          width="{{ section.settings.logo_src.width }}"
+          height="{{ section.settings.logo_src.height }}"
+        >
+      </a>
+    {%- else -%}
+      <a class="logo-txt" href="{{ routes.root_url }}">{{ shop.name | escape }}</a>
+    {%- endif -%}
+  </span>
+
+  {%- render 'logo-size', logo: section.settings.logo_src, logo_height: section.settings.logo_height -%}
+
+  <!-- menu -->
+
+  <div id="site-nav--desktop" class="site-nav style--classic">
+    {%- if section.settings.show_promotion_block -%}
+      {%- capture promotion_block -%}
+        <div class="clearfix"><div class="menu-promotion site-box" id="menu-promotion">
+
+          <div>
+
+            <span class="menu-promotion-title">{{ section.settings.promotion_header | escape }}</span>
+            <div class="rte">{{ section.settings.promotion_content }}</div>
+            {%- if section.settings.promotion_button_label != blank -%}
+              <a class="button" href="{{ section.settings.promotion_button_link | escape }}">
+                <span class="button-scroll-in">{{ section.settings.promotion_button_label | escape }}</span>
+              </a>
+            {%- endif -%}
+
+            {%- unless section.settings.promotion_image == blank -%}
+              <div class="site-box-background with-image">
+                {%- assign image = section.settings.promotion_image -%}
+                <img
+                  src="{{ image | image_url: width: 240 }}" alt="{{ image.alt | escape }}"
+                  srcset="{{ image | image_url: width: 240 }} 180w, {{ image | image_url: width: 360 }} 300w, {{ image | image_url: width: 600 }} 480w, {{ image | image_url: width: 860 }} 720w"
+                  sizes="380px"
+                  width="{{ image.width }}" height="{{ image.height }}"
+                  loading="lazy"
+                />
+              </div>
+            {%- endunless -%}
+
+          </div>
+
+          <style>
+            {%- liquid
+              assign color_text_brightness = section.settings.promotion_color_txt | color_brightness
+              if color_text_brightness > 150
+                assign color_text_foreground = '#000'
+              else
+                assign color_text_foreground = '#fff'
+              endif
+            -%}
+            #menu-promotion > div {
+              color: {{ section.settings.promotion_color_txt }};
+            }
+            #menu-promotion a {
+              color: {{ section.settings.promotion_color_txt }};
+            }
+            #menu-promotion .button {
+              color: {{ color_text_foreground }} !important;
+              background: {{ section.settings.promotion_color_txt }} !important;
+            }
+            {%- if section.settings.promotion_image == blank -%}
+              #menu-promotion > div {
+                background: {{ section.settings.promotion_color_bg }};
+              }
+            {%- else -%}
+              #menu-promotion .site-box-background.with-image:after {
+                background: {{ section.settings.promotion_color_bg }};
+              }
+            {%- endif -%}
+          </style>
+
+        </div></div>
+      {%- endcapture -%}
+    {%- endif -%}
+
+    {%- if section.settings.menu_style == 'classic' -%}
+      <div class="site-nav-container portable--hide">
+        <nav class="primary-menu">
+          {%- render 'site-nav',
+            linklist: section.settings.main_linklist,
+            collection_linklist: section.settings.collection_linklist,
+            show_locale_selector: section.settings.show_locale_selector,
+            show_country_selector: section.settings.show_country_selector,
+            show_collection_images: section.settings.show_collection_image,
+            promotion_block: promotion_block,
+            type: 'classic'
+          -%}
+        </nav>
+      </div>
+    {%- else -%}
+      <noscript>
+        <div class="site-nav-container portable--hide">
+          <nav class="primary-menu">
+            {%- render 'site-nav',
+              linklist: section.settings.main_linklist,
+              collection_linklist: section.settings.collection_linklist,
+              show_collection_images: section.settings.show_collection_image,
+              promotion_block: promotion_block,
+              type: 'classic'
+            -%}
+          </nav>
+        </div>
+      </noscript>
+    {%- endif -%}
+
+    <span
+      class="site-search-handle site-menu-handle"
+      title="{{ 'general.accessibility_labels.open_search' | t }}"
+      {% if template != 'search' %}
+        id="site-search-handle" aria-expanded="false" aria-controls="site-search"
+        data-js-sidebar-handle
+      {% endif %}
+    >
+      <span class="visually-hidden">{{ 'general.accessibility_labels.open_search' | t }}</span>
+      <a href="{{ routes.search_url }}" title="{{ 'general.accessibility_labels.open_search' | t }}<">
+        <span class="search-menu" aria-hidden="true" style="display:block;margin-top:1px;">
+          {%- render 'theme-symbols', icon: 'search' -%}
+        </span>
+      </a>
+    </span>
+
+    <span
+      class="site-cart-handle site-menu-handle {{ settings.cart_action }}"
+      title="{{ 'general.accessibility_labels.open_cart' | t }}"
+      {% if settings.cart_action == 'overlay' %}
+        id="site-cart-handle" aria-expanded="false" aria-controls="site-cart"
+        data-js-sidebar-handle
+      {% endif %}
+    >
+      <span class="visually-hidden">{{ 'general.accessibility_labels.open_cart' | t }}</span>
+      <a href="{{ routes.cart_url }}" title="{{ 'general.accessibility_labels.open_cart' | t }}">
+        <span class="cart-menu" aria-hidden="true">
+          {%- render 'theme-symbols', icon: 'cart' -%}
+          <span class="count-holder"
+            ><span class="count" data-header-cart-count>{{ cart.item_count }}</span></span
+          >
+        </span>
+      </a>
+    </span>
+
+    <button
+      id="site-menu-handle"
+      class="site-menu-handle site-burger-handle hide portable--show"
+      aria-expanded="false"
+      aria-controls="site-nav--mobile"
+      title="{{ 'general.accessibility_labels.open_menu' | t }}"
+      data-js-sidebar-handle
+    >
+      <span class="visually-hidden">{{ 'general.accessibility_labels.open_menu' | t }}</span>
+      <span class="hamburger-menu" aria-hidden="true" style="height:16px;margin-top:-5px;">
+        {%- render 'theme-symbols', icon: 'burger' -%}
+      </span>
+    </button>
+  </div>
+</main-header>
+<script>
+  window.fixVhByVars();
+</script>
+
+<sidebar-drawer
+  id="site-nav--mobile"
+  class="site-nav style--sidebar"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+  style="display:none"
+>
+  <button class="site-close-handle" title="{{ 'general.accessibility_labels.close_sidebar' | t }}">
+    <span class="visually-hidden">{{ 'general.accessibility_labels.close_sidebar' | t }}</span>
+    <span class="hamburger-menu" aria-hidden="true">{%- render 'theme-symbols', icon: 'close' -%}</span>
+  </button>
+
+  <div id="site-navigation" class="site-nav-container">
+    <div class="site-nav-container-last">
+      <p class="title sidebar-title add-hr-below">{{ 'sidebar.menu_title' | t }}</p>
+
+      <div class="top">
+        <nav class="primary-menu">
+          {%- render 'site-nav',
+            linklist: section.settings.main_linklist,
+            collection_linklist: section.settings.collection_linklist,
+            show_collection_images: false,
+            type: 'sidebar',
+            show_locale_selector: section.settings.show_locale_selector,
+            show_country_selector: section.settings.show_country_selector
+          -%}
+        </nav>
+      </div>
+
+      <div class="to-bottom-content">
+        {%- liquid
+          if promotion_block
+            echo promotion_block
+          endif
+        -%}
+
+        {%- render 'social-icons', size: 'regular' -%}
+
+        <div class="site-copyright text-size--smallest">
+          <span class="copyright-text">
+            {{- 'general.copyright' | t }} &copy; {{ 'now' | date: '%Y' }}
+            <a href="{{ routes.root_url }}">{{ shop.name | escape }}</a></span
+          >
+          <span class="powered-by-shopify" style="display:block">{{ powered_by_link }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</sidebar-drawer>
+
+{% schema %}
+{
+  "name": "t:sections.split-extra-words.sections.header.name",
+  "class": "mount-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_src",
+      "label": "t:sections.sidebar.settings.image.label"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "t:sections.split-extra-words.sections.header.settings.logo_height",
+      "unit": "px",
+      "min": 20,
+      "max": 140,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "link_list",
+      "id": "main_linklist",
+      "label": "t:sections.split-extra-words.sections.header.settings.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": "t:sections.split-extra-words.sections.header.settings.menu_style.label",
+      "options": [
+        {
+          "value": "classic",
+          "label": "t:sections.split-extra-words.sections.header.settings.menu_style.options__1"
+        },
+        {
+          "value": "minimal",
+          "label": "t:sections.split-extra-words.sections.header.settings.menu_style.options__2"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "menu_sticky",
+      "label": "t:sections.refactor_words.header.sticky.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.refactor_words.header.sticky.option_1"
+        },
+        {
+          "value": "sticky",
+          "label": "t:sections.refactor_words.header.sticky.option_2"
+        },
+        {
+          "value": "sticky--scroll",
+          "label": "t:sections.refactor_words.header.sticky.option_3"
+        }
+      ],
+      "default": "sticky--scroll"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_hide_border",
+      "label": "t:sections.local-extra-words.settings_schema.colors.settings.hide_border",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.split-extra-words.sections.header.settings.collections_menu.header",
+      "info": "t:sections.split-extra-words.sections.header.settings.collections_menu.info"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.split-extra-words.sections.header.settings.collections_menu.info_2"
+    },
+    {
+      "type": "link_list",
+      "id": "collection_linklist",
+      "label": "t:sections.split-extra-words.sections.header.settings.menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "t:sections.split-extra-words.sections.header.settings.collections_menu.settings.show_images.label",
+      "default": true,
+      "info": "t:sections.split-extra-words.sections.header.settings.collections_menu.settings.show_images.info"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.split-extra-words.sections.header.settings.promotional_block.name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promotion_block",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.show.label",
+      "default": false,
+      "info": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.show.info"
+    },
+    {
+      "type": "text",
+      "id": "promotion_header",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.title.label"
+    },
+    {
+      "type": "richtext",
+      "id": "promotion_content",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.content.label"
+    },
+    {
+      "type": "text",
+      "id": "promotion_button_label",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.button.label"
+    },
+    {
+      "type": "url",
+      "id": "promotion_button_link",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.link.label"
+    },
+    {
+      "type": "color",
+      "id": "promotion_color_txt",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.txt_color.label",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "promotion_color_bg",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.bg_color.label",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "image_picker",
+      "id": "promotion_image",
+      "label": "t:sections.split-extra-words.sections.header.settings.promotional_block.settings.image.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.language_selector.content",
+      "info": "t:sections.footer.settings.language_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_locale_selector",
+      "label": "t:sections.footer.settings.language_selector_show.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.footer.settings.country_selector.content",
+      "info": "t:sections.footer.settings.country_selector.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "t:sections.footer.settings.country_selector_show.label",
+      "default": false
+    }
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  }
+}
+{% endschema %}

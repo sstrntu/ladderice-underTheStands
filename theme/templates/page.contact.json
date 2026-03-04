@@ -1,0 +1,57 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "contact-form",
+      "blocks": {
+        "1628539090bcf511f6-": {
+          "type": "title",
+          "settings": {
+            "title": "ข้อมูลที่จะติดต่อสอบถาม"
+          }
+        },
+        "1628539090bcf511f6-0": {
+          "type": "email",
+          "settings": {}
+        },
+        "1628539090bcf511f6-1": {
+          "type": "field",
+          "settings": {
+            "label": "กรอกข้อความ",
+            "type": "textarea",
+            "required": true
+          }
+        },
+        "1628539090bcf511f6-2": {
+          "type": "button",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "1628539090bcf511f6-",
+        "1628539090bcf511f6-0",
+        "1628539090bcf511f6-1",
+        "1628539090bcf511f6-2"
+      ],
+      "settings": {
+        "title": "ติดต่อเรา",
+        "map_enable": false,
+        "map_address": "",
+        "map_api": "",
+        "map_style": "light",
+        "seo_h_tag": "h1"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,218 @@
+{%- liquid
+  if settings.within_filter_enabled and product_collection
+    assign product_url = product.url | within: product_collection
+  else
+    assign product_url = product.url
+  endif
+-%}
+
+<div class="product-item style--{{ settings.product_animation }} {% if large %} lap--box--small-lg {% endif %} {% if settings.product_show_secondary and product.images.size >= 2 %} with-secondary-image {% endif %}" data-js-product-item>
+
+  <a href="{{ product_url }}" title="{{ product.title | escape }}" class="product-item__special-link">{{ product.title | escape }}</a>
+
+  <div class="box--product-image primary" style="padding-top: {{ 100 | divided_by: settings.product_card_aspect_ratio }}%">
+
+    {%- liquid
+
+      unless mini
+        if large 
+          assign sizes = '(max-width: 768px) 80vw, (max-width: 1024px) and (orientation: portrait) 80vw, 50vw'
+        elsif slider
+          assign sizes = '(max-width: 768px) 80vw, (max-width: 1024px) and (orientation: portrait) 80vw, 33vw'
+        else 
+          assign sizes = '(max-width: 768px) 50vw, (max-width: 1024px) and (orientation: portrait) 50vw, 25vw'
+        endif
+      else
+        assign sizes = '(max-width: 767px) 100px, 300px'
+      endunless
+
+      if section.index == 1 and index <= 4
+        assign preload = true
+      else
+        assign preload = false
+      endif
+      
+      unless blank_product
+        render 'lazy-image', image: product.featured_media, preload: preload, sizes: sizes 
+      else
+        assign no = index | modulo: 6 | plus: 1
+        echo 'product-X' | replace: 'X', no | placeholder_svg_tag
+      endunless
+
+      if settings.show_preloader
+        render 'preloader'
+      endif
+
+    -%}
+
+  </div>
+
+  {%- if settings.product_show_secondary and product.images.size >= 2 -%}
+    <div class="box--product-image secondary" style="padding-top: {{ 100 | divided_by: settings.product_card_aspect_ratio }}%">
+      {%- render 'lazy-image', image: product.media[1], sizes: sizes -%}
+    </div>
+  {%- endif -%}
+
+  {%- assign variant = product.selected_or_first_available_variant -%}
+
+  {%- if settings.product_thumbnail_color_swatches -%}
+
+    {%- assign color_label = settings.color_swatches_labels | split: ',' -%}
+    
+    {%- for option in product.options_with_values -%}
+      {%- assign option_downcased = option.name | downcase -%}
+      {%- if color_label contains option_downcased -%}
+
+        <product-item-variants class="box--product-variants" aria-hidden="true">
+          {%- liquid
+            assign variant_option = 'option' | append: forloop.index
+            assign u_index = 0
+            for value in option.values
+              assign downcased_value = value | downcase
+              for variant in product.variants
+                if variant[variant_option] == value
+                  echo '<div class="box--product-variant" data-js-product-variant data-href="' | append: variant.url | append: '" data-id="' | append: u_index | append: '" data-variant-image="' | append: variant.featured_media.id | append: '">'
+                    assign color_swatch_name = value | handle | append: '.png'
+                    assign color_swatch_image = images[color_swatch_name]
+                    if color_swatch_image != blank
+                      assign color_swatch_image = color_swatch_image | image_url: width: 60, height: 60
+                      echo '<span style="background-image:url(' | append: color_swatch_image | append: ')"></span>'
+                    else
+                      assign color_swatch_name = downcased_value | escape | replace: ' ', ''
+                      echo '<span style="background-color:' | append: color_swatch_name | append: '"></span>'
+                    endif
+                    assign u_index = u_index | plus: 1
+                  echo '</div>'
+                  break
+                endif
+              endfor
+            endfor
+          -%}
+
+          <div style="display:none" data-js-product-variant-images>
+            {%- assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' -%}
+            {%- if product.media.size > 1 -%}
+              {%- for media in product.media -%}
+                {%- if variant_images contains media.src -%}
+                  <template data-media-id="{{ media.id }}">
+                    <div class="box--product-image tertiary" style="padding-top: {{ 100 | divided_by: settings.product_card_aspect_ratio }}%">
+                      {%- render 'lazy-image', image: media sizes: sizes, sync: true -%}
+                    </div>
+                  </template>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}   
+          </div>
+
+        </product-item-variants>
+        
+      {%- endif -%}
+    {%- endfor -%}
+
+  {%- endif -%}
+
+  <div class="caption">
+
+    <div>
+      <span class="title"><span class="underline-animation">
+        {%- liquid 
+          unless blank_product 
+            echo product.title 
+          else 
+            echo 'general.onboarding.product_title' | t
+          endunless
+        -%}
+      </span></span>
+      <span class="price text-size--smaller"><span style="display:flex;flex-direction:row">
+
+        {%- liquid
+
+          unless blank_product
+
+            assign price = product.price | money
+
+            if product.price_varies
+              assign price = product.price_min | money
+              if product.compare_at_price > product.price
+                echo 'products.grid.on_sale_from_html' | t: price: price
+              else
+                echo 'products.grid.from_text_html' | t: price: price
+              endif
+            else
+              if product.compare_at_price > product.price
+                echo price
+                echo '<del>'
+                  echo product.compare_at_price | money
+                echo '</del>'
+              else 
+                echo price
+              endif
+            endif
+
+            if variant.unit_price_measurement
+              echo '<span class="unit-price text-size--smallest">'
+              echo variant.unit_price | money
+              echo ' / '
+              if variant.unit_price_measurement.reference_value != 1
+                echo variant.unit_price_measurement.reference_value
+              endif
+              echo variant.unit_price_measurement.reference_unit
+              echo '</span>'
+            endif
+
+          else 
+
+            echo 9999 | money
+
+          endunless
+
+        -%}
+
+      </span></span>
+
+    </div>
+
+    {%- if settings.enable_quick_buy and product.available -%}
+      {%- if product.has_only_default_variant -%}
+        <quick-add-to-cart class="quick-add-to-cart">
+          <product-form {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}>
+            <div class="quick-add-to-cart-button">
+              {%- form 'product', product -%}
+                <input type="hidden" name="id" value="{{ variant.id }}">
+                <button class="product__add-to-cart" type="submit" name="add" aria-label="{{ 'products.page.add_to_cart_button' | t }}" tabindex="-1">
+                  <span class="visually-hidden">{{ 'products.page.add_to_cart_button' | t }}</span>
+                  <span class="add-to-cart__text" style="height:26px" role="img">{%- render 'theme-symbols', icon: 'cart_icon_plus' -%}</span>
+                  {%- render 'preloader', class: 'add-to-cart__preloader' -%}
+                </button>
+              {%- endform -%} 
+            </div>
+          </product-form>
+        </quick-add-to-cart>
+      {%- else -%}
+        <quick-view-product class="quick-add-to-cart">
+          <div class="quick-add-to-cart-button">
+            <button class="product__add-to-cart" data-href="{{ product.url }}" tabindex="-1">
+              <span class="visually-hidden">{{ 'products.page.add_to_cart_button' | t }}</span>
+              <span class="add-to-cart__text" style="height:26px" role="img">{%- render 'theme-symbols', icon: 'cart_icon_plus' -%}</span>
+              {%- render 'preloader', class: 'add-to-cart__preloader' -%}
+            </button>
+          </div>
+        </quick-view-product>
+      {%- endif -%}
+    {%- endif -%}
+
+  </div>
+
+  {%- liquid
+    if settings.reviews_badge_desktop != "no" or settings.reviews_badge_mobile 
+      render 'product-rating', product: product, type: 'product-item'
+    endif
+  -%}
+
+  {%- liquid
+    if settings.product_card_show_badges 
+      render 'product-badges', product: product
+    endif
+  -%}
+
+</div>

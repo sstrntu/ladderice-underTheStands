@@ -1,0 +1,85 @@
+{{ 'component-banner.css' | asset_url | stylesheet_tag }}
+
+<modal-box id="modal-{{ section.id }}" class="box__banner style--box" 
+  data-options='{
+    "show": {% unless request.design_mode %} 1 {% else %} 1000 {% endunless %},
+    "frequency": "day",
+    "type": "cookies",
+    "enabled": true
+  }'
+  data-modal-box
+  {{ block.shopify_attributes }}
+  style="display: none"
+>
+
+  <div class="modal-object modal-object--cookie" style="
+  background-color: {{ section.settings.bg_color }};
+  {% if product_object == blank %} text-align: center; {% endif %}"
+  {% if link != blank %} data-has-link {% endif %}
+>
+
+  <div class="content" data-content style="color: {{ section.settings.txt_color }}">
+    <span class="title text-size--large">{{ 'general.cookies_popup.title' | t }}</span>
+    <span class="subtitle">{{ 'general.cookies_popup.content' | t }}</span>
+    <div class="cookie-cta-block">
+      <button class="button button--solid" data-js-close data-js-cookies-accept>{{ 'general.cookies_popup.button_label' | t }}</button>
+      <button class="button button--outline" data-js-close data-js-cookies-decline>{{ 'general.cookies_popup.button_label_decline' | t }}</button>
+    </div>
+    
+    <style>
+      {%- liquid
+        assign cookie_text_brightness = section.settings.txt_color | color_brightness
+        if cookie_text_brightness > 150 
+          assign cookie_text_foreground = '#000' 
+        else 
+          assign cookie_text_foreground = '#fff' 
+        endif 
+      -%}
+      #modal-{{ section.id }} .button {
+        background: {{ section.settings.txt_color }};
+        color: {{ cookie_text_foreground }};
+      }
+
+      #modal-{{ section.id }} .button.button--outline {
+        background: {{ cookie_text_foreground }};
+        color: {{ section.settings.txt_color }};
+        border-color: {{ section.settings.txt_color }};
+        margin-top: 15px;
+      }
+    </style>
+  </div>
+
+</div>
+
+
+{% schema %}
+  {
+    "name": "t:sections.refactor_words.cookies_banner.name",
+    "class": "mount-popup stacked-popup cookie-popup",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:sections.cookies.cookies_info"
+      },
+      {
+        "type": "header",
+        "content": "t:settings_schema.colors.name"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "t:sections.split-extra-words.sections.promotions.settings.background",
+        "default": "#f7f7f7"
+      },
+      {
+        "type": "color",
+        "id": "txt_color",
+        "label": "t:sections.split-extra-words.sections.promotions.settings.text",
+        "default": "#000000"
+      }
+    ],
+    "enabled_on": {
+      "groups": ["custom.overlay"]
+    }
+  }
+{% endschema %}

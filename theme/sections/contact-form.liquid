@@ -1,0 +1,314 @@
+<div class="site-box-container container--fullscreen box--can-stick">
+
+  <div class="site-box box--big lap--box--small-fl-auto box--typo-big box--top-align box--column-flow box__heading" data-order="0">
+
+    <div class="reduce-top-margin" style="pointer-events:none">
+      <div class="site-box-content {{ section.settings.map_style }}">
+        <{{ section.settings.seo_h_tag }} class="title h1">
+          {{ section.settings.title | escape }}
+        </{{ section.settings.seo_h_tag }}>
+        {%- if settings.headings_hr -%} <hr /> {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.map_enable -%}
+
+      {{ 'component-map.css' | asset_url | stylesheet_tag }}
+      
+      <contact-map class="contact-map-holder" 
+        data-key="{{ section.settings.map_api | escape }}" aria-hidden="true"
+      >
+        <div class="contact-map-object" 
+          id="contact-map-{{ section.id }}"
+          data-address="{{ section.settings.map_address | escape }}" 
+          data-marker="{% if section.settings.map_marker %}{{ section.settings.map_marker | image_url: width: 240 }}{% else %}{% if section.settings.map_style == 'light' %}{{ 'img_marker-dark.png' | asset_url }}{% else %}{{ 'img_marker-light.png' | asset_url }}{% endif %}{% endif %}" 
+          data-style="{{ section.settings.map_style }}" data-zoom="16"
+        ></div>
+
+        <div class="contact-map-address-holder hide" data-aria="hidden">
+          <div class="contact-map-address" style="padding:6px">
+            <p class="text-size--larger" style="margin-bottom:.5em">{{ section.settings.map_address | escape }}</p>
+            <a target="_blank" style="border-bottom:1px solid">{{ 'general.contact_form.map.google_maps_link' | t }}</a>
+          </div>
+        </div>
+
+      </contact-map>
+
+      <script src="{{ 'component-map.js'| asset_url }}" defer></script>
+
+    {%- endif -%}
+
+  </div>
+
+   <div class="site-box box--big lap--box--bigger box__text box--typo-big box--top-align box--column-flow" data-order="1">
+
+    <div class="site-box-content reduce-top-margin">
+
+      <div>
+
+        <div class="form-vertical">
+
+          {%- assign form_id = 'form-id-' | append: section.id -%}
+          {%- form 'contact', id: form_id -%}
+
+            {%- if form.posted_successfully? -%}
+              <p class="alert alert--success">
+                {{ 'general.contact_form.success_message' | t }}
+              </p>
+            {% endif %}
+
+            {%- render 'form-errors', form: form -%}
+              
+            <div class="simple-grid">
+
+              {%- for block in section.blocks -%}
+
+                {%- case block.type -%}
+
+                  {%- when 'title' -%}
+                    <div class="grid__item one-whole" {{ block.shopify_attributes }}>
+                      <h3 class="simple-title h4" style="margin-bottom:0">{{ block.settings.title | escape }}</h3>
+                    </div>
+
+                    {%- when 'text' -%}
+                      <div class="grid__item one-whole" {{ block.shopify_attributes }}>
+                        <div class="rte" style="margin-bottom:0">{{ block.settings.content }}</div>
+                      </div>
+
+                  {%- when 'email' -%}
+                    <div class="grid__item one-half portable--one-whole palm--one-whole" {{ block.shopify_attributes }}>
+                       <label for="{{ form_id }}ContactFormName" class="visually-hidden">{{ 'general.contact_form.name_label' | t }}</label>
+                       <input type="text" id="{{ form_id }}ContactFormName" class="input-full" name="contact[name]" autocapitalize="words" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}" placeholder="{{ 'general.contact_form.name_label' | t }}" required>
+                    </div>
+                    <div class="grid__item one-half portable--one-whole palm--one-whole">
+                      <label for="{{ form_id }}ContactFormEmail" class="visually-hidden">{{ 'general.contact_form.email_label' | t }}</label>
+                      <input type="email" id="{{ form_id }}ContactFormEmail" class="input-full" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.contact_form.email_label' | t }}" required>
+                    </div>
+
+                  {%- when 'field' -%}
+                    <div class="grid__item portable--one-whole palm--one-whole" {{ block.shopify_attributes }}>
+                      {%- assign id = block.id | prepend: 'ContactForm-' -%}
+                      <label for="{{ id }}" class="visually-hidden">{{ block.settings.label | escape }}</label>
+                      {%- if block.settings.type == 'input' -%}
+                        <input type="text"
+                      {%- else -%}
+                        <textarea rows="10"
+                      {%- endif -%}
+                          placeholder="{{ block.settings.label }}" 
+                          id="{{ id }}" name="contact[{{ block.settings.label | handleize }}]" 
+                          autocorrect="off" autocapitalize="off" autocomplete="off" 
+                          {% if block.settings.required %} required {% endif %}
+                        >
+                      {%- if block.settings.type == 'textarea' -%}
+                        </textarea>
+                      {%- endif -%}
+                    </div>
+
+                  {%- when 'button' -%}
+                    <div class="grid__item one-whole">
+                      <button type="submit" class="button button--solid button--with-icon">
+                        <span>{{ 'general.contact_form.submit_label' | t }}</span> 
+                        <span class="icon" aria-hidden="true" role="img">{%- render 'theme-symbols', icon: 'arrow_icon_smallest' -%}</span>
+                      </button>
+                    </div>
+
+                {%- endcase -%}
+
+              {%- endfor -%}
+
+            </div>
+
+          {%- endform -%}
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.contact-form.name",
+    "class": "mount-map",
+    "max_blocks": 8,
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.split-extra-words.settings_schema.headings.title",
+        "default": "Get in touch"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.split-extra-words.sections.map.name"
+      },
+      {
+        "type": "checkbox",
+        "id": "map_enable",
+        "label": "t:sections.split-extra-words.sections.map.settings.map.enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "map_address",
+        "label": "t:sections.split-extra-words.sections.map.settings.map.address"
+      },
+      {
+        "type": "text",
+        "id": "map_api",
+        "label": "t:sections.split-extra-words.sections.map.settings.map.api.label",
+        "info": "t:sections.split-extra-words.sections.map.settings.map.api.info"
+      },
+      {
+        "type": "radio",
+        "id": "map_style",
+        "label": "t:sections.split-extra-words.sections.map.settings.map.style.label",
+        "options": [
+          {
+            "value": "light",
+            "label": "t:sections.split-extra-words.sections.map.settings.map.style.options__1"
+          },
+          {
+            "value": "dark",
+            "label": "t:sections.split-extra-words.sections.map.settings.map.style.options__2"
+          }
+        ],
+        "default": "light"
+      },
+      {
+        "type": "image_picker",
+        "id": "map_marker",
+        "label": "t:sections.split-extra-words.sections.map.settings.map.marker.label",
+        "info": "t:sections.split-extra-words.sections.map.settings.map.marker.info"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.refactor_words.seo.name"
+      },
+      {
+        "type": "select",
+        "id": "seo_h_tag",
+        "label": "t:sections.refactor_words.seo.label",
+        "info": "t:sections.refactor_words.seo.info",
+        "options": [
+          {
+            "value": "h1",
+            "label": "H1"
+          },
+          {
+            "value": "h2",
+            "label": "H2"
+          },
+          {
+            "value": "h3",
+            "label": "H3"
+          },
+          {
+            "value": "h4",
+            "label": "H4"
+          },
+          {
+            "value": "span",
+            "label": "span"
+          }
+        ],
+        "default": "h2"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "title",
+        "name": "t:sections.heading.settings.title.label",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.rich-text.blocks.text.settings.text.label",
+            "default": "Write us a message"
+          }
+        ],
+        "limit": 1
+      },
+      {
+        "type": "text",
+        "name": "t:sections.rich-text.blocks.text.name",
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "content",
+            "label": "t:sections.rich-text.blocks.text.settings.text.label",
+            "default": "<p>Address<br/><strong>93 South Park Ave.<br/>San Francisco, CA 94108</strong></p><p>Phone<br/><strong>(123) 456-7890</strong></p>"
+          }
+        ]
+      },
+      {
+        "type": "field",
+        "name": "t:sections.contact-form.blocks.field.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "label",
+            "label": "t:sections.contact-form.blocks.field.settings.labels.label",
+            "info": "t:sections.contact-form.blocks.field.settings.labels.info",
+            "default": "Label"
+          },
+          {
+            "type": "select",
+            "id": "type",
+            "label": "t:sections.contact-form.blocks.field.settings.type.label",
+            "options": [
+              {
+                "value": "input",
+                "label": "t:sections.contact-form.blocks.field.settings.type.options__1.label"
+              },
+              {
+                "value": "textarea",
+                "label": "t:sections.contact-form.blocks.field.settings.type.options__2.label"
+              }
+            ],
+            "default": "input"
+          },
+          {
+            "type": "checkbox",
+            "id": "required",
+            "label": "t:sections.contact-form.blocks.field.settings.required_field.label"
+          }
+        ]
+      },
+      {
+        "type": "email",
+        "name": "t:sections.contact-form.blocks.email.name",
+        "limit": 1
+      },
+      {
+        "type": "button",
+        "name": "t:sections.contact-form.blocks.button.name",
+        "limit": 1
+      }
+    ],
+    "presets": [{
+      "name": "t:sections.contact-form.name",
+      "blocks": [{
+        "type": "title"
+      },{
+        "type": "email"
+      },{
+        "type": "field",
+        "settings": {
+            "label": "Message",
+            "type": "textarea",
+            "required": true
+        }
+      },{
+        "type": "button"
+      }]
+    }],
+		"disabled_on": {
+			"groups": ["custom.overlay", "header"]
+		}
+  }
+{% endschema %}

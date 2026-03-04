@@ -1,0 +1,13 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      # Persist SQLite database outside the container
+      - ./server/data:/app/data
+    env_file:
+      - ./server/.env
+    restart: unless-stopped

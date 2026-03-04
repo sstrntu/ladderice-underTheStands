@@ -1,0 +1,189 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "layout": "split"
+      }
+    },
+    "9ae3d144-f206-4df4-a494-bcb5499df6fb": {
+      "type": "image-with-text",
+      "blocks": {
+        "template--15596379406388__9ae3d144-f206-4df4-a494-bcb5499df6fb-16776810158a1c39fd-0": {
+          "type": "image",
+          "settings": {
+            "subtitle": "",
+            "title": "OUR COMPANY",
+            "button_label": "",
+            "url": "",
+            "custom_text": "rgba(0,0,0,0)",
+            "custom_overlay": "rgba(0,0,0,0)",
+            "seo_h_tag": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "template--15596379406388__9ae3d144-f206-4df4-a494-bcb5499df6fb-16776810158a1c39fd-0"
+      ],
+      "settings": {
+        "image_height": "half",
+        "text_alignment": "horizontal-center vertical-middle"
+      }
+    },
+    "e2787111-6ca3-48d1-b9c6-faf31d311467": {
+      "type": "heading",
+      "blocks": {
+        "template--15596379406388__e2787111-6ca3-48d1-b9c6-faf31d311467-167768086086bf45d8-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Describe your brand in depth, talk about your story, your products, the process you are using in creating quality content.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--15596379406388__e2787111-6ca3-48d1-b9c6-faf31d311467-167768086086bf45d8-1"
+      ],
+      "settings": {
+        "text_alignment": "center",
+        "custom_background": "rgba(0,0,0,0)",
+        "custom_text": "rgba(0,0,0,0)"
+      }
+    },
+    "a23a978c-1b25-4a3f-9417-5cfd1ddf6441": {
+      "type": "rich-text",
+      "blocks": {
+        "template--15596379406388__a23a978c-1b25-4a3f-9417-5cfd1ddf6441-1677681074f997bb9f-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Talk about your brand",
+            "seo_h_tag": "h3"
+          }
+        },
+        "template--15596379406388__a23a978c-1b25-4a3f-9417-5cfd1ddf6441-1677681074f997bb9f-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--15596379406388__a23a978c-1b25-4a3f-9417-5cfd1ddf6441-1677681074f997bb9f-0",
+        "template--15596379406388__a23a978c-1b25-4a3f-9417-5cfd1ddf6441-1677681074f997bb9f-1"
+      ],
+      "settings": {
+        "title": "Story",
+        "btn_label": "",
+        "btn_url": "",
+        "desktop_image_positioning": "image-on-left",
+        "bg_overlay": false,
+        "custom_background": "rgba(0,0,0,0)",
+        "custom_text": "rgba(0,0,0,0)",
+        "seo_h_tag": "h2"
+      }
+    },
+    "74da1757-2b0b-44c7-9b12-4fad30f6a485": {
+      "type": "rich-text",
+      "blocks": {
+        "template--15596379406388__74da1757-2b0b-44c7-9b12-4fad30f6a485-1677681074f997bb9f-0": {
+          "type": "heading",
+          "settings": {
+            "heading": "Talk about your brand",
+            "seo_h_tag": "h3"
+          }
+        },
+        "template--15596379406388__74da1757-2b0b-44c7-9b12-4fad30f6a485-1677681074f997bb9f-1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--15596379406388__74da1757-2b0b-44c7-9b12-4fad30f6a485-1677681074f997bb9f-0",
+        "template--15596379406388__74da1757-2b0b-44c7-9b12-4fad30f6a485-1677681074f997bb9f-1"
+      ],
+      "settings": {
+        "title": "Story",
+        "btn_label": "",
+        "btn_url": "",
+        "desktop_image_positioning": "image-on-right",
+        "bg_overlay": false,
+        "custom_background": "rgba(0,0,0,0)",
+        "custom_text": "rgba(0,0,0,0)",
+        "seo_h_tag": "h2"
+      }
+    },
+    "dddb5f17-64c6-4d13-aacb-3105ee26dedf": {
+      "type": "gallery",
+      "blocks": {
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-0": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-1": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-2": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        },
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-3": {
+          "type": "image",
+          "settings": {
+            "link": "",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-0",
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-1",
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-2",
+        "template--15596379406388__dddb5f17-64c6-4d13-aacb-3105ee26dedf-1677681297698103a1-3"
+      ],
+      "settings": {
+        "image_height": "half"
+      }
+    },
+    "1c318dd5-7977-4519-992f-43728aa869b3": {
+      "type": "map",
+      "settings": {
+        "title": "Our store",
+        "content": "<p>123 Fake St.<br>Vancouver, Canada</p><p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 4pm<br>Sunday, CLOSED</p>",
+        "map_address": "Vancouver, Canada",
+        "map_api": "",
+        "map_style": "light",
+        "seo_h_tag": "h3"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "9ae3d144-f206-4df4-a494-bcb5499df6fb",
+    "e2787111-6ca3-48d1-b9c6-faf31d311467",
+    "a23a978c-1b25-4a3f-9417-5cfd1ddf6441",
+    "74da1757-2b0b-44c7-9b12-4fad30f6a485",
+    "dddb5f17-64c6-4d13-aacb-3105ee26dedf",
+    "1c318dd5-7977-4519-992f-43728aa869b3"
+  ]
+}

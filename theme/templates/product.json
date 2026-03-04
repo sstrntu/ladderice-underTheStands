@@ -1,0 +1,79 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "show_vendor": true,
+            "show_badge": true,
+            "show_reviews": true,
+            "show_tax_info": false,
+            "show_sku": false,
+            "show_barcode": false,
+            "stick_product_header_on_mobile": true
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "variants_style": "radio",
+            "show_color_swatches": true,
+            "unavailable_variants": "show"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity_selector": true,
+            "show_preorder": false,
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "header",
+        "variant_picker",
+        "buy_buttons",
+        "description",
+        "share"
+      ],
+      "settings": {
+        "gallery_style": "scroll",
+        "gallery_aspect": true,
+        "gallery_pagination": "dots",
+        "enable_zoom": true,
+        "enable_video_looping": false
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "heading": "You may also like"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations"
+  ]
+}

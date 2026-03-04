@@ -1,0 +1,66 @@
+.box__newsletter .site-box-content {
+  width: 50%;
+  margin-inline-start: auto;
+  margin-inline-end: auto;
+}
+@media screen and (max-width: 1024px) {
+  .box__newsletter .site-box-content {
+    width: 80%;
+  }
+}
+@media screen and (max-width: 768px), screen and (max-width: 1024px) and (orientation: portrait) {
+  .box__newsletter .site-box-content {
+    width: 100%;
+    padding: 0 var(--site-horizontal-padding);
+  }
+}
+.box__newsletter .newsletter-title,
+.box__newsletter .newsletter-form,
+.box__newsletter .newsletter-text {
+  margin-bottom: var(--text-spacing);
+}
+.box__newsletter .content > *:last-child {
+  margin-bottom: 0;
+}
+
+.newsletter-form .input-group {
+  display: flex;
+  width: 100%;
+  justify-content: stretch;
+}
+.newsletter-form .input-group input[type=email], .newsletter-form .input-group input[type=search] {
+  flex-grow: 1;
+  border-color: var(--main-text);
+}
+html[dir=rtl] .newsletter-form .input-group input[type=email], html[dir=rtl] .newsletter-form .input-group input[type=search] {
+  border-top-right-radius: var(--buttons-radius);
+  border-bottom-right-radius: var(--buttons-radius);
+}
+html[dir=ltr] .newsletter-form .input-group input[type=email], html[dir=ltr] .newsletter-form .input-group input[type=search] {
+  border-top-left-radius: var(--buttons-radius);
+  border-bottom-left-radius: var(--buttons-radius);
+}
+.newsletter-form .input-group button[type=submit] {
+  flex-shrink: 0;
+  margin-top: 1px;
+  margin-inline-start: -1px;
+}
+html[dir=rtl] .newsletter-form .input-group button[type=submit] {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+html[dir=ltr] .newsletter-form .input-group button[type=submit] {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+@media screen and (max-width: 480px) {
+  .newsletter-form .input-group {
+    flex-direction: column;
+  }
+  .newsletter-form .input-group input, .newsletter-form .input-group button {
+    border-radius: var(--buttons-radius) !important;
+  }
+  .newsletter-form .input-group button {
+    margin-top: 1em !important;
+  }
+}

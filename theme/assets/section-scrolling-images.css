@@ -1,0 +1,39 @@
+.scrolling-images-parent {
+  display: flex;
+}
+
+.scrolling-images {
+  border: 0;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-color: var(--main-borders);
+  border-style: solid;
+  flex-shrink: 0;
+  transition: ease-in-out translate 500ms;
+}
+.scrolling-images span {
+  display: inline-block;
+}
+.scrolling-images .site-box {
+  flex-shrink: 0;
+}
+.scrolling-images .scrolling-image--centered {
+  max-width: 80%;
+  max-height: 80%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.scrolling-images .scrolling-image--centered img {
+  object-fit: contain !important;
+}
+.no-touchevents .scrolling-images a:hover img {
+  transform: translateZ(0) scale(1.05) !important;
+}
+.scrolling-images img {
+  transition: opacity 150ms linear, transform 200ms cubic-bezier(0.39, 0.575, 0.565, 1) !important;
+}

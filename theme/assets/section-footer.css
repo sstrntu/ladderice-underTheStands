@@ -1,0 +1,183 @@
+.site-footer {
+  padding-inline-start: var(--site-horizontal-padding);
+  padding-inline-end: var(--site-horizontal-padding);
+  border-bottom: 0;
+  color: var(--main-text);
+}
+.site-footer:before {
+  content: '';
+  width: 100%;
+  background: var(--grid-borders);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  z-index: 99;
+  display: block;
+}
+.site-footer .footer-top {
+  /* padding-top: var(--box-auto-top); */
+  /* padding-bottom: var(--box-auto-top); */
+  padding: 40px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: min(100px, var(--box-auto-top));
+}
+.site-footer .footer-top[data-size='3'] {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media screen and (max-width: 768px), screen and (max-width: 1024px) and (orientation: portrait) {
+  .site-footer .footer-top[data-size='3'] {
+    grid-template-columns: 1fr;
+  }
+}
+.site-footer .footer-top[data-size='4'] {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+@media screen and (max-width: 1023px) {
+  .site-footer .footer-top[data-size='4'] {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media screen and (max-width: 640px) {
+  .site-footer .footer-top {
+    grid-template-columns: 1fr !important;
+  }
+}
+.site-footer .footer-top + .footer-bottom {
+  border-top: 1px solid var(--grid-borders);
+  padding-top: 40px;
+  /* padding-bottom: var(--box-auto-top); */
+  padding-bottom: 40px;
+}
+.site-footer .site-payment {
+  max-width: 50vw;
+  display: flex;
+  gap: 4px;
+  justify-content: flex-start;
+  align-items: center;
+}
+.site-footer .site-payment img {
+  border-radius: 2px;
+  width: 36px;
+}
+html[dir='rtl'] .site-footer .site-payment:first-child {
+  text-align: right;
+}
+html[dir='ltr'] .site-footer .site-payment:first-child {
+  text-align: left;
+}
+.site-footer .footer-bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.site-footer .footer-bottom:first-child {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.site-footer .footer-bottom > div:first-child {
+  margin-inline-end: 50px;
+}
+@media screen and (max-width: 726px) {
+  .site-footer .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .site-footer .footer-bottom > div:first-child {
+    margin-inline-end: 0;
+  }
+  html[dir='rtl'] .site-footer .footer-bottom .footer-copyright,
+  html[dir='rtl'] .site-footer .footer-bottom .site-payment {
+    text-align: right !important;
+  }
+  html[dir='ltr'] .site-footer .footer-bottom .footer-copyright,
+  html[dir='ltr'] .site-footer .footer-bottom .site-payment {
+    text-align: left !important;
+  }
+  .site-footer .footer-bottom .localization-form-holder ~ .footer-copyright {
+    margin-top: 50px;
+  }
+  .site-footer .footer-bottom .site-payment {
+    max-width: 100%;
+  }
+}
+html[dir='rtl'] .site-footer .footer-copyright {
+  text-align: left;
+}
+html[dir='ltr'] .site-footer .footer-copyright {
+  text-align: right;
+}
+html[dir='rtl'] .site-footer .footer-copyright:first-child {
+  text-align: right;
+}
+html[dir='ltr'] .site-footer .footer-copyright:first-child {
+  text-align: left;
+}
+html[dir='rtl'] .site-footer .localization-form-holder ~ .footer-copyright .site-payment {
+  text-align: left;
+}
+html[dir='ltr'] .site-footer .localization-form-holder ~ .footer-copyright .site-payment {
+  text-align: right;
+}
+.site-footer .footer-image svg {
+  background: rgba(0, 0, 0, 0.05);
+}
+.site-footer .footer-item .title {
+  margin-bottom: 1.5em;
+}
+.site-footer .footer-content p:last-child {
+  margin-bottom: 0;
+}
+.site-footer .footer-menu > span {
+  line-height: 1;
+  display: block;
+  min-height: 16px;
+}
+.site-footer .footer-menu > span:not(:last-child) {
+  margin-bottom: 1.25em;
+}
+.site-footer .site-social {
+  flex-direction: column;
+  margin-bottom: 0;
+}
+.site-footer .site-social a {
+  display: flex;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  align-items: center;
+}
+.site-footer .site-social a:not(:last-child) {
+  margin-bottom: 1.25em;
+}
+.site-footer .site-social .icon {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  margin-inline-end: 1em;
+}
+.site-footer .site-social .icon svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+.site-footer .site-social .icon svg * {
+  fill: var(--main-text);
+}
+.site-footer .site-social .text {
+  background-position: 0 calc(1em + 2px);
+  transform: translateY(1px);
+}
+
+.site-copyright {
+  display: block;
+  /* margin-top: 10px; */
+}
+
+.shop-login-button {
+  display: block;
+  margin-bottom: 18px;
+}

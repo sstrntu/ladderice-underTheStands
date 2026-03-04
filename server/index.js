@@ -1,0 +1,66 @@
+'use strict';
+
+require('dotenv').config();
+
+const express = require('express');
+const session = require('express-session');
+const path    = require('path');
+
+const adminRoutes = require('./routes/admin');
+const apiRoutes   = require('./routes/api');
+
+const app  = express();
+const PORT = process.env.PORT || 3001;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+
+// ── CORS ─────────────────────────────────────────────────────────────────────
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // Allow the configured origin AND localhost for local preview
+  if (
+    origin === ALLOWED_ORIGIN ||
+    /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin) ||
+    /^file:\/\//.test(origin) ||
+    !origin // same-origin or non-browser requests
+  ) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
+// ── Sessions ─────────────────────────────────────────────────────────────────
+app.use(session({
+  secret:            process.env.SESSION_SECRET || 'dev-secret-change-me',
+  resave:            false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    maxAge:   8 * 60 * 60 * 1000, // 8 hours
+  },
+}));
+
+// ── Static assets ─────────────────────────────────────────────────────────────
+app.use('/public',  express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'data', 'uploads')));
+
+// ── Routes ───────────────────────────────────────────────────────────────────
+app.use('/admin', adminRoutes);
+app.use('/api',   apiRoutes);
+
+// Campaign page at root
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', 'index.html')));
+
+// 404
+app.use((req, res) => res.status(404).json({ error: 'Not found' }));
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+app.listen(PORT, () => {
+  console.log(`\n  Red Funding server running at http://localhost:${PORT}`);
+  console.log(`  Admin panel:  http://localhost:${PORT}/admin`);
+  console.log(`  API counts:   http://localhost:${PORT}/api/counts\n`);
+});

@@ -1,0 +1,304 @@
+<div id="section-{{ section.id }}" class="site-box-container container--fullscreen remove-background" data-size="{{ section.blocks.size }}" data-height="{{ section.settings.image_height }}">
+
+  {%- for block in section.blocks -%}
+
+    {%- liquid
+
+      render 'custom-colors', type: 'block', id: block.id, background: block.settings.custom_overlay, text: block.settings.custom_text
+
+      assign size = section.blocks.size
+      assign index = forloop.index
+
+      if section.settings.image_height == "half"
+
+        if size == 1 
+          assign size_class = "box--small-fl box--large-padding"
+        elsif size == 2
+          assign size_class = "box--small-lg palm--box--small-fl box--small-padding"
+        elsif size == 3
+          assign size_class = "box--third-fl palm--box--small-fl box--small-padding"
+        elsif size == 4 
+          assign size_class = "box--small lap--box--small-lg palm--box--small-fl box--small-padding"
+        endif
+
+        if size < 3
+          assign text_size = size | plus: 1
+        else  
+          assign text_size = size
+        endif
+
+      else
+
+        if size == 1
+          assign size_class = "box--bigger lap--box--66 box--largest-padding"
+        elsif size == 2
+          assign size_class = "box--big lap--box--big palm--box--bigger box--large-padding"
+        elsif size == 3
+          assign size_class = "box--third-big lap--box--33 palm--box--bigger box--small-padding"
+        elsif size == 4
+          assign size_class = "box--forth-big lap--box--big palm--box--bigger box--small-padding"
+        endif
+
+        if size == 1
+          assign text_size = 0
+        else 
+          assign text_size = size
+        endif
+
+      endif
+
+      if block.settings.url == blank or block.settings.url == '#'
+        assign block_url = blank
+      else 
+        assign block_url = block.settings.url
+      endif
+
+      if section.index == 1 and forloop.index <= 2
+        assign preload = true
+      else
+        assign preload = false
+      endif
+
+    -%}
+
+    {%- liquid 
+      if block.settings.button_label == blank and block.settings.title == blank and block.settings.caption == blank and block_url != blank
+        assign link_on = 'main'
+      elsif block.settings.button_label == blank and block_url != blank
+        assign link_on = 'content'
+      else
+        assign link_on = 'button'
+      endif
+    -%}
+
+    {% if link_on == 'main' %}
+      <a href="{{ block_url | escape }}" 
+    {% else %}
+      <div 
+    {% endif %}
+
+      id="block-{{ block.id }}" {{ block.shopify_attributes }} 
+      class="site-box box--column-flow {{ size_class }} box__image-text {{ section.settings.text_alignment }} {% if link_on == 'content' %} hard-align {% endif %}" 
+      data-order="{{ index | minus: 1 }}">
+
+      {% if link_on == 'content' and block_url != blank %}
+        <a href="{{ block_url | escape }}"
+      {% else %}
+        <div 
+      {% endif %}
+
+        class="site-box-content site-box-content-to-focus">
+
+        <div class="content">
+
+          {%- unless block.settings.subtitle == blank -%}
+            <p class="subtitle">{{ block.settings.subtitle | escape }}</p>
+          {%- endunless -%}
+
+          {%- unless block.settings.title == blank -%}
+            <{{ block.settings.seo_h_tag }} class="title h{{ text_size }}">
+              {%- if link_on == 'content' and settings.headings_hr == false -%} <span class="underline-animation{% if size < 3 %}-thick{% endif %}"> {%- endif -%}
+                {{ block.settings.title | escape }}
+              {%- if link_on == 'content' and settings.headings_hr == false -%} </span> {%- endif -%}
+            </{{ block.settings.seo_h_tag }}>
+          {%- endunless -%}
+
+          {%- unless block.settings.button_label == blank -%}
+            <a class="button button--with-icon button--outline" {% unless block_url == blank %} href="{{ block_url }}" {% endunless %}> {{ block.settings.button_label | escape }} <span class="icon" aria-hidden="true">{%- render 'theme-symbols', icon: 'arrow_icon_smallest' -%}</span></a>
+          {%- elsif block.settings.subtitle != blank or block.settings.title != blank -%}
+            {%- if settings.headings_hr -%} <hr /> {%- endif -%}
+          {%- endunless -%}
+
+        </div>
+
+        {%- if link_on == 'content' %}
+          </a>
+        {%- else -%}
+          </div>
+        {%- endif -%}
+
+      <span class="site-box-background {% if block.settings.custom_overlay != "rgba(0,0,0,0)" %} with-image {% endif %} {% if block.settings.caption != blank or block.settings.title != blank or block.settings.button_label == blank %} no-preloader {% endif %}" aria-hidden="true">
+
+        {%- if block.settings.image == blank -%}
+          {%- assign no = index | modulo: 6 | plus: 1 -%}
+          <span class="onboarding-svg">{{ 'collection-X' | replace: 'X', no | placeholder_svg_tag }}</span>
+        {%- else -%}
+          {%- render 'lazy-image', image: block.settings.image, image_alignment: true, id: block.id, sizes: '100vw', preload: preload -%}
+        {%- endif -%}
+        
+    </span>
+
+    {%- if link_on == 'main' -%}
+      </a>
+    {%- else -%}
+      </div> 
+    {%- endif -%}
+
+  {%- endfor -%}
+
+</div>
+
+{% schema %}
+  {
+    "name": "t:sections.image-with-text.name",
+    "max_blocks": 4,
+    "blocks": [
+      {
+        "type": "image",
+        "name": "t:sections.image-with-text.blocks.image.name",
+        "settings": [
+          {
+            "type": "text",
+            "id": "subtitle",
+            "label": "t:sections.split-extra-words.sections.split-screen-slider.blocks.slide.settings.tagline",
+            "default": "Share your latest news"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "t:sections.split-extra-words.settings_schema.headings.title",
+            "default": "Write your story"
+          },
+          {
+            "type": "text",
+            "id": "button_label",
+            "label": "t:sections.image-with-text.blocks.image.settings.button_label.label"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "t:sections.image-with-text.blocks.image.settings.url.label",
+            "info": "t:sections.local-extra-words.sections.media-with-text-overlay.blocks.link.info"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "t:sections.image-with-text.blocks.image.settings.image.label"
+          },
+          {
+            "type": "header",
+            "content": "t:sections.split-extra-words.settings_schema.colors.headings.custom_colors"
+          },
+          {
+            "type": "color",
+            "id": "custom_text",
+            "label": "t:sections.split-extra-words.settings_schema.colors.settings.text",
+            "default": "rgba(0,0,0,0)"
+          },
+          {
+            "type": "color",
+            "id": "custom_overlay",
+            "label": "t:sections.split-extra-words.sections.image-with-text.settings.overlay.label",
+            "default": "rgba(0,0,0,0)"
+          },
+          {
+            "type": "header",
+            "content": "t:sections.refactor_words.seo.name"
+          },
+          {
+            "type": "select",
+            "id": "seo_h_tag",
+            "label": "t:sections.refactor_words.seo.label",
+            "info": "t:sections.refactor_words.seo.info",
+            "options": [
+              {
+                "value": "h1",
+                "label": "H1"
+              },
+              {
+                "value": "h2",
+                "label": "H2"
+              },
+              {
+                "value": "h3",
+                "label": "H3"
+              },
+              {
+                "value": "h4",
+                "label": "H4"
+              },
+              {
+                "value": "span",
+                "label": "span"
+              }
+            ],
+            "default": "h2"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "select",
+        "id": "image_height",
+        "label": "t:sections.split-extra-words.sections.image-with-text.settings.image_height.label",
+        "options": [
+          {
+            "value": "half",
+            "label": "t:sections.split-extra-words.sections.image-with-text.settings.image_height.options__1"
+          },
+          {
+            "value": "full",
+            "label": "t:sections.split-extra-words.sections.image-with-text.settings.image_height.options__2"
+          }
+        ],
+        "default": "half"
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "t:sections.image-with-text.settings.text_alignment.label",
+        "options": [
+          {
+            "value": "horizontal-left vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__1.label"
+          },
+          {
+            "value": "horizontal-center vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__2.label"
+          },
+          {
+            "value": "horizontal-right vertical-top",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__3.label"
+          },
+          {
+            "value": "horizontal-left vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__4.label"
+          },
+          {
+            "value": "horizontal-center vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__5.label"
+          },
+          {
+            "value": "horizontal-right vertical-middle",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__6.label"
+          },
+          {
+            "value": "horizontal-left vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__7.label"
+          },
+          {
+            "value": "horizontal-center vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__8.label"
+          },
+          {
+            "value": "horizontal-right vertical-bottom",
+            "label": "t:sections.image-with-text.settings.text_alignment.options__9.label"
+          }
+        ],
+        "default": "horizontal-center vertical-middle"
+      }
+    ], 
+    "presets": [{
+      "name": "t:sections.image-with-text.presets.name",
+      "blocks": [{
+        "type": "image"
+      },{
+        "type": "image"
+      }]
+    }],
+		"disabled_on": {
+			"groups": ["custom.overlay", "header"]
+		}
+  }
+{% endschema %}

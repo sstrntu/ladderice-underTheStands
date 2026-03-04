@@ -1,0 +1,141 @@
+.localization-form-holder .localization-form {
+  flex-wrap: wrap;
+  display: flex;
+  margin-bottom: -20px;
+}
+.localization-form-holder .localization-form__item {
+  margin-bottom: 20px;
+  position: relative;
+}
+.localization-form-holder .localization-form__item > span {
+  display: block;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.localization-form-holder .localization-form__item:not(:last-child) {
+  margin-inline-end: 20px;
+}
+.localization-form-holder .regular-select-cover {
+  display: inline-block;
+  width: auto !important;
+  position: relative;
+  color: var(--main-text);
+  height: 50px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: calc(100% - 17px) 50%;
+  background-size: 14px 9px;
+  line-height: 1;
+  border: 1px solid var(--main-background-secondary);
+}
+html[dir=rtl] .localization-form-holder .regular-select-cover {
+  background-position: 17px 50%;
+}
+.localization-form-holder .regular-select-inner {
+  height: 50px;
+  color: var(--main-text);
+  padding-inline-end: 60px;
+  padding-inline-start: 20px;
+  line-height: 48px;
+  display: block;
+  font-size: calc(14px / 16 * var(--base-body-size) + 0px);
+  text-transform: capitalize;
+}
+.localization-form-holder .regular-select-content {
+  list-style: none;
+  background-color: var(--main-background);
+  position: relative;
+  overflow: hidden;
+  top: -2px;
+  height: auto;
+  border: 1px solid var(--main-background-secondary);
+  margin: 0;
+  text-transform: capitalize;
+  display: none;
+  width: 100%;
+  max-height: 360px;
+  overflow-y: auto;
+}
+html[dir=rtl] .localization-form-holder .regular-select-content {
+  right: 0px;
+}
+html[dir=ltr] .localization-form-holder .regular-select-content {
+  left: 0px;
+}
+.localization-form-holder .content-opened:not(.invert-permanent).regular-select-content {
+  top: 49px;
+  display: block;
+  bottom: auto;
+  position: absolute;
+  border-top: 1px solid var(--main-background-secondary);
+  z-index: 999;
+}
+.localization-form-holder .content-opened.invert-permanent.regular-select-content,
+.localization-form-holder .content-opened.invert-y.regular-select-content {
+  top: auto;
+  display: block;
+  bottom: 49px;
+  position: absolute;
+  border-top: 1px solid var(--main-background-secondary);
+}
+.localization-form-holder .regular-select-item {
+  height: auto;
+  padding: 0;
+  font-size: calc(14px / 16 * var(--base-body-size) + 0px);
+}
+.localization-form-holder .regular-select-item button {
+  background-color: var(--main-background);
+  display: block;
+  padding: 11px 12px 9px;
+  color: var(--main-text);
+  width: 100%;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: all 150ms linear;
+}
+html[dir=rtl] .localization-form-holder .regular-select-item button {
+  text-align: right;
+}
+html[dir=ltr] .localization-form-holder .regular-select-item button {
+  text-align: left;
+}
+.no-touchevents .localization-form-holder .regular-select-item:hover button, .localization-form-holder .regular-select-item.regular-select-item--selected button {
+  font-weight: var(--font-weight-body-bold);
+}
+
+.site-nav.style--sidebar .localization-form--header {
+  margin-top: 50px;
+}
+.site-nav.style--sidebar .localization-form--header button {
+  color: var(--main-text);
+}
+.site-nav.style--classic .localization-form--header span {
+  color: var(--header-text);
+}
+.no-touchevents .site-nav.style--classic .localization-form--header button:hover .underline-animation {
+  background-size: 100% 1px;
+}
+.localization-form--header .regular-select-content {
+  width: fit-content;
+  min-width: 200px;
+}
+.localization-form--header .regular-select-content li {
+  display: block;
+}
+.localization-form--header .localization-form__item,
+.localization-form--header .regular-select-item {
+  margin-bottom: 0 !important;
+}
+.localization-form--header .localization-form__item > .localization-form__label {
+  display: none;
+}
+
+.site-nav.style--classic .localization-form-holder .regular-select-content, .site-nav.style--classic .localization-form-holder .regular-select-item button {
+  background-color: var(--header-background);
+}
+.site-nav.style--classic .localization-form-holder .regular-select-content {
+  border-color: var(--header-borders) !important;
+}
+.site-nav.style--classic .localization-form-holder button {
+  color: var(--header-text);
+}

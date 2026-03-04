@@ -1,0 +1,89 @@
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+	<div class="cart-product-recommendations" data-js-cart-recommendations-performed>
+		<span class="sidebar-divider">{{ settings.cart_recommendations_heading }}</span>
+		<css-slider class="css-slider--simple-dots" 
+      data-options='{
+        "selector": ".cart-product-item",
+        "navigation": false,
+        "groupCells": true
+      }'
+      style="display:flex"
+    > 
+		  {%- for product in recommendations.products -%}
+				<div class="cart-product-item" data-js-product-item>
+
+					<a href="{{ product.url }}" class="cart-product-item-image">
+						{%- render 'lazy-image-small', image: product.featured_media, sizes: '170px' -%}
+					</a>
+
+					<a href="{{ product.url }}" class="cart-product-item-title">
+						<span class="underline-animation">{{ product.title }}</span>
+					</a>	
+
+					<span class="cart-product-item-price text-size--smaller">
+		  			{%- liquid
+
+							assign variant = product.selected_or_first_available_variant
+		          assign price = product.price | money
+
+		          if product.price_varies
+		            if product.compare_at_price > product.price
+		              echo 'products.grid.on_sale_from_html' | t: price: price
+		            else
+		              echo 'products.grid.from_text_html' | t: price: price
+		            endif
+		          else
+		            if product.compare_at_price > product.price
+		              echo price
+		              echo '<del>'
+		                echo product.compare_at_price | money
+		              echo '</del>'
+		            else 
+		              echo price
+		            endif
+		          endif
+
+		          if variant.unit_price_measurement
+		            echo '<span class="unit-price text-size--smallest">'
+		            echo variant.unit_price | money
+		            echo ' / '
+		            if variant.unit_price_measurement.reference_value != 1
+		              echo variant.unit_price_measurement.reference_value
+		            endif
+		            echo variant.unit_price_measurement.reference_unit
+		            echo '</span>'
+		          endif
+
+		        -%}
+					</span>
+
+					{%- if settings.enable_recommendations_quick_buy -%}
+						<div class="actions">
+							{%- if product.available -%}
+								{%- if product.has_only_default_variant -%}
+									<quick-add-to-cart>
+										<product-form {% if settings.cart_action == 'overlay' %} data-ajax-cart {% endif %}>
+											{%- form 'product', product -%}
+												<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+												<button class="product__add-to-cart" type="submit" name="add" aria-label="{{ 'products.page.add_to_cart_button' | t }}" tabindex="-1" style="color:var(--main-text)">
+													<span class="text-size--smallest" style="border-bottom: 1px solid">{{ 'cart.quick_buy' | t }}</span>
+												</button>
+											{%- endform -%} 
+										</product-form>
+									</quick-add-to-cart>
+								{%- else -%}
+									<quick-view-product>
+										<button class="product__add-to-cart" data-href="{{ product.url }}" tabindex="-1" onclick="document.getElementById('site-cart').hide()" style="color:var(--main-text)">
+											<span class="text-size--smallest" style="border-bottom: 1px solid">{{ 'cart.quick_buy' | t }}</span>
+										</button>
+									</quick-view-product>
+								{%- endif -%}
+							{%- endif -%}
+						</div>
+					{%- endif -%}
+
+				</div>
+	  	{%- endfor -%}
+	  </css-slider>
+ 	</div>
+{%- endif -%}
