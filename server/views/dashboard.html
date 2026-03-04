@@ -320,6 +320,52 @@
         </div>
       </div>
 
+      <!-- Email Content CMS -->
+      <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
+        <div class="section-title">Email Content</div>
+        <div class="section-heading">Customize Email Template</div>
+
+        <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:20px;line-height:1.7;">
+          Edit the text content of the vote invitation email. Changes take effect on the <strong>next email sent</strong>.
+        </p>
+
+        <div class="cms-grid" style="margin-bottom:20px">
+          <div class="cms-field cms-field--full">
+            <label>Email Subject Line</label>
+            <input type="text" id="email-cms-subject" placeholder="Your vote is ready — Ladderice Campaign">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Preheader Text <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(preview text shown in inbox)</span></label>
+            <input type="text" id="email-cms-preheader" placeholder="You've been selected to vote on where our campaign profit goes.">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Main Heading <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(use new lines for line breaks)</span></label>
+            <textarea id="email-cms-heading" rows="2" placeholder="Your Vote&#10;is Ready" style="min-height:56px"></textarea>
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Body Text</label>
+            <textarea id="email-cms-body" rows="3" placeholder="Thank you for supporting the Ladderice campaign. You've been selected to vote on where our campaign profit goes — choose one of three causes that matter to you."></textarea>
+          </div>
+          <div class="cms-field">
+            <label>Button Text</label>
+            <input type="text" id="email-cms-cta" placeholder="Cast Your Vote">
+          </div>
+          <div class="cms-field">
+            <label>Brand / Sign-off Name</label>
+            <input type="text" id="email-cms-signoff" placeholder="Ladderice">
+          </div>
+          <div class="cms-field cms-field--full">
+            <label>Footer Text</label>
+            <input type="text" id="email-cms-footer" placeholder="You received this email because you purchased from the Ladderice campaign.">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:center">
+          <button class="btn btn--primary" onclick="saveEmailContent()">Save Email Content</button>
+          <span id="email-cms-save-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></span>
+        </div>
+      </div>
+
       <!-- Token Stats -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
         <div class="stat">
@@ -1010,6 +1056,43 @@
       document.getElementById('email-smtp_from_name').value = s.smtp_from_name || 'Ladderice Campaign';
       document.getElementById('email-site_url').value = s.site_url || '';
       document.getElementById('email-smtp_secure').checked = s.smtp_secure === '1' || s.smtp_secure === 'true';
+
+      // Email content CMS
+      document.getElementById('email-cms-subject').value = s.email_subject || '';
+      document.getElementById('email-cms-preheader').value = s.email_preheader || '';
+      document.getElementById('email-cms-heading').value = s.email_heading || '';
+      document.getElementById('email-cms-body').value = s.email_body || '';
+      document.getElementById('email-cms-cta').value = s.email_cta_text || '';
+      document.getElementById('email-cms-signoff').value = s.email_signoff || '';
+      document.getElementById('email-cms-footer').value = s.email_footer_text || '';
+    });
+  }
+
+  function saveEmailContent() {
+    var pairs = {
+      'email_subject': document.getElementById('email-cms-subject').value.trim(),
+      'email_preheader': document.getElementById('email-cms-preheader').value.trim(),
+      'email_heading': document.getElementById('email-cms-heading').value,
+      'email_body': document.getElementById('email-cms-body').value.trim(),
+      'email_cta_text': document.getElementById('email-cms-cta').value.trim(),
+      'email_signoff': document.getElementById('email-cms-signoff').value.trim(),
+      'email_footer_text': document.getElementById('email-cms-footer').value.trim()
+    };
+    var btn = event.target;
+    var status = document.getElementById('email-cms-save-status');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fetch('/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pairs)
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) { status.textContent = '✓ Email content saved'; status.style.color = '#2e7d32'; }
+      else { status.textContent = 'Error: ' + data.error; status.style.color = '#A50009'; }
+    }).catch(function() {
+      status.textContent = 'Network error.'; status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Save Email Content';
+      setTimeout(function() { status.textContent = ''; }, 3000);
     });
   }
 
