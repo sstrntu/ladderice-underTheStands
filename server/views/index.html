@@ -298,7 +298,7 @@
 
     /* Financial cards */
     .rf-financials { display: flex; align-items: stretch; border: 1px solid var(--main-borders); border-radius: 0; overflow: hidden; margin-bottom: 80px; }
-    @media(max-width:900px){ .rf-financials{flex-direction:column} .rf-fin-sep{transform:rotate(90deg);padding:4px 0} }
+    @media(max-width:900px){ .rf-financials{flex-direction:column} .rf-fin-sep{padding:4px 0} }
 
     .rf-fin-card { flex: 1; padding: 48px 40px; border-right: 1px solid var(--main-borders); }
     .rf-fin-card:last-child { border-right: none; }
@@ -519,14 +519,44 @@
         padding-top: calc(100% * 5 / 4);
       }
     }
+    .rf-jersey-card__img::before {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60%;
+      background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%);
+      z-index: 2; pointer-events: none;
+    }
     .rf-jersey-card__img::after {
       content: "";
       position: absolute;
       inset: 0;
       border: 1px solid rgba(24,24,24,0.06);
       pointer-events: none;
-      z-index: 2;
+      z-index: 5;
     }
+    .rf-card-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 24px 24px 28px; z-index: 4;
+    }
+    .rf-card-overlay__tag {
+      display: block; font-family: var(--font-stack-body);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px;
+    }
+    .rf-card-overlay__name {
+      font-family: var(--font-stack-headings); font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 500; color: #fff; margin-bottom: 16px; line-height: 1.15;
+    }
+    .rf-card-overlay__btn {
+      display: inline-flex; align-items: center; padding: 9px 20px;
+      font-family: var(--font-stack-body); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
+      border: 1px solid rgba(255,255,255,0.55); border-radius: 50px;
+      text-decoration: none; transition: background 0.2s var(--ease-smooth), border-color 0.2s;
+    }
+    .rf-card-overlay__btn:hover:not(.is-disabled) { background: rgba(255,255,255,0.15); border-color: #fff; }
+    .rf-card-overlay__btn.is-disabled { opacity: 0.45; pointer-events: none; }
     .rf-jersey-card__img svg { width: 45%; max-width: 180px; flex-shrink: 0; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); z-index: 0; }
     .rf-jersey-card:hover .rf-jersey-card__img svg { transform: translateY(-8px) scale(1.04); }
     .rf-jersey-card__info { padding: 20px 24px 28px; border-top: 1px solid var(--grid-borders); }
@@ -575,15 +605,15 @@
     .rf-mini-carousel__btn--next { right: 10px; }
     .rf-mini-carousel__btn:hover { background: #fff; }
     .rf-mini-carousel__dots {
-      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
       display: flex; gap: 6px; z-index: 3;
     }
     .rf-mini-carousel__dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(24,24,24,0.2); border: none; cursor: pointer; padding: 0;
+      background: rgba(255,255,255,0.4); border: none; cursor: pointer; padding: 0;
       transition: background 0.2s, transform 0.2s;
     }
-    .rf-mini-carousel__dot.active { background: var(--main-text); transform: scale(1.35); }
+    .rf-mini-carousel__dot.active { background: #fff; transform: scale(1.35); }
 
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 
@@ -889,17 +919,17 @@
             <rect x="30" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
             <rect x="240" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
           </svg>
+          <div class="rf-card-overlay">
+            <span class="rf-card-overlay__tag" id="jersey-2-tag">Away Kit</span>
+            <div class="rf-card-overlay__name" id="jersey-2-name">Black — No. 07</div>
+            <a class="rf-card-overlay__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
+          </div>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
           <div class="rf-mini-carousel__dots" id="jersey-2-dots"></div>
         </div>
-        <div class="rf-jersey-card__info">
-          <span class="rf-jersey-card__tag" id="jersey-2-tag">Away Kit</span>
-          <div class="rf-jersey-card__name" id="jersey-2-name">Black — No. 07</div>
-          <p class="rf-jersey-card__desc" id="jersey-2-desc">Blacked-out with red accents. Understated, sharp, undeniable.</p>
-          <div class="rf-jersey-card__price" id="jersey-2-price">฿1,590</div>
-          <a class="rf-jersey-card__link is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
-        </div>
+        <span id="jersey-2-desc" hidden></span>
+        <span id="jersey-2-price" hidden></span>
       </div>
 
       <!-- Jersey 3 — Product 3 -->
@@ -911,17 +941,17 @@
             <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
             <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
           </svg>
+          <div class="rf-card-overlay">
+            <span class="rf-card-overlay__tag" id="jersey-3-tag">Coming Soon</span>
+            <div class="rf-card-overlay__name" id="jersey-3-name">Third Jersey</div>
+            <a class="rf-card-overlay__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
+          </div>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
           <div class="rf-mini-carousel__dots" id="jersey-3-dots"></div>
         </div>
-        <div class="rf-jersey-card__info">
-          <span class="rf-jersey-card__tag" id="jersey-3-tag">Coming Soon</span>
-          <div class="rf-jersey-card__name" id="jersey-3-name">Third Jersey</div>
-          <p class="rf-jersey-card__desc" id="jersey-3-desc">Add details via the admin panel.</p>
-          <div class="rf-jersey-card__price" id="jersey-3-price" style="display:none"></div>
-          <a class="rf-jersey-card__link is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
-        </div>
+        <span id="jersey-3-desc" hidden></span>
+        <span id="jersey-3-price" hidden></span>
       </div>
 
     </div>
@@ -1090,11 +1120,12 @@
       var iw = img.naturalWidth;
       var ih = img.naturalHeight;
 
-      // Cover algorithm
+      // Cover algorithm — shift right on mobile to focus on right jersey
       var scale = Math.max(cw / iw, ch / ih);
       var sw = cw / scale;
       var sh = ch / scale;
-      var sx = (iw - sw) / 2;
+      var xFactor = window.innerWidth <= 768 ? 0.8 : 0.5;
+      var sx = (iw - sw) * xFactor;
       var sy = (ih - sh) / 2;
 
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
