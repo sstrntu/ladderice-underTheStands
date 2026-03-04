@@ -443,17 +443,19 @@
     .rf-bar-count { font-size: 11px; color: var(--main-text-subtle); }
 
     .rf-vote-btn {
-      width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
-      border: 1px solid var(--main-borders); background: transparent;
-      color: var(--main-text-subtle); font-family: var(--font-stack-body);
-      font-size: 10px; font-weight: 500; letter-spacing: 0.10em; text-transform: uppercase;
-      cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s;
-      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; padding: 0 22px; height: 48px; border-radius: 30px;
+      border: none; background: var(--rf-red);
+      color: #fff; font-family: var(--font-stack-body);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      box-shadow: 0 2px 10px rgba(196,30,30,0.35);
     }
-    .rf-vote-btn:not(:disabled):hover { background: var(--rf-red); border-color: var(--rf-red); color: #fff; }
-    .rf-vote-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .rf-vote-btn-check { display: none; font-size: 18px; }
-    .rf-charity.voted .rf-vote-btn { background: rgba(76,175,80,0.08); border-color: rgba(76,175,80,0.25); color: #4CAF50; opacity: 1; }
+    .rf-vote-btn:not(:disabled):hover { background: var(--rf-red-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(196,30,30,0.45); }
+    .rf-vote-btn:not(:disabled):active { transform: translateY(0); box-shadow: 0 2px 8px rgba(196,30,30,0.3); }
+    .rf-vote-btn:disabled { opacity: 0.28; cursor: not-allowed; box-shadow: none; }
+    .rf-vote-btn-check { display: none; font-size: 16px; }
+    .rf-charity.voted .rf-vote-btn { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.3); color: #4CAF50; opacity: 1; box-shadow: none; }
     .rf-charity.voted .rf-vote-btn-label { display: none; }
     .rf-charity.voted .rf-vote-btn-check { display: block; }
 
@@ -790,7 +792,7 @@
       <div class="rf-vote-section__left">
         <div class="rf-vote-section__eyebrow">Cast Your Vote</div>
         <h2 class="rf-vote-section__heading" id="cms-vote-heading">You decide<br>where the<br><em>profit lands.</em></h2>
-        <p class="rf-vote-section__body" id="cms-vote-body">One purchase = one vote. Enter your order number or email to unlock your vote.</p>
+        <p class="rf-vote-section__body" id="cms-vote-body">One purchase = one vote. Enter your email to unlock your vote.</p>
         <div class="rf-vote-section__stat">
           <div class="rf-vote-section__stat-item">
             <div class="rf-vote-section__stat-num" id="vote-stat-total">&mdash;</div>
@@ -809,12 +811,12 @@
 
       <div class="rf-vote-section__right">
         <div class="rf-gate" id="rf-gate">
-          <label class="rf-gate__label" for="rf-order">Your Order Number or Email</label>
+          <label class="rf-gate__label" for="rf-order">Your Email</label>
           <div class="rf-gate__row">
-            <input type="text" id="rf-order" class="rf-gate__input" placeholder="#10001 or email" autocomplete="off">
+            <input type="email" id="rf-order" class="rf-gate__input" placeholder="your@email.com" autocomplete="email">
             <button class="rf-gate__btn" id="rf-verify" type="button">Verify</button>
           </div>
-          <p class="rf-gate__note" id="rf-note">Your order number can be found in your confirmation email.</p>
+          <p class="rf-gate__note" id="rf-note">Enter the email address you used when purchasing.</p>
         </div>
 
         <div class="rf-charities" id="rf-charities">
@@ -986,9 +988,9 @@
   var verifiedOrder = null;
 
   var errorMessages = {
-    empty_query:  'Please enter your order number or email.',
-    not_found:    'Order not found. Check your confirmation email for the exact number.',
-    already_voted:'You have already voted with this order.'
+    empty_query:  'Please enter your email address.',
+    not_found:    'Email not found. Make sure you\'re using the address from your purchase confirmation.',
+    already_voted:'You have already voted with this email.'
   };
 
   // ── Apply live vote counts ────────────────────────────
@@ -1313,7 +1315,7 @@
       verifiedOrder         = data.orderNumber;
       verified              = true;
       gate.classList.add('verified');
-      note.textContent      = '\u2713 Order verified' + (data.voterName ? ', ' + data.voterName : '') + ' \u2014 select a cause and cast your vote.';
+      note.textContent      = '\u2713 Email verified' + (data.voterName ? ', ' + data.voterName : '') + ' \u2014 select a cause and cast your vote.';
       note.style.color      = '#4CAF50';
       input.disabled        = verifyBtn.disabled = true;
       verifyBtn.textContent = 'Verified \u2713';
