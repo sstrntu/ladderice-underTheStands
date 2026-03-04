@@ -8,10 +8,38 @@ const path    = require('path');
 
 const adminRoutes = require('./routes/admin');
 const apiRoutes   = require('./routes/api');
+const db = require('./database');
 
 const app  = express();
 const PORT = process.env.PORT || 3001;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
+
+// ── Initialize SMTP settings from .env if not in database ──────────────────
+(function initializeSettings() {
+  const currentSettings = db.getAllSettings();
+  const envSettings = {
+    smtp_host: process.env.SMTP_HOST,
+    smtp_port: process.env.SMTP_PORT,
+    smtp_user: process.env.SMTP_USER,
+    smtp_pass: process.env.SMTP_PASS,
+    smtp_from_email: process.env.SMTP_FROM_EMAIL,
+    smtp_from_name: process.env.SMTP_FROM_NAME,
+    site_url: process.env.SITE_URL,
+    smtp_secure: '1',
+  };
+
+  const toUpdate = {};
+  Object.keys(envSettings).forEach(key => {
+    if (envSettings[key] && !currentSettings[key]) {
+      toUpdate[key] = envSettings[key];
+    }
+  });
+
+  if (Object.keys(toUpdate).length > 0) {
+    db.setSetting(toUpdate);
+    console.log('✓ Initialized SMTP settings from .env');
+  }
+})();
 
 // ── CORS ─────────────────────────────────────────────────────────────────────
 app.use((req, res, next) => {

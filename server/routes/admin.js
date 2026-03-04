@@ -6,6 +6,7 @@ const { parse } = require('csv-parse/sync');
 const path     = require('path');
 const fs       = require('fs');
 const db       = require('../database');
+const mailer   = require('../mailer');
 const { requireAdmin } = require('../middleware/auth');
 
 const router  = express.Router();
@@ -193,5 +194,174 @@ router.post('/upload-image', requireAdmin, (req, res) => {
 
 // ── GET /uploads/:file ────────────────────────────────────────────────────────
 // Handled by express.static in index.js (served at /uploads)
+
+// ── POST /admin/upload-voters ─────────────────────────────────────────────────
+// Upload CSV of customer emails for vote campaign.
+// Columns: email, name (can also be first_name/last_name or customer_name)
+
+router.post('/upload-voters', requireAdmin, upload.single('csv'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ ok: false, error: 'No file uploaded.' });
+  }
+
+  let records;
+  try {
+    records = parse(req.file.buffer.toString('utf8'), {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+    });
+  } catch (e) {
+    return res.status(400).json({ ok: false, error: 'Could not parse CSV: ' + e.message });
+  }
+
+  // Normalise column names
+  const rows = [];
+  for (const raw of records) {
+    const lower = {};
+    for (const [k, v] of Object.entries(raw)) {
+      lower[k.toLowerCase().replace(/\s+/g, '_')] = v;
+    }
+
+    const email = (lower.email || '').trim().toLowerCase();
+    const name  = (lower.name || lower.first_name || lower.customer_name || '').trim();
+
+    if (!email) continue; // skip rows without email
+
+    // Check if email already has a token
+    const existing = db.findOrder(email); // use findOrder as a workaround to check if exists
+    if (!existing) { // only create if not existing
+      rows.push({ email, name });
+    }
+  }
+
+  let created = 0;
+  let skipped = rows.length > 0 ? records.length - rows.length : records.length;
+
+  for (const { email, name } of rows) {
+    db.createToken(email, name);
+    created++;
+  }
+
+  res.json({ ok: true, created, skipped });
+});
+
+// ── GET /admin/tokens ─────────────────────────────────────────────────────────
+// Return all vote tokens (for admin table)
+
+router.get('/tokens', requireAdmin, (req, res) => {
+  res.json(db.getAllTokens());
+});
+
+// ── GET /admin/token-stats ────────────────────────────────────────────────────
+// Return token statistics: { total, sent, used }
+
+router.get('/token-stats', requireAdmin, (req, res) => {
+  res.json(db.getTokenStats());
+});
+
+// ── POST /admin/send-vote-emails ──────────────────────────────────────────────
+// Send vote invitation emails to all tokens where email_sent=0
+
+router.post('/send-vote-emails', requireAdmin, express.json(), async (req, res) => {
+  try {
+    const tokens = db.getAllTokens();
+    const toSend = tokens.filter(t => !t.email_sent);
+
+    if (toSend.length === 0) {
+      return res.json({ ok: true, sent: 0, failed: 0, message: 'No unsent emails' });
+    }
+
+    let sent = 0;
+    let failed = 0;
+    const errors = [];
+
+    for (const token of toSend) {
+      const result = await mailer.sendVoteEmail(token.token, token.email, token.name);
+      if (result.ok) {
+        db.markEmailSent(token.token);
+        sent++;
+      } else {
+        failed++;
+        errors.push({ email: token.email, error: result.error });
+      }
+    }
+
+    res.json({ ok: true, sent, failed, errors: errors.length > 0 ? errors : undefined });
+  } catch (error) {
+    console.error('Send emails error:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+// ── POST /admin/resend-email ──────────────────────────────────────────────────
+// Resend vote email for a specific token
+// Body: { token }
+
+router.post('/resend-email', requireAdmin, express.json(), async (req, res) => {
+  const { token } = req.body || {};
+  if (!token) {
+    return res.status(400).json({ ok: false, error: 'No token provided.' });
+  }
+
+  const tokenRow = db.findToken(token);
+  if (!tokenRow) {
+    return res.status(400).json({ ok: false, error: 'Token not found.' });
+  }
+
+  try {
+    const result = await mailer.sendVoteEmail(token, tokenRow.email, tokenRow.name);
+    if (result.ok) {
+      db.markEmailSent(token);
+      res.json({ ok: true, message: 'Email sent.' });
+    } else {
+      res.json({ ok: false, error: result.error });
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+// ── POST /admin/manual-token ──────────────────────────────────────────────────
+// Manually create a single token for a customer not in the CSV
+// Body: { email, name }
+
+router.post('/manual-token', requireAdmin, express.json(), (req, res) => {
+  const { email, name } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ ok: false, error: 'Email is required.' });
+  }
+
+  const token = db.createToken(email, name || '');
+  if (!token) {
+    return res.status(400).json({ ok: false, error: 'Could not create token (email may already exist).' });
+  }
+
+  res.json({ ok: true, token, email });
+});
+
+// ── POST /admin/send-test-email ────────────────────────────────────────────
+// Send a test email to verify SMTP settings
+// Body: { email }
+
+router.post('/send-test-email', requireAdmin, express.json(), async (req, res) => {
+  const { email } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ ok: false, error: 'Email address required.' });
+  }
+
+  try {
+    const settings = db.getAllSettings();
+    const result = await mailer.sendVoteEmail('TEST-' + Date.now(), email, 'Test Recipient');
+    if (result.ok) {
+      res.json({ ok: true, message: 'Test email sent successfully.' });
+    } else {
+      res.json({ ok: false, error: result.error });
+    }
+  } catch (error) {
+    console.error('Test email error:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
 
 module.exports = router;

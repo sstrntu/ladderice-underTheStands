@@ -38,6 +38,16 @@ db.exec(`
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL DEFAULT ''
   );
+
+  CREATE TABLE IF NOT EXISTS vote_tokens (
+    token       TEXT UNIQUE NOT NULL,
+    email       TEXT NOT NULL,
+    name        TEXT DEFAULT '',
+    used        INTEGER DEFAULT 0,
+    email_sent  INTEGER DEFAULT 0,
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
+    used_at     DATETIME
+  );
 `);
 
 // ── Order helpers ────────────────────────────────────────────────────────────
@@ -139,6 +149,76 @@ const setSetting = db.transaction((pairs) => {
   }
 });
 
+// ── Vote Token helpers (magic links) ──────────────────────────────────────
+
+/**
+ * Create a new vote token. Returns the token string.
+ * Token is crypto-random, email/name are from CSV upload.
+ */
+function createToken(email, name = '') {
+  const crypto = require('crypto');
+  const token = crypto.randomBytes(32).toString('hex');
+  try {
+    db.prepare(`
+      INSERT INTO vote_tokens (token, email, name)
+      VALUES (?, ?, ?)
+    `).run(token, email, name);
+    return token;
+  } catch (e) {
+    // If email already has a token, return the existing one (idempotent)
+    if (e.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+      const existing = db.prepare(`SELECT token FROM vote_tokens WHERE email = ?`).get(email);
+      return existing ? existing.token : null;
+    }
+    throw e;
+  }
+}
+
+/**
+ * Find a token by its string. Returns full row or null.
+ */
+function findToken(token) {
+  return db.prepare(`SELECT * FROM vote_tokens WHERE token = ?`).get(token) || null;
+}
+
+/**
+ * Mark a token as used. Sets used=1 and used_at=NOW().
+ */
+function markTokenUsed(token) {
+  db.prepare(`
+    UPDATE vote_tokens SET used = 1, used_at = CURRENT_TIMESTAMP WHERE token = ?
+  `).run(token);
+}
+
+/**
+ * Mark token(s) as email_sent. Can pass single token or array of tokens.
+ */
+function markEmailSent(tokens) {
+  if (!Array.isArray(tokens)) tokens = [tokens];
+  const stmt = db.prepare(`UPDATE vote_tokens SET email_sent = 1 WHERE token = ?`);
+  for (const token of tokens) stmt.run(token);
+}
+
+/**
+ * Get all vote tokens (for admin table).
+ */
+function getAllTokens() {
+  return db.prepare(`
+    SELECT token, email, name, used, email_sent, created_at, used_at
+    FROM vote_tokens ORDER BY created_at DESC
+  `).all();
+}
+
+/**
+ * Get summary stats: { total, sent, used }
+ */
+function getTokenStats() {
+  const total = db.prepare(`SELECT COUNT(*) as c FROM vote_tokens`).get().c;
+  const sent = db.prepare(`SELECT COUNT(*) as c FROM vote_tokens WHERE email_sent = 1`).get().c;
+  const used = db.prepare(`SELECT COUNT(*) as c FROM vote_tokens WHERE used = 1`).get().c;
+  return { total, sent, used };
+}
+
 module.exports = {
   upsertOrders,
   findOrder,
@@ -149,4 +229,10 @@ module.exports = {
   getAllVotes,
   getAllSettings,
   setSetting,
+  createToken,
+  findToken,
+  markTokenUsed,
+  markEmailSent,
+  getAllTokens,
+  getTokenStats,
 };

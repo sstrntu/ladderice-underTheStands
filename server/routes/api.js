@@ -81,6 +81,90 @@ router.post('/vote', express.json(), (req, res) => {
   res.json({ ok: true, votes, total });
 });
 
+// ── GET /api/validate-token ──────────────────────────────────────────────────
+// Query: ?token=xxx
+// Returns: { ok, name, alreadyVoted? } or { ok: false, reason }
+
+router.get('/validate-token', (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    return res.status(400).json({ ok: false, reason: 'missing_token' });
+  }
+
+  const tokenRow = db.findToken(token);
+  if (!tokenRow) {
+    return res.json({ ok: false, reason: 'invalid' });
+  }
+
+  if (tokenRow.used) {
+    return res.json({ ok: false, reason: 'used' });
+  }
+
+  // Check if this email has already voted via this token
+  // (the token is used as order_number in votes table)
+  const existing = db.getExistingVote(token);
+  if (existing) {
+    return res.json({
+      ok: true,
+      name: tokenRow.name,
+      alreadyVoted: true,
+      votedFor: existing.charity_id,
+      votedForName: existing.charity_name,
+    });
+  }
+
+  res.json({
+    ok: true,
+    name: tokenRow.name,
+    alreadyVoted: false,
+  });
+});
+
+// ── POST /api/vote-with-token ─────────────────────────────────────────────────
+// Body: { token, charityId, charityName }
+// Returns: { ok, votes, total } or { ok: false, error }
+
+router.post('/vote-with-token', express.json(), (req, res) => {
+  const { token, charityId, charityName } = req.body || {};
+
+  if (!token || !charityId) {
+    return res.status(400).json({ ok: false, error: 'missing_fields' });
+  }
+
+  if (!['1', '2', '3'].includes(String(charityId))) {
+    return res.status(400).json({ ok: false, error: 'invalid_charity' });
+  }
+
+  // Validate token
+  const tokenRow = db.findToken(token);
+  if (!tokenRow || tokenRow.used) {
+    return res.json({ ok: false, error: 'invalid_token' });
+  }
+
+  // Ensure an order record exists for this token (use token as order_number)
+  const existingOrder = db.findOrder(token);
+  if (!existingOrder) {
+    db.upsertOrders([{
+      order_number: token,
+      email: tokenRow.email,
+      name: tokenRow.name,
+    }]);
+  }
+
+  // Record the vote
+  const result = db.recordVote(token, String(charityId), charityName || '');
+  if (!result.ok) {
+    return res.json({ ok: false, error: result.error });
+  }
+
+  // Mark token as used
+  db.markTokenUsed(token);
+
+  const votes = db.getVoteCounts();
+  const total = Object.values(votes).reduce((a, b) => a + b, 0);
+  res.json({ ok: true, votes, total });
+});
+
 // ── GET /api/settings ────────────────────────────────────────────────────────
 // Returns public CMS settings (text content, image paths)
 

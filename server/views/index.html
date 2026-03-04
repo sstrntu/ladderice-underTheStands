@@ -1217,6 +1217,58 @@
     setTimeout(function () { input.classList.remove('error'); }, 400);
   }
 
+  // ── Token-based voting (magic links) ─────────────────
+  function checkTokenAndSetup() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var token = urlParams.get('token');
+    if (!token) return; // no token, proceed with normal gate flow
+
+    fetch(API_BASE + '/api/validate-token?token=' + encodeURIComponent(token))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.ok) {
+          // Invalid or used token — show the normal gate
+          note.textContent = 'This vote link is invalid or has already been used.';
+          note.style.color = 'var(--error-color)';
+          return;
+        }
+
+        // Valid token! Hide the gate and enable voting
+        verifiedOrder = token;
+        verified = true;
+
+        // Hide the gate
+        gate.classList.add('verified');
+        note.textContent = '✓ Ready to vote — select a cause below.';
+        note.style.color = '';
+
+        // Show/enable charity cards as selectable
+        document.querySelectorAll('.rf-charity').forEach(function (card) {
+          card.classList.add('selectable');
+        });
+        document.querySelectorAll('.rf-vote-btn').forEach(function (btn) {
+          btn.disabled = false;
+        });
+
+        // If already voted via this token, show that state
+        if (data.alreadyVoted) {
+          verified = true;
+          voted = true;
+          gate.classList.add('verified');
+          note.textContent = '✓ You already voted for ' + data.votedForName + '. Thank you!';
+          var votedCard = document.querySelector('.rf-charity[data-id="' + data.votedFor + '"]');
+          if (votedCard) votedCard.classList.add('voted');
+          document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = true; });
+        }
+      })
+      .catch(function () {
+        // Network error — show gate
+        note.textContent = 'Could not validate vote link. Using standard form.';
+        note.style.color = 'var(--error-color)';
+      });
+  }
+  checkTokenAndSetup();
+
   // ── Verify ───────────────────────────────────────────
   if (verifyBtn) {
     verifyBtn.addEventListener('click', doVerify);
@@ -1306,10 +1358,17 @@
 
     document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = true; });
 
-    fetch(API_BASE + '/api/vote', {
+    // Check if verifiedOrder is a token (long string) or order number
+    var isToken = verifiedOrder && verifiedOrder.length > 20;
+    var endpoint = isToken ? '/api/vote-with-token' : '/api/vote';
+    var payload = isToken
+      ? { token: verifiedOrder, charityId: charityId, charityName: charityName }
+      : { orderNumber: verifiedOrder, charityId: charityId, charityName: charityName };
+
+    fetch(API_BASE + endpoint, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ orderNumber: verifiedOrder, charityId: charityId, charityName: charityName })
+      body:    JSON.stringify(payload)
     })
     .then(function (r) { return r.json(); })
     .then(function (data) {

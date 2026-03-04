@@ -248,6 +248,7 @@
       <div class="tab active" data-tab="votes">Vote Tally</div>
       <div class="tab" data-tab="orders">Loaded Orders</div>
       <div class="tab" data-tab="history">Vote History</div>
+      <div class="tab" data-tab="email">Email Campaign</div>
       <div class="tab" data-tab="products">Products</div>
       <div class="tab" data-tab="content">Finances &amp; Causes</div>
     </div>
@@ -282,6 +283,114 @@
           <tbody id="votes-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- ═══ EMAIL CAMPAIGN TAB ═══ -->
+    <div class="tab-panel" id="tab-email">
+      <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:24px;line-height:1.7;">
+        Manage vote invitation emails. Upload a CSV of customer emails from Shopify, configure SMTP settings, then send vote invitation emails to customers.
+      </p>
+
+      <!-- SMTP Settings -->
+      <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
+        <div class="section-title">Email Configuration</div>
+        <div class="section-heading">SMTP Settings</div>
+
+        <div class="cms-grid" style="margin-bottom:20px">
+          <div class="cms-field"><label>SMTP Host</label><input type="text" id="email-smtp_host" placeholder="smtp.gmail.com"></div>
+          <div class="cms-field"><label>SMTP Port</label><input type="number" id="email-smtp_port" placeholder="587" value="587"></div>
+          <div class="cms-field"><label>SMTP Username</label><input type="text" id="email-smtp_user" placeholder="your-email@gmail.com"></div>
+          <div class="cms-field"><label>SMTP Password</label><input type="password" id="email-smtp_pass" placeholder="app password or SMTP password"></div>
+          <div class="cms-field"><label>From Email</label><input type="email" id="email-smtp_from_email" placeholder="noreply@ladderice.co"></div>
+          <div class="cms-field"><label>From Name</label><input type="text" id="email-smtp_from_name" placeholder="Ladderice Campaign"></div>
+          <div class="cms-field cms-field--full"><label>Campaign Website URL</label><input type="url" id="email-site_url" placeholder="https://ladderice.co"></div>
+          <div class="cms-field" style="grid-column:1/3;display:flex;align-items:flex-end;gap:8px">
+            <input type="checkbox" id="email-smtp_secure" style="width:18px;height:18px;cursor:pointer;margin-bottom:0" disabled>
+            <label for="email-smtp_secure" style="margin-bottom:0;cursor:pointer;color:rgba(17,17,17,0.5)">Secure connection (auto-detected: port 587 = STARTTLS, port 465 = TLS)</label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
+          <button class="btn btn--primary" onclick="saveEmailSettings()">Save SMTP Settings</button>
+          <div style="display:flex;gap:8px;align-items:flex-end;flex:1;min-width:250px">
+            <input type="email" id="email-test-recipient" placeholder="sira@turfmapp.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px;height:39px" value="sira@turfmapp.com">
+            <button class="btn btn--outline" onclick="sendTestEmail()">Test Email</button>
+          </div>
+          <div id="email-settings-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></div>
+        </div>
+      </div>
+
+      <!-- Token Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="stat">
+          <div class="stat__label">Total Tokens Created</div>
+          <div class="stat__value" id="email-stat-total">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat__label">Emails Sent</div>
+          <div class="stat__value" id="email-stat-sent">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat__label">Votes Cast</div>
+          <div class="stat__value stat__value--red" id="email-stat-used">—</div>
+        </div>
+      </div>
+
+      <!-- Upload Voters CSV -->
+      <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
+        <div class="section-title">Customer List</div>
+        <div class="section-heading">Upload Voters CSV</div>
+
+        <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:20px;line-height:1.7;">
+          Export customer emails from Shopify and upload here. Required columns: <code>email</code>. Optional: <code>name</code>, <code>first_name</code>, <code>last_name</code>, <code>customer_name</code>.
+          Existing emails are skipped (idempotent).
+        </p>
+
+        <div class="upload-zone" id="voters-upload-zone">
+          <input type="file" id="voters-csv-input" accept=".csv,text/csv">
+          <div class="upload-icon">📧</div>
+          <p><strong>Click to choose</strong> or drag and drop your CSV file here</p>
+          <small>Max 5MB · CSV format only</small>
+        </div>
+
+        <div class="upload-actions" style="margin-top:20px">
+          <button class="btn btn--primary" id="voters-upload-btn" disabled>Upload Voters</button>
+          <button class="btn btn--outline" id="voters-clear-btn" style="display:none">Clear</button>
+          <span id="voters-file-name" style="font-size:12px;color:rgba(17,17,17,0.45);"></span>
+        </div>
+
+        <div class="status-msg" id="voters-status-msg"></div>
+      </div>
+
+      <!-- Email Campaign Actions -->
+      <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
+        <div class="section-title">Send Emails</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn--red" id="email-send-all-btn" onclick="sendAllVoteEmails()">Send Vote Emails (Unsent Only)</button>
+          <button class="btn btn--outline" onclick="loadEmailCampaign()">Refresh Stats</button>
+          <span id="email-send-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></span>
+        </div>
+      </div>
+
+      <!-- Tokens Table -->
+      <div class="card">
+        <div class="section-title">Token Management</div>
+        <div class="section-heading">Active Tokens</div>
+
+        <div style="margin-bottom:20px;display:flex;gap:12px">
+          <input type="text" id="email-manual-email" placeholder="customer@example.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px">
+          <input type="text" id="email-manual-name" placeholder="Customer Name (optional)" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px">
+          <button class="btn btn--outline" onclick="createManualToken()">Add Token</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Email</th><th>Name</th><th>Created</th><th>Email Sent?</th><th>Token Used?</th><th>Action</th></tr></thead>
+            <tbody id="tokens-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
     <!-- ═══ PRODUCTS TAB ═══ -->
@@ -879,7 +988,253 @@
     tab.addEventListener('click', function() {
       if (tab.dataset.tab === 'content')  loadFinanceSettings();
       if (tab.dataset.tab === 'products') loadProductSettings();
+      if (tab.dataset.tab === 'email')    loadEmailCampaign();
     });
+  });
+
+  // ── Email Campaign ────────────────────────────────────────────────────────────
+
+  function loadEmailCampaign() {
+    loadEmailSettings();
+    loadTokenStats();
+    loadAllTokens();
+  }
+
+  function loadEmailSettings() {
+    fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
+      document.getElementById('email-smtp_host').value = s.smtp_host || '';
+      document.getElementById('email-smtp_port').value = s.smtp_port || '587';
+      document.getElementById('email-smtp_user').value = s.smtp_user || '';
+      document.getElementById('email-smtp_pass').value = s.smtp_pass || '';
+      document.getElementById('email-smtp_from_email').value = s.smtp_from_email || '';
+      document.getElementById('email-smtp_from_name').value = s.smtp_from_name || 'Ladderice Campaign';
+      document.getElementById('email-site_url').value = s.site_url || '';
+      document.getElementById('email-smtp_secure').checked = s.smtp_secure === '1' || s.smtp_secure === 'true';
+    });
+  }
+
+  function saveEmailSettings() {
+    var pairs = {
+      'smtp_host': document.getElementById('email-smtp_host').value.trim(),
+      'smtp_port': document.getElementById('email-smtp_port').value.trim(),
+      'smtp_user': document.getElementById('email-smtp_user').value.trim(),
+      'smtp_pass': document.getElementById('email-smtp_pass').value.trim(),
+      'smtp_from_email': document.getElementById('email-smtp_from_email').value.trim(),
+      'smtp_from_name': document.getElementById('email-smtp_from_name').value.trim(),
+      'site_url': document.getElementById('email-site_url').value.trim(),
+      'smtp_secure': document.getElementById('email-smtp_secure').checked ? '1' : '0'
+    };
+    var status = document.getElementById('email-settings-status');
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fetch('/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pairs)
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) { status.textContent = '✓ Saved'; status.style.color = '#2e7d32'; }
+      else { status.textContent = 'Error: ' + data.error; status.style.color = '#A50009'; }
+    }).catch(function() {
+      status.textContent = 'Network error.'; status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Save SMTP Settings';
+      setTimeout(function() { status.textContent = ''; }, 3000);
+    });
+  }
+
+  function sendTestEmail() {
+    var email = document.getElementById('email-test-recipient').value.trim();
+    if (!email) { alert('Please enter a test email address.'); return; }
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { alert('Please enter a valid email address.'); return; }
+
+    var btn = event.target;
+    var status = document.getElementById('email-settings-status');
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    fetch('/admin/send-test-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) { status.textContent = '✓ Test email sent to ' + email; status.style.color = '#2e7d32'; }
+      else { status.textContent = 'Error: ' + data.error; status.style.color = '#A50009'; }
+    }).catch(function() {
+      status.textContent = 'Network error.'; status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Test Email';
+      setTimeout(function() { status.textContent = ''; }, 4000);
+    });
+  }
+
+  function loadTokenStats() {
+    fetch('/admin/token-stats').then(function(r){ return r.json(); }).then(function(stats) {
+      document.getElementById('email-stat-total').textContent = stats.total || '0';
+      document.getElementById('email-stat-sent').textContent = stats.sent || '0';
+      document.getElementById('email-stat-used').textContent = stats.used || '0';
+    });
+  }
+
+  function loadAllTokens() {
+    fetch('/admin/tokens').then(function(r){ return r.json(); }).then(function(tokens) {
+      if (!tokens.length) {
+        document.getElementById('tokens-body').innerHTML = '<tr><td colspan="6" class="empty-state">No tokens created yet. Upload a voters CSV above.</td></tr>';
+        return;
+      }
+      document.getElementById('tokens-body').innerHTML = tokens.map(function(t, i) {
+        return '<tr>' +
+          '<td style="color:rgba(17,17,17,.55)">' + t.email + '</td>' +
+          '<td>' + (t.name || '—') + '</td>' +
+          '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(t.created_at) + '</td>' +
+          '<td><span class="badge ' + (t.email_sent ? 'badge--green">✓' : 'badge--red">✗') + '</span></td>' +
+          '<td><span class="badge ' + (t.used ? 'badge--red">✓' : 'badge--green">—') + '</span></td>' +
+          '<td><button class="btn btn--outline" style="font-size:10px;padding:6px 10px" onclick="resendTokenEmail(\'' + t.token + '\')">Resend</button></td>' +
+        '</tr>';
+      }).join('');
+    });
+  }
+
+  function sendAllVoteEmails() {
+    var btn = document.getElementById('email-send-all-btn');
+    var status = document.getElementById('email-send-status');
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    fetch('/admin/send-vote-emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        status.textContent = '✓ Sent: ' + data.sent + ', Failed: ' + data.failed;
+        status.style.color = '#2e7d32';
+        loadEmailCampaign();
+      } else {
+        status.textContent = 'Error: ' + data.error;
+        status.style.color = '#A50009';
+      }
+    }).catch(function() {
+      status.textContent = 'Network error.';
+      status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Send Vote Emails (Unsent Only)';
+      setTimeout(function() { status.textContent = ''; }, 5000);
+    });
+  }
+
+  function resendTokenEmail(token) {
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    fetch('/admin/resend-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        btn.textContent = '✓ Sent';
+        setTimeout(function() { loadAllTokens(); }, 1500);
+      } else {
+        btn.textContent = 'Error';
+        setTimeout(function() { btn.disabled = false; btn.textContent = 'Resend'; }, 2000);
+      }
+    }).catch(function() {
+      btn.textContent = 'Error';
+      setTimeout(function() { btn.disabled = false; btn.textContent = 'Resend'; }, 2000);
+    });
+  }
+
+  function createManualToken() {
+    var email = document.getElementById('email-manual-email').value.trim();
+    var name = document.getElementById('email-manual-name').value.trim();
+
+    if (!email) { alert('Please enter an email address.'); return; }
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { alert('Please enter a valid email address.'); return; }
+
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Creating…';
+
+    fetch('/admin/manual-token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, name: name || '' })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        document.getElementById('email-manual-email').value = '';
+        document.getElementById('email-manual-name').value = '';
+        loadEmailCampaign();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    }).catch(function() {
+      alert('Network error.');
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Add Token';
+    });
+  }
+
+  // ── Voters CSV Upload ──────────────────────────────────────────────────────
+  var votersFile = null;
+  var votersInput   = document.getElementById('voters-csv-input');
+  var votersUploadBtn = document.getElementById('voters-upload-btn');
+  var votersClearBtn  = document.getElementById('voters-clear-btn');
+  var votersUploadZone = document.getElementById('voters-upload-zone');
+  var votersFileNameEl = document.getElementById('voters-file-name');
+  var votersStatusMsg = document.getElementById('voters-status-msg');
+
+  function handleVotersFile(file) {
+    if (!file || !file.name.endsWith('.csv')) {
+      showVotersStatus('Please select a CSV file.', 'error');
+      return;
+    }
+    votersFile = file;
+    votersFileNameEl.textContent = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
+    votersUploadBtn.disabled = false;
+    votersClearBtn.style.display = 'inline-flex';
+  }
+
+  function showVotersStatus(msg, type) {
+    votersStatusMsg.textContent = msg;
+    votersStatusMsg.className = 'status-msg ' + type;
+    votersStatusMsg.style.display = 'block';
+  }
+
+  votersInput.addEventListener('change', function() { handleVotersFile(this.files[0]); });
+
+  votersUploadZone.addEventListener('dragover', function(e) { e.preventDefault(); votersUploadZone.classList.add('drag-over'); });
+  votersUploadZone.addEventListener('dragleave', function() { votersUploadZone.classList.remove('drag-over'); });
+  votersUploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    votersUploadZone.classList.remove('drag-over');
+    handleVotersFile(e.dataTransfer.files[0]);
+  });
+
+  votersClearBtn.addEventListener('click', function() {
+    votersFile = null; votersInput.value = '';
+    votersUploadBtn.disabled = true; votersClearBtn.style.display = 'none';
+    votersFileNameEl.textContent = ''; votersStatusMsg.style.display = 'none';
+  });
+
+  votersUploadBtn.addEventListener('click', function() {
+    if (!votersFile) return;
+    var formData = new FormData();
+    formData.append('csv', votersFile);
+    votersUploadBtn.disabled = true;
+    votersUploadBtn.textContent = 'Uploading…';
+
+    fetch('/admin/upload-voters', { method: 'POST', body: formData })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) {
+          showVotersStatus('✓ Created ' + data.created + ' tokens, skipped ' + data.skipped + '.', 'success');
+          loadEmailCampaign();
+          votersFile = null; votersInput.value = '';
+          votersUploadBtn.disabled = true; votersClearBtn.style.display = 'none';
+          votersFileNameEl.textContent = '';
+        } else {
+          showVotersStatus('Error: ' + data.error, 'error');
+        }
+      })
+      .catch(function() { showVotersStatus('Upload failed. Please try again.', 'error'); })
+      .finally(function() { votersUploadBtn.disabled = false; votersUploadBtn.textContent = 'Upload Voters'; });
   });
 
   // ── Init ──────────────────────────────────────────────────────────────────
