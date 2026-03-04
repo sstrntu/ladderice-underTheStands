@@ -52,15 +52,18 @@ router.get('/login', (req, res) => {
 
 // ── POST /admin/login ────────────────────────────────────────────────────────
 
-router.post('/login', express.urlencoded({ extended: false }), (req, res) => {
+router.post('/login', express.json(), express.urlencoded({ extended: false }), (req, res) => {
   const { username, password } = req.body;
+  const isJson = req.headers['content-type'] && req.headers['content-type'].includes('application/json');
   if (
     username === 'admin' &&
     password === 'bss@5432'
   ) {
     req.session.admin = true;
+    if (isJson) return res.json({ ok: true, redirect: '/admin/dashboard' });
     return res.redirect('/admin/dashboard');
   }
+  if (isJson) return res.status(401).json({ ok: false, error: 'Incorrect username or password.' });
   res.redirect('/admin/login?error=1');
 });
 

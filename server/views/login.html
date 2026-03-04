@@ -101,23 +101,60 @@
     <div class="logo">LADDER<span>I</span>CE</div>
     <div class="subtitle">Red Funding — Admin</div>
 
-    <form method="POST" action="/admin/login">
+    <form id="loginForm">
       <label for="username">Username</label>
       <input type="text" id="username" name="username" placeholder="admin" autocomplete="username" required>
 
       <label for="password">Password</label>
       <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
 
-      <button type="submit">Sign In</button>
+      <button type="submit" id="submitBtn">Sign In</button>
     </form>
 
-    <!-- Show error if ?error=1 -->
     <script>
-      if (new URLSearchParams(location.search).get('error')) {
+      var form = document.getElementById('loginForm');
+      var btn  = document.getElementById('submitBtn');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.textContent = 'Signing in\u2026';
+
+        var errorEl = document.getElementById('loginError');
+        if (errorEl) errorEl.remove();
+
+        fetch('/admin/login', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+          }),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            window.location.href = data.redirect || '/admin/dashboard';
+          } else {
+            showError(data.error || 'Incorrect username or password.');
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
+          }
+        })
+        .catch(function() {
+          showError('Network error. Please try again.');
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+        });
+      });
+
+      function showError(msg) {
         var el = document.createElement('div');
+        el.id = 'loginError';
         el.className = 'error';
-        el.textContent = 'Incorrect username or password.';
-        document.querySelector('form').after(el);
+        el.textContent = msg;
+        form.after(el);
       }
     </script>
   </div>
