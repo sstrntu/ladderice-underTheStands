@@ -792,7 +792,7 @@
       <div class="rf-vote-section__left">
         <div class="rf-vote-section__eyebrow">Cast Your Vote</div>
         <h2 class="rf-vote-section__heading" id="cms-vote-heading">You decide<br>where the<br><em>profit lands.</em></h2>
-        <p class="rf-vote-section__body" id="cms-vote-body">One purchase = one vote. Enter your email to unlock your vote.</p>
+        <p class="rf-vote-section__body" id="cms-vote-body">One purchase = one vote. Check your email for your personal voting link.</p>
         <div class="rf-vote-section__stat">
           <div class="rf-vote-section__stat-item">
             <div class="rf-vote-section__stat-num" id="vote-stat-total">&mdash;</div>
@@ -810,14 +810,7 @@
       </div>
 
       <div class="rf-vote-section__right">
-        <div class="rf-gate" id="rf-gate">
-          <label class="rf-gate__label" for="rf-order">Your Email</label>
-          <div class="rf-gate__row">
-            <input type="email" id="rf-order" class="rf-gate__input" placeholder="your@email.com" autocomplete="email">
-            <button class="rf-gate__btn" id="rf-verify" type="button">Verify</button>
-          </div>
-          <p class="rf-gate__note" id="rf-note">Enter the email address you used when purchasing.</p>
-        </div>
+        <p class="rf-gate__note" id="rf-note" style="margin-bottom:20px;"></p>
 
         <div class="rf-charities" id="rf-charities">
 
@@ -977,21 +970,12 @@
   // Same origin — use relative paths (works on localhost AND production)
   var API_BASE = '';
 
-  var verifyBtn = document.getElementById('rf-verify');
-  var input     = document.getElementById('rf-order');
   var note      = document.getElementById('rf-note');
-  var gate      = document.getElementById('rf-gate');
 
   var verified      = false;
   var voted         = false;
   var selected      = null;
   var verifiedOrder = null;
-
-  var errorMessages = {
-    empty_query:  'Please enter your email address.',
-    not_found:    'Email not found. Make sure you\'re using the address from your purchase confirmation.',
-    already_voted:'You have already voted with this email.'
-  };
 
   // ── Apply live vote counts ────────────────────────────
   function applyVoteCounts(votes, total) {
@@ -1211,123 +1195,42 @@
     resizeCanvas();
   })();
 
-  // ── Gate helpers ─────────────────────────────────────
-  function setGateError(msg) {
-    note.textContent = msg;
-    note.style.color = 'var(--error-color)';
-    input.classList.add('error');
-    setTimeout(function () { input.classList.remove('error'); }, 400);
-  }
-
   // ── Token-based voting (magic links) ─────────────────
-  function checkTokenAndSetup() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var token = urlParams.get('token');
-    if (!token) return; // no token, proceed with normal gate flow
+  (function checkTokenAndSetup() {
+    var token = new URLSearchParams(window.location.search).get('token');
+    if (!token) return; // no token — cards stay read-only
 
     fetch(API_BASE + '/api/validate-token?token=' + encodeURIComponent(token))
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (!data.ok) {
-          // Invalid or used token — show the normal gate
           note.textContent = 'This vote link is invalid or has already been used.';
           note.style.color = 'var(--error-color)';
           return;
         }
 
-        // Valid token! Hide the gate and enable voting
-        verifiedOrder = token;
-        verified = true;
-
-        // Hide the gate
-        gate.classList.add('verified');
-        note.textContent = '✓ Ready to vote — select a cause below.';
-        note.style.color = '';
-
-        // Show/enable charity cards as selectable
-        document.querySelectorAll('.rf-charity').forEach(function (card) {
-          card.classList.add('selectable');
-        });
-        document.querySelectorAll('.rf-vote-btn').forEach(function (btn) {
-          btn.disabled = false;
-        });
-
-        // If already voted via this token, show that state
         if (data.alreadyVoted) {
-          verified = true;
           voted = true;
-          gate.classList.add('verified');
-          note.textContent = '✓ You already voted for ' + data.votedForName + '. Thank you!';
+          note.textContent = '\u2713 You already voted for ' + data.votedForName + '. Thank you!';
+          note.style.color = '#4CAF50';
           var votedCard = document.querySelector('.rf-charity[data-id="' + data.votedFor + '"]');
           if (votedCard) votedCard.classList.add('voted');
-          document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = true; });
+          return;
         }
+
+        // Valid unused token — unlock voting
+        verifiedOrder = token;
+        verified = true;
+        note.textContent = '\u2713 Hi' + (data.name ? ', ' + data.name : '') + '! Select a cause and cast your vote.';
+        note.style.color = '#4CAF50';
+        document.querySelectorAll('.rf-charity').forEach(function (card) { card.classList.add('selectable'); });
+        document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = false; });
       })
       .catch(function () {
-        // Network error — show gate
-        note.textContent = 'Could not validate vote link. Using standard form.';
+        note.textContent = 'Could not validate your vote link. Please try again.';
         note.style.color = 'var(--error-color)';
       });
-  }
-  checkTokenAndSetup();
-
-  // ── Verify ───────────────────────────────────────────
-  if (verifyBtn) {
-    verifyBtn.addEventListener('click', doVerify);
-    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') doVerify(); });
-  }
-
-  function doVerify() {
-    var val = input.value.trim();
-    if (!val) { setGateError(errorMessages.empty_query); return; }
-
-    verifyBtn.disabled    = true;
-    verifyBtn.textContent = 'Checking\u2026';
-    note.textContent      = '';
-    note.style.color      = '';
-
-    fetch(API_BASE + '/api/verify', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ query: val })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (!data.ok) {
-        verifyBtn.disabled    = false;
-        verifyBtn.textContent = 'Verify';
-        setGateError(errorMessages[data.error] || 'Could not verify. Please try again.');
-        return;
-      }
-
-      if (data.alreadyVoted) {
-        gate.classList.add('verified');
-        note.textContent = '\u2713 You already voted for ' + (data.votedForName || 'a cause') + '. Thank you!';
-        note.style.color = '#4CAF50';
-        input.disabled = verifyBtn.disabled = true;
-        verifyBtn.textContent = 'Voted \u2713';
-        document.querySelectorAll('.rf-charity').forEach(function (card) {
-          if (card.dataset.id === String(data.votedFor)) card.classList.add('voted');
-        });
-        return;
-      }
-
-      verifiedOrder         = data.orderNumber;
-      verified              = true;
-      gate.classList.add('verified');
-      note.textContent      = '\u2713 Email verified' + (data.voterName ? ', ' + data.voterName : '') + ' \u2014 select a cause and cast your vote.';
-      note.style.color      = '#4CAF50';
-      input.disabled        = verifyBtn.disabled = true;
-      verifyBtn.textContent = 'Verified \u2713';
-      document.querySelectorAll('.rf-charity').forEach(function (c) { c.classList.add('selectable'); });
-      document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
-    })
-    .catch(function () {
-      verifyBtn.disabled    = false;
-      verifyBtn.textContent = 'Verify';
-      setGateError('Connection error. Please try again.');
-    });
-  }
+  })();
 
   // ── Card selection ───────────────────────────────────
   document.querySelectorAll('.rf-charity').forEach(function (card) {
@@ -1376,7 +1279,8 @@
     .then(function (data) {
       if (!data.ok) {
         document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
-        setGateError(data.error === 'already_voted' ? 'You have already voted.' : 'Vote failed. Please try again.');
+        note.textContent = data.error === 'already_voted' ? 'You have already voted.' : 'Vote failed. Please try again.';
+        note.style.color = 'var(--error-color)';
         return;
       }
 
@@ -1398,7 +1302,8 @@
     })
     .catch(function () {
       document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
-      setGateError('Connection error. Please try again.');
+      note.textContent = 'Connection error. Please try again.';
+      note.style.color = 'var(--error-color)';
     });
   }
 
