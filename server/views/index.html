@@ -382,7 +382,7 @@
 
     .rf-dashboard__title { font-family: var(--font-stack-headings); font-size: clamp(32px,4vw,48px); font-weight: 500; line-height: 1.1; color: var(--main-text); margin: 8px 0 0; letter-spacing: -0.01em; }
     .rf-dashboard__title em { color: var(--rf-red); font-style: italic; }
-    .rf-dashboard__desc { font-family: var(--font-stack-body); font-size: 14px; font-weight: 300; line-height: 1.85; color: var(--main-text-muted); margin: 8px 0 0; border-left: 1px solid var(--grid-borders); padding-left: 24px; text-align: left; align-self: start; }
+    .rf-dashboard__desc { font-family: var(--font-stack-body); font-size: 14px; font-weight: 300; line-height: 1.85; color: var(--main-text-muted); margin: 82px 0 0; border-left: 1px solid var(--grid-borders); padding-left: 24px; text-align: left; align-self: start; }
     .rf-dashboard__mark {
       display: flex;
       align-items: center;
@@ -399,9 +399,22 @@
       filter: drop-shadow(0 18px 24px rgba(196,30,30,0.08));
       transition: transform 0.12s linear;
     }
+    .rf-dashboard.is-scrolling .rf-dashboard__mark-img {
+      animation: rf-mark-vibrate 0.22s steps(2, end) infinite;
+    }
+    @keyframes rf-mark-vibrate {
+      0%   { transform: translate3d(-0.4px, 0.6px, 0) scale(var(--rf-transparency-scale)) rotate(-0.35deg); }
+      25%  { transform: translate3d(0.6px, -0.3px, 0) scale(var(--rf-transparency-scale)) rotate(0.2deg); }
+      50%  { transform: translate3d(-0.7px, -0.5px, 0) scale(var(--rf-transparency-scale)) rotate(-0.15deg); }
+      75%  { transform: translate3d(0.5px, 0.4px, 0) scale(var(--rf-transparency-scale)) rotate(0.25deg); }
+      100% { transform: translate3d(-0.4px, 0.6px, 0) scale(var(--rf-transparency-scale)) rotate(-0.35deg); }
+    }
     @media(max-width:768px){
-      .rf-dashboard__mark {
+      .rf-dashboard__header > div:first-child {
         order: 2;
+      }
+      .rf-dashboard__mark {
+        order: 1;
         min-width: 0;
       }
       .rf-dashboard__desc {
@@ -442,12 +455,25 @@
        CAST YOUR VOTE
     ══════════════════════════════════════ */
     .rf-vote-section {
+      --rf-vote-mark-scale: 0.42;
       position: relative;
-      color: var(--main-text);
-      background:
-        radial-gradient(120% 120% at 100% 0%, rgba(196,30,30,0.05) 0%, rgba(196,30,30,0) 58%),
-        linear-gradient(180deg, #fafaf8 0%, #f5f3ee 100%);
+      color: #f2eee2;
+      background: #00001d;
       overflow: hidden;
+    }
+    .rf-vote-section::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('/public/ldrc30-t.png') left calc(50% - 165px) top 35px / min(44vw, 560px) auto no-repeat;
+      opacity: 1;
+      filter: none;
+      transform: scale(var(--rf-vote-mark-scale));
+      transform-origin: left calc(50% - 165px) top 35px;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+      transition: transform 0.08s linear;
     }
     .rf-vote-section::before {
       content: '';
@@ -455,14 +481,14 @@
       inset: 0;
       background:
         linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(24,24,24,0.03) 1px, transparent 1px);
+        linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
       background-size: 40px 40px;
-      opacity: 0.4;
+      opacity: 0.2;
       pointer-events: none;
     }
     .rf-vote-section__inner {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       max-width: 1280px;
       margin: 0 auto;
       display: grid;
@@ -474,11 +500,16 @@
     .rf-vote-section__left {
       padding: 108px 6vw 88px;
       display: flex; flex-direction: column; justify-content: center;
-      border-right: 1px solid var(--grid-borders);
       position: sticky; top: 0; height: 100vh;
-      background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
     }
-    @media(max-width:900px){ .rf-vote-section__left{ position:static; height:auto; padding:72px 24px 40px; border-right:none; border-bottom:1px solid var(--grid-borders); background:none; } }
+    @media(max-width:900px){
+      .rf-vote-section::after {
+        background: url('/public/ldrc30-t.png') left calc(50% - 92px) top 115px / min(66vw, 360px) auto no-repeat;
+        transform-origin: left calc(50% - 92px) top 115px;
+      }
+      .rf-vote-section__left{ position:static; height:auto; padding:72px 24px 40px; border-bottom:1px solid rgba(255,255,255,0.08); background:none; }
+    }
 
     .rf-vote-section__eyebrow {
       font-family: var(--font-stack-body);
@@ -486,7 +517,7 @@
       font-weight: 500;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: var(--main-text-subtle);
+      color: rgba(242,238,226,0.42);
       margin-bottom: 24px;
       display: flex;
       align-items: center;
@@ -496,7 +527,7 @@
       content: '';
       width: 26px;
       height: 1px;
-      background: var(--main-text-subtle);
+      background: rgba(242,238,226,0.3);
       flex-shrink: 0;
     }
     .rf-vote-section__heading {
@@ -505,7 +536,7 @@
       font-size: clamp(34px, 4.3vw, 58px);
       line-height: 1.06;
       letter-spacing: -0.02em;
-      color: var(--main-text);
+      color: #f2eee2;
       margin: 0 0 28px;
       text-wrap: balance;
     }
@@ -515,7 +546,7 @@
       font-size: 14px;
       font-weight: 300;
       line-height: 1.8;
-      color: var(--main-text-muted);
+      color: rgba(242,238,226,0.6);
       max-width: 420px;
       margin: 0 0 44px;
     }
@@ -524,14 +555,14 @@
       gap: 34px;
       flex-wrap: wrap;
       padding-top: 28px;
-      border-top: 1px solid var(--grid-borders);
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
     .rf-vote-section__stat-item { display: flex; flex-direction: column; gap: 4px; min-width: 86px; }
     .rf-vote-section__stat-num {
       font-family: var(--font-stack-headings);
       font-size: clamp(30px, 3.2vw, 44px);
       font-weight: 500;
-      color: var(--main-text);
+      color: #f2eee2;
       letter-spacing: -0.02em;
       line-height: 1;
     }
@@ -541,7 +572,7 @@
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--main-text-subtle);
+      color: rgba(242,238,226,0.34);
     }
 
     .rf-vote-section__right {
@@ -549,14 +580,14 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(250,250,248,0.1) 100%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(255,255,255,0.005) 100%);
     }
     @media(max-width:900px){ .rf-vote-section__right{ padding: 46px 24px 64px; background:none; } }
 
     .rf-gate__note {
       font-size: 11px;
       letter-spacing: 0.03em;
-      color: var(--main-text-muted);
+      color: rgba(242,238,226,0.58);
       margin: 0;
       transition: color 0.3s;
     }
@@ -570,8 +601,8 @@
       align-items: center;
       gap: 16px;
       padding: 18px;
-      border: 1px solid rgba(24,24,24,0.1);
-      background: linear-gradient(120deg, rgba(255,255,255,0.82) 0%, rgba(250,250,248,0.62) 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
       transition: border-color 0.22s, background 0.22s, transform 0.22s var(--ease-spring), box-shadow 0.22s;
       overflow: hidden;
     }
@@ -590,14 +621,14 @@
     .rf-charity.selectable { cursor: pointer; }
     .rf-charity.selectable:hover {
       transform: translateY(-2px);
-      border-color: rgba(24,24,24,0.18);
-      background: linear-gradient(120deg, rgba(255,255,255,0.96) 0%, rgba(247,245,240,0.88) 100%);
-      box-shadow: 0 10px 24px rgba(24,24,24,0.08);
+      border-color: rgba(255,255,255,0.22);
+      background: linear-gradient(120deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.28);
     }
     .rf-charity.selected {
       border-color: rgba(196,30,30,0.72) !important;
-      background: linear-gradient(120deg, rgba(196,30,30,0.08) 0%, rgba(255,255,255,0.92) 100%) !important;
-      box-shadow: 0 12px 26px rgba(24,24,24,0.08), 0 0 0 1px rgba(196,30,30,0.18) inset;
+      background: linear-gradient(120deg, rgba(196,30,30,0.16) 0%, rgba(255,255,255,0.05) 100%) !important;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.28), 0 0 0 1px rgba(196,30,30,0.18) inset;
       transform: translateY(-2px) !important;
     }
     .rf-charity.selected::before { transform: scaleY(1); }
@@ -607,7 +638,7 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 1px solid rgba(24,24,24,0.25);
+      border: 1px solid rgba(242,238,226,0.28);
       position: relative;
       transition: border-color 0.2s;
       margin-left: 2px;
@@ -630,8 +661,8 @@
       width: 56px;
       height: 56px;
       flex-shrink: 0;
-      border: 1px solid rgba(24,24,24,0.08);
-      background: linear-gradient(180deg, rgba(24,24,24,0.03) 0%, rgba(24,24,24,0.01) 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -651,8 +682,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--main-text-muted);
-      background: radial-gradient(circle at 30% 25%, rgba(24,24,24,0.05) 0%, rgba(24,24,24,0) 65%);
+      color: rgba(242,238,226,0.54);
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 65%);
     }
     .rf-charity__icon.has-image .rf-charity__icon-placeholder { display: none; }
     .rf-charity__icon-placeholder svg {
@@ -668,14 +699,14 @@
       font-family: var(--font-stack-headings);
       font-size: clamp(18px, 2vw, 24px);
       font-weight: 500;
-      color: var(--main-text);
+      color: #f2eee2;
       margin: 0 0 4px;
       letter-spacing: -0.01em;
       line-height: 1.1;
     }
     .rf-charity__desc {
       font-size: 12px;
-      color: var(--main-text-muted);
+      color: rgba(242,238,226,0.68);
       margin: 0;
       line-height: 1.55;
       max-width: 46ch;
@@ -683,7 +714,7 @@
 
     .rf-bar-track {
       height: 2px;
-      background: rgba(24,24,24,0.1);
+      background: rgba(255,255,255,0.12);
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 7px;
@@ -696,17 +727,17 @@
     }
     .rf-bar-fill.animate { width: var(--pct, 0%); }
     .rf-bar-stats { display: flex; justify-content: space-between; }
-    .rf-bar-pct { font-size: 13px; font-weight: 500; color: var(--main-text); }
-    .rf-bar-count { font-size: 11px; color: var(--main-text-subtle); }
+    .rf-bar-pct { font-size: 13px; font-weight: 500; color: #f2eee2; }
+    .rf-bar-count { font-size: 11px; color: rgba(242,238,226,0.42); }
 
     .rf-vote-btn {
       height: 44px;
       min-width: 114px;
       padding: 0 18px;
-      border: 1px solid rgba(24,24,24,0.16);
+      border: 1px solid rgba(242,238,226,0.14);
       border-radius: 999px;
-      background: rgba(24,24,24,0.03);
-      color: #fff;
+      background: rgba(255,255,255,0.04);
+      color: #f2eee2;
       font-family: var(--font-stack-body);
       font-size: 10px;
       font-weight: 600;
@@ -723,14 +754,14 @@
       background: linear-gradient(90deg, var(--rf-red-dark) 0%, var(--rf-red) 100%);
       border-color: rgba(196,30,30,0.92);
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(24,24,24,0.12);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
     }
     .rf-vote-btn:not(:disabled):active { transform: translateY(0); }
     .rf-vote-btn:disabled {
       opacity: 0.35;
       cursor: not-allowed;
-      border-color: rgba(24,24,24,0.1);
-      background: rgba(24,24,24,0.03);
+      border-color: rgba(242,238,226,0.08);
+      background: rgba(255,255,255,0.03);
     }
     .rf-vote-btn-check { display: none; font-size: 15px; }
     .rf-charity.voted .rf-vote-btn {
@@ -1069,7 +1100,7 @@
         <div class="rf-dashboard__mark" aria-hidden="true">
           <img class="rf-dashboard__mark-img" src="/public/acss_transparent.png" alt="">
         </div>
-        <p class="rf-dashboard__desc">No middlemen. No hidden costs. Just a jersey, a dream, and a direct line from your purchase to the cause you believe in.</p>
+        <p class="rf-dashboard__desc">You didn’t just buy a jersey, you bought into something bigger. A signal that football culture in Thailand deserves more. No middlemen. No hidden margins. Just a clear line from your purchase to the cause you believe in, and a real say in where the profit goes.</p>
       </div>
 
       <div class="rf-financials">
@@ -1429,6 +1460,7 @@
   (function () {
     var section = document.querySelector('.rf-dashboard');
     if (!section) return;
+    var scrollTimer = null;
 
     function updateScale() {
       var rect = section.getBoundingClientRect();
@@ -1441,9 +1473,38 @@
       section.style.setProperty('--rf-transparency-scale', scale.toFixed(3));
     }
 
-    window.addEventListener('scroll', updateScale, { passive: true });
+    function handleScroll() {
+      updateScale();
+      section.classList.add('is-scrolling');
+      if (scrollTimer) window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(function () {
+        section.classList.remove('is-scrolling');
+      }, 110);
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', updateScale);
     updateScale();
+  })();
+
+  // ── Vote mark scroll scale ────────────────────────────
+  (function () {
+    var section = document.getElementById('rf-vote-section');
+    if (!section) return;
+
+    function updateVoteMarkScale() {
+      var rect = section.getBoundingClientRect();
+      var vh = window.innerHeight || 1;
+      var start = vh * 0.9;
+      var progress = (start - rect.top) / (vh * 0.9);
+      progress = Math.max(0, Math.min(1, progress));
+      var scale = 0.42 + (0.58 * progress);
+      section.style.setProperty('--rf-vote-mark-scale', scale.toFixed(3));
+    }
+
+    window.addEventListener('scroll', updateVoteMarkScale, { passive: true });
+    window.addEventListener('resize', updateVoteMarkScale);
+    updateVoteMarkScale();
   })();
 
   // ── Manifesto scroll-highlight ─────────────────────────
