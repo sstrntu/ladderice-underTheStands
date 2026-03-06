@@ -169,7 +169,7 @@ router.post('/vote-with-token', express.json(), (req, res) => {
 // Returns public CMS settings (text content, image paths)
 
 router.get('/settings', (req, res) => {
-  res.setHeader('Cache-Control', 'public, max-age=30');
+  res.setHeader('Cache-Control', 'no-cache');
   res.json(db.getAllSettings());
 });
 
