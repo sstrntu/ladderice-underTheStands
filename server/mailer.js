@@ -40,12 +40,12 @@ async function sendVoteEmail(token, email, name) {
     const fromEmail = settings.smtp_from_email;
 
     // CMS-driven content with defaults
-    const emailSubject = settings.email_subject || 'Your vote is ready — Ladderice Campaign';
-    const emailPreheader = settings.email_preheader || 'You\'ve been selected to vote on where our campaign profit goes.';
-    const emailHeading = settings.email_heading || 'Your Vote\nis Ready';
-    const emailBody = settings.email_body || 'Thank you for supporting the Ladderice campaign. You\'ve been selected to vote on where our campaign profit goes — choose one of three causes that matter to you.';
+    const emailSubject = settings.email_subject || 'You bought the dream. Now direct it.';
+    const emailPreheader = settings.email_preheader || 'One vote. Three causes. Your call.';
+    const emailHeading = settings.email_heading || 'Your Voice.\nYour Vote.';
+    const emailBody = settings.email_body || 'You didn\'t just buy a jersey — you bought into something bigger. A signal that football culture in Thailand deserves more. Now it\'s your turn to decide where the profit goes.\n\nThree causes. One vote. Make it count.';
     const emailCtaText = settings.email_cta_text || 'Cast Your Vote';
-    const emailFooterText = settings.email_footer_text || 'You received this email because you purchased from the Ladderice campaign.';
+    const emailFooterText = settings.email_footer_text || 'You\'re receiving this because you believed in the dream. Thank you.';
     const emailSignoff = settings.email_signoff || 'Ladderice';
     const safeName = escapeHtml(name || 'there');
 

@@ -469,7 +469,8 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_1_name" placeholder="The Campaign Kit"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_1_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_1_link" placeholder="https://ladderice.co/products/…"></div>
-          <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_1_desc" placeholder="Limited edition jersey where 100% of net proceeds go directly to the community…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Short Description (shown under title)</label><textarea id="cms-product_1_short_desc" placeholder="Limited edition jersey where 100% of net proceeds go directly to the community…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Full Description (shown on 2nd carousel slide)</label><textarea id="cms-product_1_desc" placeholder="Detailed description for the carousel slide…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(1)">Save Product 1</button>
@@ -598,8 +599,8 @@
         <div class="cms-section-title">Charity / Cause 1</div>
         <div class="cms-grid">
           <div class="cms-field">
-            <label>Icon (emoji)</label>
-            <input type="text" id="cms-charity_1_icon" placeholder="⚽">
+            <label>Icon Image URL (optional)</label>
+            <input type="text" id="cms-charity_1_icon" placeholder="/uploads/cause-1.png or https://...">
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -616,8 +617,8 @@
         <div class="cms-section-title">Charity / Cause 2</div>
         <div class="cms-grid">
           <div class="cms-field">
-            <label>Icon (emoji)</label>
-            <input type="text" id="cms-charity_2_icon" placeholder="🍞">
+            <label>Icon Image URL (optional)</label>
+            <input type="text" id="cms-charity_2_icon" placeholder="/uploads/cause-2.png or https://...">
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -634,8 +635,8 @@
         <div class="cms-section-title">Charity / Cause 3</div>
         <div class="cms-grid">
           <div class="cms-field">
-            <label>Icon (emoji)</label>
-            <input type="text" id="cms-charity_3_icon" placeholder="🧠">
+            <label>Icon Image URL (optional)</label>
+            <input type="text" id="cms-charity_3_icon" placeholder="/uploads/cause-3.png or https://...">
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -953,7 +954,7 @@
   });
 
   // ── Products CMS ──────────────────────────────────────────────────────────
-  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','desc'];
+  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','short_desc','desc'];
 
   function loadProductSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
