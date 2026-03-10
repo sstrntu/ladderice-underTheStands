@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anti Corruption — Ladderice</title>
+  <title>Ladderice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Boldonse&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
@@ -418,12 +418,11 @@
     ══════════════════════════════════════ */
     .rf-dashboard {
       --rf-transparency-scale: 0.92;
-      background: var(--main-background-warm);
+      background: var(--main-background);
       color: var(--main-text);
       padding: 96px 0;
       position: relative;
       overflow: hidden;
-      border-top: 1px solid var(--grid-borders);
     }
 
     .rf-dashboard__wrap { max-width: 1200px; margin: 0 auto; padding: 0 7vw; }
@@ -507,8 +506,8 @@
     .rf-vote-section {
       --rf-vote-mark-scale: 0.42;
       position: relative;
-      color: #f2eee2;
-      background: #00001d;
+      color: var(--main-text);
+      background: #ffffff;
       overflow: hidden;
     }
     .rf-vote-section::after {
@@ -521,7 +520,7 @@
       transform: scale(var(--rf-vote-mark-scale));
       transform-origin: left calc(50% - 165px) top 35px;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
       will-change: transform;
       transition: transform 0.08s linear;
     }
@@ -530,8 +529,8 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
       background-size: 40px 40px;
       opacity: 0.2;
       pointer-events: none;
@@ -551,14 +550,14 @@
       padding: 108px 6vw 88px;
       display: flex; flex-direction: column; justify-content: center;
       position: sticky; top: 0; height: 100vh;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+      background: transparent;
     }
     @media(max-width:900px){
       .rf-vote-section::after {
         background: url('/public/ldrc30-t.png') right 0px top 80px / min(55vw, 280px) auto no-repeat;
         transform-origin: right 0px top 80px;
       }
-      .rf-vote-section__left{ position:static; height:auto; padding:72px 24px 40px; border-bottom:1px solid rgba(255,255,255,0.08); background:none; }
+      .rf-vote-section__left{ position:static; height:auto; padding:72px 24px 40px; border-bottom:1px solid var(--grid-borders); background:none; }
     }
 
     .rf-vote-section__eyebrow {
@@ -567,7 +566,7 @@
       font-weight: 500;
       letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: rgba(242,238,226,0.42);
+      color: var(--main-text-subtle);
       margin-bottom: 24px;
       display: flex;
       align-items: center;
@@ -577,7 +576,7 @@
       content: '';
       width: 26px;
       height: 1px;
-      background: rgba(242,238,226,0.3);
+      background: var(--main-text-subtle);
       flex-shrink: 0;
     }
     .rf-vote-section__heading {
@@ -586,7 +585,7 @@
       font-size: clamp(34px, 4.3vw, 58px);
       line-height: 1.3;
       letter-spacing: -0.02em;
-      color: #f2eee2;
+      color: var(--main-text);
       margin: 0 0 28px;
       text-wrap: balance;
     }
@@ -596,7 +595,7 @@
       font-size: 14px;
       font-weight: 300;
       line-height: 1.8;
-      color: rgba(242,238,226,0.6);
+      color: var(--main-text-muted);
       max-width: 420px;
       margin: 0 0 44px;
     }
@@ -605,14 +604,14 @@
       gap: 34px;
       flex-wrap: wrap;
       padding-top: 28px;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid var(--grid-borders);
     }
     .rf-vote-section__stat-item { display: flex; flex-direction: column; gap: 8px; min-width: 86px; }
     .rf-vote-section__stat-num {
       font-family: var(--font-stack-headings);
       font-size: clamp(30px, 3.2vw, 44px);
       font-weight: 500;
-      color: #f2eee2;
+      color: var(--main-text);
       letter-spacing: -0.02em;
       line-height: 1.3;
     }
@@ -622,7 +621,7 @@
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(242,238,226,0.34);
+      color: var(--main-text-subtle);
     }
 
     .rf-vote-section__right {
@@ -630,14 +629,14 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(255,255,255,0.005) 100%);
+      background: transparent;
     }
-    @media(max-width:900px){ .rf-vote-section__right{ padding: 46px 24px 64px; background:none; } }
+    @media(max-width:900px){ .rf-vote-section__right{ padding: 46px 24px 64px; } }
 
     .rf-gate__note {
       font-size: 11px;
       letter-spacing: 0.03em;
-      color: rgba(242,238,226,0.58);
+      color: var(--main-text-muted);
       margin: 0;
       transition: color 0.3s;
     }
@@ -651,8 +650,8 @@
       align-items: center;
       gap: 16px;
       padding: 18px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+      border: none;
+      background: transparent;
       transition: border-color 0.22s, background 0.22s, transform 0.22s var(--ease-spring), box-shadow 0.22s;
       overflow: hidden;
     }
@@ -671,14 +670,14 @@
     .rf-charity.selectable { cursor: pointer; }
     .rf-charity.selectable:hover {
       transform: translateY(-2px);
-      border-color: rgba(255,255,255,0.22);
-      background: linear-gradient(120deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.04) 100%);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+      border-color: transparent;
+      background: var(--main-background-secondary);
+      box-shadow: none;
     }
     .rf-charity.selected {
-      border-color: rgba(196,30,30,0.72) !important;
-      background: linear-gradient(120deg, rgba(196,30,30,0.16) 0%, rgba(255,255,255,0.05) 100%) !important;
-      box-shadow: 0 12px 26px rgba(0,0,0,0.28), 0 0 0 1px rgba(196,30,30,0.18) inset;
+      border-color: transparent !important;
+      background: rgba(196,30,30,0.05) !important;
+      box-shadow: none;
       transform: translateY(-2px) !important;
     }
     .rf-charity.selected::before { transform: scaleY(1); }
@@ -688,7 +687,7 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      border: 1px solid rgba(242,238,226,0.28);
+      border: 1px solid var(--main-borders);
       position: relative;
       transition: border-color 0.2s;
       margin-left: 2px;
@@ -711,8 +710,8 @@
       width: 56px;
       height: 56px;
       flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
+      border: 1px solid var(--grid-borders);
+      background: var(--main-background-secondary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -732,8 +731,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(242,238,226,0.54);
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 65%);
+      color: var(--main-text-subtle);
+      background: transparent;
     }
     .rf-charity__icon.has-image .rf-charity__icon-placeholder { display: none; }
     .rf-charity__icon-placeholder svg {
@@ -749,14 +748,14 @@
       font-family: var(--font-stack-headings);
       font-size: clamp(18px, 2vw, 24px);
       font-weight: 500;
-      color: #f2eee2;
+      color: var(--main-text);
       margin: 0 0 4px;
       letter-spacing: -0.01em;
       line-height: 1.3;
     }
     .rf-charity__desc {
       font-size: 12px;
-      color: rgba(242,238,226,0.68);
+      color: var(--main-text-muted);
       margin: 0;
       line-height: 1.55;
       max-width: 46ch;
@@ -764,7 +763,7 @@
 
     .rf-bar-track {
       height: 2px;
-      background: rgba(255,255,255,0.12);
+      background: var(--grid-borders);
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 7px;
@@ -777,17 +776,17 @@
     }
     .rf-bar-fill.animate { width: var(--pct, 0%); }
     .rf-bar-stats { display: flex; justify-content: space-between; }
-    .rf-bar-pct { font-size: 13px; font-weight: 500; color: #f2eee2; }
-    .rf-bar-count { font-size: 11px; color: rgba(242,238,226,0.42); }
+    .rf-bar-pct { font-size: 13px; font-weight: 500; color: var(--main-text); }
+    .rf-bar-count { font-size: 11px; color: var(--main-text-subtle); }
 
     .rf-vote-btn {
       height: 44px;
       min-width: 114px;
       padding: 0 18px;
-      border: 1px solid rgba(242,238,226,0.14);
+      border: 1px solid var(--main-borders);
       border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      color: #f2eee2;
+      background: var(--main-background-warm);
+      color: var(--main-text);
       font-family: var(--font-stack-body);
       font-size: 10px;
       font-weight: 600;
@@ -803,21 +802,22 @@
     .rf-vote-btn:not(:disabled):hover {
       background: linear-gradient(90deg, var(--rf-red-dark) 0%, var(--rf-red) 100%);
       border-color: rgba(196,30,30,0.92);
+      color: #fff;
       transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
     }
     .rf-vote-btn:not(:disabled):active { transform: translateY(0); }
     .rf-vote-btn:disabled {
       opacity: 0.35;
       cursor: not-allowed;
-      border-color: rgba(242,238,226,0.08);
-      background: rgba(255,255,255,0.03);
+      border-color: var(--grid-borders);
+      background: var(--main-background-secondary);
     }
     .rf-vote-btn-check { display: none; font-size: 15px; }
     .rf-charity.voted .rf-vote-btn {
-      background: rgba(76,175,80,0.18);
-      border-color: rgba(76,175,80,0.4);
-      color: #9ad8a1;
+      background: rgba(76,175,80,0.08);
+      border-color: rgba(76,175,80,0.3);
+      color: #2e7d32;
       opacity: 1;
       box-shadow: none;
     }
@@ -846,8 +846,8 @@
     .rf-confirm {
       margin-top: 24px;
       padding: 30px;
-      background: rgba(76,175,80,0.08);
-      border: 1px solid rgba(76,175,80,0.24);
+      background: rgba(76,175,80,0.06);
+      border: 1px solid rgba(76,175,80,0.2);
       text-align: center;
       opacity: 0;
       transform: translateY(16px);
@@ -859,23 +859,23 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: rgba(76,175,80,0.16);
-      border: 1px solid rgba(76,175,80,0.3);
+      background: rgba(76,175,80,0.1);
+      border: 1px solid rgba(76,175,80,0.25);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      color: #8ad295;
+      color: #2e7d32;
       margin: 0 auto 16px;
     }
     .rf-confirm h4 {
       font-family: var(--font-stack-headings);
       font-size: 22px;
       font-weight: 500;
-      color: #fff;
+      color: var(--main-text);
       margin: 0 0 8px;
     }
-    .rf-confirm p { font-size: 13px; color: rgba(255,255,255,0.7); margin: 0; }
+    .rf-confirm p { font-size: 13px; color: var(--main-text-muted); margin: 0; }
 
     /* ══════════════════════════════════════
        JERSEY COLLECTION SECTION
@@ -893,10 +893,25 @@
     .rf-collection__title { font-family: var(--font-stack-headings); font-size: clamp(28px, 3.5vw, 40px); font-weight: 500; letter-spacing: -0.01em; color: var(--main-text); margin: 0; line-height: 1.3; }
     .rf-collection__sub { font-family: var(--font-stack-body); font-size: 12px; color: var(--main-text-muted); font-weight: 400; }
 
-    .rf-jerseys-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-    @media(max-width:768px){ .rf-jerseys-grid{ grid-template-columns: repeat(2, 1fr); } }
-    @media(max-width:500px){ .rf-jerseys-grid{ grid-template-columns: 1fr; } }
+    /* ── Product list (alternating rows) ── */
+    .rf-jerseys-list { display: flex; flex-direction: column; }
 
+    .rf-jersey-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 70vh; border-bottom: 1px solid var(--grid-borders);
+      overflow: hidden;
+    }
+    @media(max-width:768px){ .rf-jersey-row{ grid-template-columns: 1fr; min-height: auto; } }
+
+    /* Alternate: even rows flip image to the right */
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__img { order: 2; }
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__info { order: 1; border-left: none; border-right: 1px solid var(--grid-borders); }
+    @media(max-width:768px){
+      .rf-jersey-row:nth-child(even) .rf-jersey-row__img { order: 0; }
+      .rf-jersey-row:nth-child(even) .rf-jersey-row__info { order: 0; border-right: none; }
+    }
+
+    /* Scroll reveal */
     .rf-section-fade {
       opacity: 0;
       transform: translateY(24px);
@@ -907,103 +922,78 @@
       opacity: 1;
       transform: translateY(0);
     }
-
-    .rf-jersey-card {
-      border-right: 1px solid var(--grid-borders);
-      border-bottom: 1px solid var(--grid-borders);
-      cursor: pointer; position: relative; overflow: hidden;
-      transition: background 0.2s;
+    .rf-jersey-row .rf-jersey-row__img,
+    .rf-jersey-row .rf-jersey-row__info {
+      opacity: 0;
+      transition: opacity 0.9s var(--ease-smooth), transform 0.9s var(--ease-smooth);
+      will-change: opacity, transform;
     }
-    .rf-jerseys-grid .rf-jersey-card:nth-child(3n) { border-right: none; }
-    @media(max-width:768px){ .rf-jerseys-grid .rf-jersey-card:nth-child(3n) { border-right: 1px solid var(--grid-borders); } .rf-jerseys-grid .rf-jersey-card:nth-child(2n) { border-right: none; } }
-    @media(max-width:500px){ .rf-jerseys-grid .rf-jersey-card{ border-right: none; } }
-    .rf-jersey-card:hover { background: var(--main-background-third); }
-    .rf-jersey-card__img {
-      width: 100%;
-      aspect-ratio: 4 / 5;
-      height: auto;
-      background: var(--main-background-warm);
+    .rf-jersey-row .rf-jersey-row__img { transform: translateX(-40px); }
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__img { transform: translateX(40px); }
+    .rf-jersey-row .rf-jersey-row__info { transform: translateX(40px); }
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__info { transform: translateX(-40px); }
+    .rf-jersey-row.is-visible .rf-jersey-row__img,
+    .rf-jersey-row.is-visible .rf-jersey-row__info {
+      opacity: 1; transform: translateX(0);
+    }
+    .rf-jersey-row .rf-jersey-row__info { transition-delay: 0.12s; }
+
+    /* Image side */
+    .rf-jersey-row__img {
+      position: relative; background: var(--main-background-warm);
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative;
+      overflow: hidden; aspect-ratio: 4 / 5;
+      min-height: 400px;
       --rf-jersey-image-inset: 0px;
     }
-    @supports not (aspect-ratio: 1 / 1) {
-      .rf-jersey-card__img {
-        height: 0;
-        padding-top: calc(100% * 5 / 4);
-      }
-    }
-    .rf-jersey-card__img::before {
-      content: "";
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 60%;
-      background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.3) 55%, transparent 100%);
-      z-index: 2; pointer-events: none;
-    }
-    .rf-jersey-card__img::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(24,24,24,0.06);
-      pointer-events: none;
-      z-index: 5;
-    }
-    .rf-card-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 24px 24px 28px; z-index: 4;
-      transition: opacity 0.3s ease;
-    }
-    .rf-card-overlay[style*="opacity: 0"] { pointer-events: none; }
-    .rf-card-overlay__tag {
-      display: block; font-family: var(--font-stack-body);
-      font-size: 10px; font-weight: 500; letter-spacing: 0.18em;
-      text-transform: uppercase; color: rgba(255,255,255,0.65); margin-bottom: 6px;
-    }
-    .rf-card-overlay__name {
-      font-family: var(--font-stack-headings); font-size: clamp(20px, 2.2vw, 28px);
-      font-weight: 500; color: #fff; margin-bottom: 16px; line-height: 1.3;
-    }
-    .rf-card-overlay__row {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .rf-card-overlay__price {
-      font-family: var(--font-stack-headings); font-size: 16px; font-weight: 500; color: #fff;
-    }
-    .rf-card-overlay__btn {
-      display: inline-flex; align-items: center; padding: 9px 20px;
-      font-family: var(--font-stack-body); font-size: 10px; font-weight: 500;
-      letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
-      border: 1px solid rgba(255,255,255,0.55); border-radius: 50px;
-      text-decoration: none; transition: background 0.2s var(--ease-smooth), border-color 0.2s;
-    }
-    .rf-card-overlay__btn:hover:not(.is-disabled) { background: rgba(255,255,255,0.15); border-color: #fff; }
-    .rf-card-overlay__btn.is-disabled { opacity: 0.45; pointer-events: none; }
-    .rf-jersey-card__img svg { width: 45%; max-width: 180px; flex-shrink: 0; transition: transform 0.5s cubic-bezier(0.16,1,0.3,1); z-index: 0; }
-    .rf-jersey-card:hover .rf-jersey-card__img svg { transform: translateY(-8px) scale(1.04); }
-    .rf-jersey-card__info { padding: 14px 20px 18px; border-top: 1px solid var(--grid-borders); }
-    .rf-jersey-card__tag { display: inline-block; font-family: var(--font-stack-body); font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 4px; }
-    .rf-jersey-card__name { font-family: var(--font-stack-headings); font-size: clamp(14px,1.6vw,18px); font-weight: 500; color: var(--main-text); letter-spacing: 0; margin-bottom: 4px; }
-    .rf-jersey-card__desc { font-family: var(--font-stack-body); font-size: 11px; color: var(--main-text-muted); margin: 0; line-height: 1.5; }
-    .rf-jersey-card__price { font-family: var(--font-stack-headings); font-size: 15px; font-weight: 500; color: var(--main-text); margin-top: 6px; }
-    .rf-jersey-card__link {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 14px; padding: 10px 0;
-      font-family: var(--font-stack-body);
-      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--main-text); background: transparent; border-radius: 0;
-      border-bottom: 1px solid var(--main-text);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    .rf-jersey-card__link.is-disabled {
-      opacity: 0.3;
-      border-bottom-color: var(--main-text-subtle);
-      pointer-events: none;
-    }
-    .rf-jersey-card__link:hover { opacity: 0.6; background: transparent; transform: none; }
+    .rf-jersey-row__img svg { width: 35%; max-width: 180px; flex-shrink: 0; z-index: 0; opacity: 0.18; }
 
-    /* ── Mini carousel inside jersey cards ── */
+    /* Info side */
+    .rf-jersey-row__info {
+      display: flex; align-items: center;
+      padding: 64px 7vw 64px 56px;
+      border-left: 1px solid var(--grid-borders);
+    }
+    @media(max-width:768px){ .rf-jersey-row__info{ padding: 40px 24px; border-left: none; border-top: 1px solid var(--grid-borders); } }
+    .rf-jersey-row__info-inner { max-width: 440px; text-align: center; }
+
+    .rf-jersey-row__tag {
+      display: inline-block; padding: 4px 0;
+      font-family: var(--font-stack-body);
+      font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--main-text-subtle);
+      border-bottom: 1px solid var(--grid-borders);
+      margin-bottom: 24px;
+    }
+    .rf-jersey-row__name {
+      font-family: var(--font-stack-headings);
+      font-size: clamp(24px, 2.8vw, 36px); font-weight: 500;
+      color: var(--main-text); line-height: 1.25; margin-bottom: 16px;
+    }
+    .rf-jersey-row__desc {
+      font-family: var(--font-stack-body);
+      font-size: clamp(13px, 1.2vw, 15px); color: var(--main-text-muted);
+      line-height: 1.75; margin: 0 auto 24px; max-width: 36ch;
+    }
+    .rf-jersey-row__price {
+      font-family: var(--font-stack-headings);
+      font-size: clamp(18px, 1.8vw, 22px); font-weight: 500;
+      color: var(--main-text); margin-bottom: 24px;
+    }
+    .rf-jersey-row__btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px;
+      font-family: var(--font-stack-body);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #fff; background: var(--main-text);
+      border: none; border-radius: 0; text-decoration: none;
+      transition: opacity 0.25s var(--ease-smooth);
+    }
+    .rf-jersey-row__btn:hover { opacity: 0.75; }
+    .rf-jersey-row__btn.is-disabled { opacity: 0.25; pointer-events: none; }
+    .rf-jersey-row__btn-arrow { font-size: 14px; }
+
+    /* ── Mini carousel inside jersey rows ── */
     .rf-mini-carousel__track {
       position: absolute; inset: var(--rf-jersey-image-inset, 0);
       display: flex; width: 100%; height: 100%;
@@ -1017,25 +1007,25 @@
     .rf-mini-carousel__btn {
       position: absolute; top: 50%; transform: translateY(-50%);
       background: rgba(255,255,255,0.88); border: none; border-radius: 50%;
-      width: 32px; height: 32px; cursor: pointer; z-index: 3;
+      width: 36px; height: 36px; cursor: pointer; z-index: 3;
       display: none; align-items: center; justify-content: center;
       font-size: 18px; line-height: 1; padding: 0; color: #111;
       transition: background 0.15s;
     }
-    .rf-jersey-card__img:hover .rf-mini-carousel__btn { display: flex; }
-    .rf-mini-carousel__btn--prev { left: 10px; }
-    .rf-mini-carousel__btn--next { right: 10px; }
+    .rf-jersey-row__img:hover .rf-mini-carousel__btn { display: flex; }
+    .rf-mini-carousel__btn--prev { left: 14px; }
+    .rf-mini-carousel__btn--next { right: 14px; }
     .rf-mini-carousel__btn:hover { background: #fff; }
     .rf-mini-carousel__dots {
-      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 6px; z-index: 3;
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; z-index: 3;
     }
     .rf-mini-carousel__dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(255,255,255,0.4); border: none; cursor: pointer; padding: 0;
+      background: rgba(24,24,24,0.25); border: none; cursor: pointer; padding: 0;
       transition: background 0.2s, transform 0.2s;
     }
-    .rf-mini-carousel__dot.active { background: #fff; transform: scale(1.35); }
+    .rf-mini-carousel__dot.active { background: var(--main-text); transform: none; }
     .rf-mini-carousel__desc-slide {
       flex-shrink: 0; width: 100%; height: 100%;
       position: relative; overflow: hidden;
@@ -1364,7 +1354,7 @@
   </div>
 
   <!-- ── JERSEY COLLECTION ── -->
-  <div class="rf-collection rf-section-fade">
+  <div class="rf-collection">
     <div class="rf-collection__header">
       <div>
         <span class="rf-label">The Collection</span>
@@ -1372,83 +1362,126 @@
       </div>
       <span class="rf-collection__sub">All jerseys in this campaign</span>
     </div>
-    <div class="rf-jerseys-grid">
+    <div class="rf-jerseys-list">
 
       <!-- Jersey 2 — Product 2 -->
-      <div class="rf-jersey-card" id="jersey-card-2">
-        <div class="rf-jersey-card__img" id="jersey-2-img-wrap">
+      <div class="rf-jersey-row" id="jersey-card-2">
+        <div class="rf-jersey-row__img" id="jersey-2-img-wrap">
           <div class="rf-mini-carousel__track" id="jersey-2-track"></div>
           <svg id="jersey-2-svg" viewBox="0 0 300 360" fill="none">
             <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
             <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#C41E1E"/>
             <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="80" font-weight="500" fill="#fff" opacity="0.35">07</text>
-            <rect x="30" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
-            <rect x="240" y="100" width="30" height="3" fill="#C41E1E" opacity="0.7"/>
           </svg>
-          <div class="rf-card-overlay">
-            <span class="rf-card-overlay__tag" id="jersey-2-tag">Away Kit</span>
-            <div class="rf-card-overlay__name" id="jersey-2-name">Black — No. 07</div>
-            <div class="rf-card-overlay__row">
-              <a class="rf-card-overlay__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
-              <span class="rf-card-overlay__price" id="jersey-2-overlay-price"></span>
-            </div>
-          </div>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
           <div class="rf-mini-carousel__dots" id="jersey-2-dots"></div>
         </div>
-        <span id="jersey-2-desc" hidden></span>
-        <span id="jersey-2-price" hidden></span>
+        <div class="rf-jersey-row__info">
+          <div class="rf-jersey-row__info-inner">
+            <div class="rf-jersey-row__tag" id="jersey-2-tag">Away Kit</div>
+            <h3 class="rf-jersey-row__name" id="jersey-2-name">Black — No. 07</h3>
+            <p class="rf-jersey-row__desc" id="jersey-2-desc"></p>
+            <div class="rf-jersey-row__price" id="jersey-2-price"></div>
+            <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+          </div>
+        </div>
       </div>
 
       <!-- Jersey 3 — Product 3 -->
-      <div class="rf-jersey-card" id="jersey-card-3">
-        <div class="rf-jersey-card__img" id="jersey-3-img-wrap">
+      <div class="rf-jersey-row" id="jersey-card-3">
+        <div class="rf-jersey-row__img" id="jersey-3-img-wrap">
           <div class="rf-mini-carousel__track" id="jersey-3-track"></div>
           <svg id="jersey-3-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
             <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
             <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
             <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
           </svg>
-          <div class="rf-card-overlay">
-            <span class="rf-card-overlay__tag" id="jersey-3-tag">Coming Soon</span>
-            <div class="rf-card-overlay__name" id="jersey-3-name">Third Jersey</div>
-            <div class="rf-card-overlay__row">
-              <a class="rf-card-overlay__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
-              <span class="rf-card-overlay__price" id="jersey-3-overlay-price"></span>
-            </div>
-          </div>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
           <div class="rf-mini-carousel__dots" id="jersey-3-dots"></div>
         </div>
-        <span id="jersey-3-desc" hidden></span>
-        <span id="jersey-3-price" hidden></span>
+        <div class="rf-jersey-row__info">
+          <div class="rf-jersey-row__info-inner">
+            <div class="rf-jersey-row__tag" id="jersey-3-tag">Coming Soon</div>
+            <h3 class="rf-jersey-row__name" id="jersey-3-name">Third Jersey</h3>
+            <p class="rf-jersey-row__desc" id="jersey-3-desc"></p>
+            <div class="rf-jersey-row__price" id="jersey-3-price"></div>
+            <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+          </div>
+        </div>
       </div>
 
       <!-- Jersey 4 — Product 4 -->
-      <div class="rf-jersey-card" id="jersey-card-4">
-        <div class="rf-jersey-card__img" id="jersey-4-img-wrap">
+      <div class="rf-jersey-row" id="jersey-card-4">
+        <div class="rf-jersey-row__img" id="jersey-4-img-wrap">
           <div class="rf-mini-carousel__track" id="jersey-4-track"></div>
           <svg id="jersey-4-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
             <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
             <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
             <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
           </svg>
-          <div class="rf-card-overlay">
-            <span class="rf-card-overlay__tag" id="jersey-4-tag">Coming Soon</span>
-            <div class="rf-card-overlay__name" id="jersey-4-name">Fourth Jersey</div>
-            <div class="rf-card-overlay__row">
-              <a class="rf-card-overlay__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now</a>
-              <span class="rf-card-overlay__price" id="jersey-4-overlay-price"></span>
-            </div>
-          </div>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
           <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
           <div class="rf-mini-carousel__dots" id="jersey-4-dots"></div>
         </div>
-        <span id="jersey-4-desc" hidden></span>
-        <span id="jersey-4-price" hidden></span>
+        <div class="rf-jersey-row__info">
+          <div class="rf-jersey-row__info-inner">
+            <div class="rf-jersey-row__tag" id="jersey-4-tag">Coming Soon</div>
+            <h3 class="rf-jersey-row__name" id="jersey-4-name">Fourth Jersey</h3>
+            <p class="rf-jersey-row__desc" id="jersey-4-desc"></p>
+            <div class="rf-jersey-row__price" id="jersey-4-price"></div>
+            <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jersey 5 — Product 5 -->
+      <div class="rf-jersey-row" id="jersey-card-5">
+        <div class="rf-jersey-row__img" id="jersey-5-img-wrap">
+          <div class="rf-mini-carousel__track" id="jersey-5-track"></div>
+          <svg id="jersey-5-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
+            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
+            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+          </svg>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+          <div class="rf-mini-carousel__dots" id="jersey-5-dots"></div>
+        </div>
+        <div class="rf-jersey-row__info">
+          <div class="rf-jersey-row__info-inner">
+            <div class="rf-jersey-row__tag" id="jersey-5-tag">Coming Soon</div>
+            <h3 class="rf-jersey-row__name" id="jersey-5-name">Fifth Jersey</h3>
+            <p class="rf-jersey-row__desc" id="jersey-5-desc"></p>
+            <div class="rf-jersey-row__price" id="jersey-5-price"></div>
+            <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jersey 6 — Product 6 -->
+      <div class="rf-jersey-row" id="jersey-card-6">
+        <div class="rf-jersey-row__img" id="jersey-6-img-wrap">
+          <div class="rf-mini-carousel__track" id="jersey-6-track"></div>
+          <svg id="jersey-6-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
+            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
+            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+          </svg>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+          <div class="rf-mini-carousel__dots" id="jersey-6-dots"></div>
+        </div>
+        <div class="rf-jersey-row__info">
+          <div class="rf-jersey-row__info-inner">
+            <div class="rf-jersey-row__tag" id="jersey-6-tag">Coming Soon</div>
+            <h3 class="rf-jersey-row__name" id="jersey-6-name">Sixth Jersey</h3>
+            <p class="rf-jersey-row__desc" id="jersey-6-desc"></p>
+            <div class="rf-jersey-row__price" id="jersey-6-price"></div>
+            <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -1534,8 +1567,20 @@
         });
       }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
       fadeSections.forEach(function (section) { sectionObserver.observe(section); });
+
+      // Observe jersey rows for alternating slide-in
+      var jerseyRows = document.querySelectorAll('.rf-jersey-row');
+      var rowObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+      jerseyRows.forEach(function (row) { rowObserver.observe(row); });
     } else {
       fadeSections.forEach(function (section) { section.classList.add('is-visible'); });
+      document.querySelectorAll('.rf-jersey-row').forEach(function (r) { r.classList.add('is-visible'); });
     }
   }
 
@@ -2204,24 +2249,27 @@
           }
         }
 
-        // ── Products 2, 3 & 4 — Collection card mini carousels ──────────────
-        [2, 3, 4].forEach(function(n) {
+        // ── Products 2–6 — Collection row mini carousels ──────────────
+        [2, 3, 4, 5, 6].forEach(function(n) {
           var track   = document.getElementById('jersey-' + n + '-track');
           var svg     = document.getElementById('jersey-' + n + '-svg');
           var dotsEl  = document.getElementById('jersey-' + n + '-dots');
           var linkEl  = document.getElementById('jersey-' + n + '-link');
           var priceEl = document.getElementById('jersey-' + n + '-price');
+          var descEl  = document.getElementById('jersey-' + n + '-desc');
           var wrap    = document.getElementById('jersey-' + n + '-img-wrap');
 
           set('jersey-' + n + '-tag',  s['product_' + n + '_tag']);
           set('jersey-' + n + '-name', s['product_' + n + '_name']);
-          set('jersey-' + n + '-desc', s['product_' + n + '_desc']);
 
-          var overlayPriceEl = document.getElementById('jersey-' + n + '-overlay-price');
+          // Set description text in the info panel
+          if (descEl && s['product_' + n + '_desc']) {
+            descEl.innerHTML = s['product_' + n + '_desc'].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n\n/g,'<br><br>').replace(/\n/g,' ');
+          }
+
           if (s['product_' + n + '_price']) {
             var formatted = formatTHB(s['product_' + n + '_price']);
-            if (priceEl) { priceEl.textContent = formatted; priceEl.style.display = ''; }
-            if (overlayPriceEl) overlayPriceEl.textContent = formatted;
+            if (priceEl) priceEl.textContent = formatted;
           }
           if (linkEl) {
             if (s['product_' + n + '_link']) {
@@ -2242,31 +2290,14 @@
           // Hide SVG fallback
           if (svg) svg.style.display = 'none';
 
-          // Build slides
-          var desc = s['product_' + n + '_desc'] || '';
-          var totalSlides = 0;
-          imgs.forEach(function(src, i) {
+          // Build image-only slides (no desc slide — desc is in info panel)
+          var totalSlides = imgs.length;
+          imgs.forEach(function(src) {
             var img = document.createElement('img');
             img.className = 'rf-mini-carousel__slide';
             img.src = src;
             img.alt = '';
             track.appendChild(img);
-            totalSlides++;
-            // Insert description slide after the first image
-            if (i === 0 && desc) {
-              var descSlide = document.createElement('div');
-              descSlide.className = 'rf-mini-carousel__desc-slide';
-              var bgImg = document.createElement('img');
-              bgImg.src = src;
-              bgImg.alt = '';
-              descSlide.appendChild(bgImg);
-              var textEl = document.createElement('div');
-              textEl.className = 'rf-mini-carousel__desc-slide__text';
-              textEl.innerHTML = desc.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-              descSlide.appendChild(textEl);
-              track.appendChild(descSlide);
-              totalSlides++;
-            }
           });
 
           // State
@@ -2283,15 +2314,12 @@
             }
           }
 
-          var overlay = wrap ? wrap.querySelector('.rf-card-overlay') : null;
           function goTo(i) {
             idx = ((i % totalSlides) + totalSlides) % totalSlides;
             track.style.transform = 'translateX(-' + (idx * 100) + '%)';
             if (dotsEl) dotsEl.querySelectorAll('.rf-mini-carousel__dot').forEach(function(d, j) {
               d.classList.toggle('active', j === idx);
             });
-            // Hide overlay on desc slide (index 1), show on image slides
-            if (overlay) overlay.style.opacity = (idx === 1) ? '0' : '';
           }
 
           // Dot clicks
@@ -2302,7 +2330,7 @@
             });
           }
 
-          // Prev / next buttons (only show when > 1 slide)
+          // Prev / next buttons
           if (wrap && totalSlides > 1) {
             var prevBtn = wrap.querySelector('.rf-mini-carousel__btn--prev');
             var nextBtn = wrap.querySelector('.rf-mini-carousel__btn--next');
@@ -2341,8 +2369,8 @@
     if (!header || !hero) return;
     var solid = false;
 
-    var featured = document.querySelector('.rf-featured');
-    var triggerEl = featured || hero;
+    var dashboard = document.querySelector('.rf-dashboard');
+    var triggerEl = dashboard || hero;
 
     function check() {
       var rect = triggerEl.getBoundingClientRect();

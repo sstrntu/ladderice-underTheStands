@@ -8,6 +8,10 @@ services:
     volumes:
       # Persist SQLite database outside the container
       - ./server/data:/app/data
+      # Live-reload views and static assets during development
+      - ./server/views:/app/views
+      - ./server/public:/app/public
+      - ./server/routes:/app/routes
     env_file:
       - ./server/.env
     restart: unless-stopped
