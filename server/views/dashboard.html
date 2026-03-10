@@ -501,6 +501,7 @@
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_2_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_2_link" placeholder="https://ladderice.co/products/…"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_2_desc" placeholder="Blacked-out with red accents…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_2_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(2)">Save Product 2</button>
@@ -531,6 +532,7 @@
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_3_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_3_link" placeholder="https://ladderice.co/products/…"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_3_desc" placeholder="Jersey description…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_3_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(3)">Save Product 3</button>
@@ -561,6 +563,7 @@
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_4_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_4_link" placeholder="https://ladderice.co/products/…"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_4_desc" placeholder="Jersey description…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_4_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(4)">Save Product 4</button>
@@ -591,6 +594,7 @@
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_5_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_5_link" placeholder="https://ladderice.co/products/…"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_5_desc" placeholder="Jersey description…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_5_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(5)">Save Product 5</button>
@@ -621,6 +625,7 @@
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_6_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_6_link" placeholder="https://ladderice.co/products/…"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_6_desc" placeholder="Jersey description…"></textarea></div>
+          <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_6_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button class="btn btn--primary" onclick="saveProduct(6)">Save Product 6</button>
@@ -1044,7 +1049,7 @@
   });
 
   // ── Products CMS ──────────────────────────────────────────────────────────
-  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','short_desc','desc'];
+  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','short_desc','desc','desc_2'];
 
   function loadProductSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
