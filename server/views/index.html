@@ -600,13 +600,20 @@
       margin: 0 0 44px;
     }
     .rf-vote-section__stat {
-      display: flex;
-      gap: 34px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
       padding-top: 28px;
       border-top: 1px solid var(--grid-borders);
     }
-    .rf-vote-section__stat-item { display: flex; flex-direction: column; gap: 8px; min-width: 86px; }
+    .rf-vote-section__stat-item {
+      display: flex; flex-direction: column; gap: 8px;
+      padding-right: 24px;
+      border-right: 1px solid var(--grid-borders);
+    }
+    .rf-vote-section__stat-item:first-child { padding-right: 24px; }
+    .rf-vote-section__stat-item:not(:first-child) { padding-left: 24px; }
+    .rf-vote-section__stat-item:last-child { border-right: none; }
     .rf-vote-section__stat-num {
       font-family: var(--font-stack-headings);
       font-size: clamp(30px, 3.2vw, 44px);
@@ -746,7 +753,7 @@
     }
     .rf-charity__name {
       font-family: var(--font-stack-headings);
-      font-size: clamp(18px, 2vw, 24px);
+      font-size: clamp(14px, 1.4vw, 18px);
       font-weight: 500;
       color: var(--main-text);
       margin: 0 0 4px;
@@ -882,33 +889,46 @@
     ══════════════════════════════════════ */
     .rf-collection {
       background: var(--main-background);
-      border-top: 1px solid var(--grid-borders);
     }
     .rf-collection__header {
       display: flex; align-items: flex-end; justify-content: space-between;
-      padding: 64px 7vw 40px;
+      padding: 80px 7vw 48px;
       border-bottom: 1px solid var(--grid-borders);
     }
-    @media(max-width:768px){ .rf-collection__header{flex-direction:column;align-items:flex-start;gap:16px;padding:40px 24px 24px} }
+    @media(max-width:768px){ .rf-collection__header{flex-direction:column;align-items:flex-start;gap:16px;padding:48px 24px 32px} }
     .rf-collection__title { font-family: var(--font-stack-headings); font-size: clamp(28px, 3.5vw, 40px); font-weight: 500; letter-spacing: -0.01em; color: var(--main-text); margin: 0; line-height: 1.3; }
-    .rf-collection__sub { font-family: var(--font-stack-body); font-size: 12px; color: var(--main-text-muted); font-weight: 400; }
 
-    /* ── Product list (alternating rows) ── */
+    /* ── Product list — magazine layout ── */
     .rf-jerseys-list { display: flex; flex-direction: column; }
 
     .rf-jersey-row {
-      display: grid; grid-template-columns: 1fr 1fr;
-      min-height: 70vh; border-bottom: 1px solid var(--grid-borders);
+      position: relative;
+      padding: 48px 5vw;
+      border-bottom: 1px solid var(--grid-borders);
       overflow: hidden;
+      background: var(--main-background);
     }
-    @media(max-width:768px){ .rf-jersey-row{ grid-template-columns: 1fr; min-height: auto; } }
+    @media(max-width:768px){ .rf-jersey-row{ padding: 32px 24px; } }
 
-    /* Alternate: even rows flip image to the right */
+    /* Magazine spread grid: main photo, secondary photo, text block */
+    .rf-jersey-row__spread {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: stretch;
+    }
+    @media(max-width:768px){ .rf-jersey-row__spread{ grid-template-columns: 1fr; } }
+
+    /* Alternate: even rows flip the layout */
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__spread {
+      grid-template-columns: 1fr 1fr;
+    }
     .rf-jersey-row:nth-child(even) .rf-jersey-row__img { order: 2; }
-    .rf-jersey-row:nth-child(even) .rf-jersey-row__info { order: 1; border-left: none; border-right: 1px solid var(--grid-borders); }
+    .rf-jersey-row:nth-child(even) .rf-jersey-row__sidebar { order: 1; }
     @media(max-width:768px){
+      .rf-jersey-row:nth-child(even) .rf-jersey-row__spread { grid-template-columns: 1fr; }
       .rf-jersey-row:nth-child(even) .rf-jersey-row__img { order: 0; }
-      .rf-jersey-row:nth-child(even) .rf-jersey-row__info { order: 0; border-right: none; }
+      .rf-jersey-row:nth-child(even) .rf-jersey-row__sidebar { order: 0; }
     }
 
     /* Scroll reveal */
@@ -922,76 +942,137 @@
       opacity: 1;
       transform: translateY(0);
     }
-    .rf-jersey-row .rf-jersey-row__img,
-    .rf-jersey-row .rf-jersey-row__info {
+    .rf-jersey-row {
       opacity: 0;
-      transition: opacity 0.9s var(--ease-smooth), transform 0.9s var(--ease-smooth);
-      will-change: opacity, transform;
+      transform: translateY(30px);
+      transition: opacity 0.8s var(--ease-smooth), transform 0.8s var(--ease-smooth);
     }
-    .rf-jersey-row .rf-jersey-row__img { transform: translateX(-40px); }
-    .rf-jersey-row:nth-child(even) .rf-jersey-row__img { transform: translateX(40px); }
-    .rf-jersey-row .rf-jersey-row__info { transform: translateX(40px); }
-    .rf-jersey-row:nth-child(even) .rf-jersey-row__info { transform: translateX(-40px); }
-    .rf-jersey-row.is-visible .rf-jersey-row__img,
-    .rf-jersey-row.is-visible .rf-jersey-row__info {
-      opacity: 1; transform: translateX(0);
+    .rf-jersey-row.is-visible {
+      opacity: 1; transform: translateY(0);
     }
-    .rf-jersey-row .rf-jersey-row__info { transition-delay: 0.12s; }
 
-    /* Image side */
+    /* Main image — large photo with title overlay */
     .rf-jersey-row__img {
       position: relative; background: var(--main-background-warm);
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden; aspect-ratio: 4 / 5;
-      min-height: 400px;
+      overflow: hidden;
+      min-height: 520px;
       --rf-jersey-image-inset: 0px;
     }
-    .rf-jersey-row__img svg { width: 35%; max-width: 180px; flex-shrink: 0; z-index: 0; opacity: 0.18; }
+    @media(max-width:768px){ .rf-jersey-row__img{ aspect-ratio: 4 / 5; min-height: auto; } }
+    .rf-jersey-row__img svg { width: 35%; max-width: 180px; flex-shrink: 0; z-index: 0; opacity: 0.12; }
 
-    /* Info side */
-    .rf-jersey-row__info {
-      display: flex; align-items: center;
-      padding: 64px 7vw 64px 56px;
-      border-left: 1px solid var(--grid-borders);
+    /* Overlay: product name on the main photo */
+    .rf-jersey-row__img-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 32px 28px;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+      z-index: 4; pointer-events: none;
     }
-    @media(max-width:768px){ .rf-jersey-row__info{ padding: 40px 24px; border-left: none; border-top: 1px solid var(--grid-borders); } }
-    .rf-jersey-row__info-inner { max-width: 440px; text-align: center; }
-
-    .rf-jersey-row__tag {
-      display: inline-block; padding: 4px 0;
-      font-family: var(--font-stack-body);
-      font-size: 10px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--main-text-subtle);
-      border-bottom: 1px solid var(--grid-borders);
-      margin-bottom: 24px;
-    }
-    .rf-jersey-row__name {
+    .rf-jersey-row__img-overlay__name {
       font-family: var(--font-stack-headings);
-      font-size: clamp(24px, 2.8vw, 36px); font-weight: 500;
-      color: var(--main-text); line-height: 1.25; margin-bottom: 16px;
+      font-size: clamp(28px, 3.5vw, 48px); font-weight: 500;
+      color: #fff; line-height: 1.15; letter-spacing: -0.02em;
     }
+    .rf-jersey-row__img-overlay__tag {
+      font-family: var(--font-stack-body);
+      font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px; display: block;
+    }
+
+    /* Sidebar: 2×2 magazine grid */
+    .rf-jersey-row__sidebar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: 100%;
+      gap: 20px;
+    }
+
+    /* Top-left: description text */
+    .rf-jersey-row__sidebar-desc {
+      display: flex; flex-direction: column; justify-content: center;
+      text-align: center;
+    }
+
+    /* Top-right: image 2 */
+    .rf-jersey-row__img-secondary {
+      background: var(--main-background-warm);
+      overflow: hidden; position: relative;
+    }
+    .rf-jersey-row__img-secondary img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* Bottom-left: image 3 */
+    .rf-jersey-row__img-tertiary {
+      background: var(--main-background-warm);
+      overflow: hidden; position: relative;
+    }
+    .rf-jersey-row__img-tertiary img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* Bottom-right: price + buy now */
+    .rf-jersey-row__info {
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .rf-jersey-row__info-inner { max-width: 100%; width: 100%; }
+
+    .rf-jersey-row__tag { display: none; }
+
+    .rf-jersey-row__name { display: none; }
+
     .rf-jersey-row__desc {
       font-family: var(--font-stack-body);
-      font-size: clamp(13px, 1.2vw, 15px); color: var(--main-text-muted);
-      line-height: 1.75; margin: 0 auto 24px; max-width: 36ch;
+      font-size: clamp(12px, 1.1vw, 14px); color: var(--main-text);
+      line-height: 1.75; margin: 0 0 20px;
     }
+    .rf-jersey-row__desc:empty { display: none; }
+
     .rf-jersey-row__price {
       font-family: var(--font-stack-headings);
-      font-size: clamp(18px, 1.8vw, 22px); font-weight: 500;
-      color: var(--main-text); margin-bottom: 24px;
+      font-size: clamp(18px, 1.8vw, 24px); font-weight: 500;
+      color: var(--main-text); margin-bottom: 16px;
     }
+    .rf-jersey-row__price:empty { display: none; }
+
     .rf-jersey-row__btn {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 14px 32px;
+      padding: 12px 28px;
       font-family: var(--font-stack-body);
-      font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
       color: #fff; background: var(--main-text);
       border: none; border-radius: 0; text-decoration: none;
       transition: opacity 0.25s var(--ease-smooth);
     }
     .rf-jersey-row__btn:hover { opacity: 0.75; }
     .rf-jersey-row__btn.is-disabled { opacity: 0.25; pointer-events: none; }
-    .rf-jersey-row__btn-arrow { font-size: 14px; }
+    .rf-jersey-row__btn-arrow { font-size: 13px; }
+
+    /* Edge label — vertical text along image */
+    .rf-jersey-row__edge-label {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 32px; z-index: 6;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rf-jersey-row__edge-label span {
+      writing-mode: vertical-lr; text-orientation: mixed;
+      font-family: var(--font-stack-body);
+      font-size: 8px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      transform: rotate(180deg);
+    }
+
+    /* Page number */
+    .rf-jersey-row__page {
+      position: absolute; top: 24px; right: 28px;
+      font-family: var(--font-stack-body);
+      font-size: 9px; font-weight: 400; letter-spacing: 0.06em;
+      color: var(--main-text-subtle);
+      z-index: 6;
+    }
 
     /* ── Mini carousel inside jersey rows ── */
     .rf-mini-carousel__track {
@@ -1013,6 +1094,8 @@
       transition: background 0.15s;
     }
     .rf-jersey-row__img:hover .rf-mini-carousel__btn { display: flex; }
+    .rf-jersey-row .rf-mini-carousel__btn { background: rgba(255,255,255,0.85); color: #111; backdrop-filter: blur(4px); }
+    .rf-jersey-row .rf-mini-carousel__btn:hover { background: #fff; }
     .rf-mini-carousel__btn--prev { left: 14px; }
     .rf-mini-carousel__btn--next { right: 14px; }
     .rf-mini-carousel__btn:hover { background: #fff; }
@@ -1022,10 +1105,10 @@
     }
     .rf-mini-carousel__dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(24,24,24,0.25); border: none; cursor: pointer; padding: 0;
+      background: rgba(255,255,255,0.4); border: none; cursor: pointer; padding: 0;
       transition: background 0.2s, transform 0.2s;
     }
-    .rf-mini-carousel__dot.active { background: var(--main-text); transform: none; }
+    .rf-mini-carousel__dot.active { background: #fff; transform: none; }
     .rf-mini-carousel__desc-slide {
       flex-shrink: 0; width: 100%; height: 100%;
       position: relative; overflow: hidden;
@@ -1360,126 +1443,191 @@
         <span class="rf-label">The Collection</span>
         <h2 class="rf-collection__title">Same Drop,<br>Different Energy</h2>
       </div>
-      <span class="rf-collection__sub">All jerseys in this campaign</span>
     </div>
     <div class="rf-jerseys-list">
 
       <!-- Jersey 2 — Product 2 -->
       <div class="rf-jersey-row" id="jersey-card-2">
-        <div class="rf-jersey-row__img" id="jersey-2-img-wrap">
-          <div class="rf-mini-carousel__track" id="jersey-2-track"></div>
-          <svg id="jersey-2-svg" viewBox="0 0 300 360" fill="none">
-            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
-            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#C41E1E"/>
-            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="80" font-weight="500" fill="#fff" opacity="0.35">07</text>
-          </svg>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
-          <div class="rf-mini-carousel__dots" id="jersey-2-dots"></div>
-        </div>
-        <div class="rf-jersey-row__info">
-          <div class="rf-jersey-row__info-inner">
-            <div class="rf-jersey-row__tag" id="jersey-2-tag">Away Kit</div>
-            <h3 class="rf-jersey-row__name" id="jersey-2-name">Black — No. 07</h3>
-            <p class="rf-jersey-row__desc" id="jersey-2-desc"></p>
-            <div class="rf-jersey-row__price" id="jersey-2-price"></div>
-            <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+        <span class="rf-jersey-row__page">002</span>
+        <div class="rf-jersey-row__spread">
+          <div class="rf-jersey-row__img" id="jersey-2-img-wrap">
+            <div class="rf-mini-carousel__track" id="jersey-2-track"></div>
+            <svg id="jersey-2-svg" viewBox="0 0 300 360" fill="none">
+              <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+              <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#C41E1E"/>
+              <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="80" font-weight="500" fill="#fff" opacity="0.35">07</text>
+            </svg>
+            <div class="rf-jersey-row__edge-label"><span id="jersey-2-edge">Ladderice</span></div>
+            <div class="rf-jersey-row__img-overlay">
+              <span class="rf-jersey-row__img-overlay__tag" id="jersey-2-overlay-tag">Away Kit</span>
+              <div class="rf-jersey-row__img-overlay__name" id="jersey-2-overlay-name">Black — No. 07</div>
+            </div>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+            <div class="rf-mini-carousel__dots" id="jersey-2-dots"></div>
+          </div>
+          <div class="rf-jersey-row__sidebar">
+            <div class="rf-jersey-row__sidebar-desc">
+              <p class="rf-jersey-row__desc" id="jersey-2-desc"></p>
+            </div>
+            <div class="rf-jersey-row__img-secondary" id="jersey-2-secondary"></div>
+            <div class="rf-jersey-row__img-tertiary" id="jersey-2-tertiary"></div>
+            <div class="rf-jersey-row__info">
+              <div class="rf-jersey-row__info-inner">
+                <div class="rf-jersey-row__tag" id="jersey-2-tag">Away Kit</div>
+                <h3 class="rf-jersey-row__name" id="jersey-2-name">Black — No. 07</h3>
+                <div class="rf-jersey-row__price" id="jersey-2-price"></div>
+                <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Jersey 3 — Product 3 -->
       <div class="rf-jersey-row" id="jersey-card-3">
-        <div class="rf-jersey-row__img" id="jersey-3-img-wrap">
-          <div class="rf-mini-carousel__track" id="jersey-3-track"></div>
-          <svg id="jersey-3-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
-            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
-            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
-            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
-          </svg>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
-          <div class="rf-mini-carousel__dots" id="jersey-3-dots"></div>
-        </div>
-        <div class="rf-jersey-row__info">
-          <div class="rf-jersey-row__info-inner">
-            <div class="rf-jersey-row__tag" id="jersey-3-tag">Coming Soon</div>
-            <h3 class="rf-jersey-row__name" id="jersey-3-name">Third Jersey</h3>
-            <p class="rf-jersey-row__desc" id="jersey-3-desc"></p>
-            <div class="rf-jersey-row__price" id="jersey-3-price"></div>
-            <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+        <span class="rf-jersey-row__page">003</span>
+        <div class="rf-jersey-row__spread">
+          <div class="rf-jersey-row__img" id="jersey-3-img-wrap">
+            <div class="rf-mini-carousel__track" id="jersey-3-track"></div>
+            <svg id="jersey-3-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.12;">
+              <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+              <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+            </svg>
+            <div class="rf-jersey-row__edge-label"><span id="jersey-3-edge">Ladderice</span></div>
+            <div class="rf-jersey-row__img-overlay">
+              <span class="rf-jersey-row__img-overlay__tag" id="jersey-3-overlay-tag">Coming Soon</span>
+              <div class="rf-jersey-row__img-overlay__name" id="jersey-3-overlay-name">Third Jersey</div>
+            </div>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+            <div class="rf-mini-carousel__dots" id="jersey-3-dots"></div>
+          </div>
+          <div class="rf-jersey-row__sidebar">
+            <div class="rf-jersey-row__sidebar-desc">
+              <p class="rf-jersey-row__desc" id="jersey-3-desc"></p>
+            </div>
+            <div class="rf-jersey-row__img-secondary" id="jersey-3-secondary"></div>
+            <div class="rf-jersey-row__img-tertiary" id="jersey-3-tertiary"></div>
+            <div class="rf-jersey-row__info">
+              <div class="rf-jersey-row__info-inner">
+                <div class="rf-jersey-row__tag" id="jersey-3-tag">Coming Soon</div>
+                <h3 class="rf-jersey-row__name" id="jersey-3-name">Third Jersey</h3>
+                <div class="rf-jersey-row__price" id="jersey-3-price"></div>
+                <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Jersey 4 — Product 4 -->
       <div class="rf-jersey-row" id="jersey-card-4">
-        <div class="rf-jersey-row__img" id="jersey-4-img-wrap">
-          <div class="rf-mini-carousel__track" id="jersey-4-track"></div>
-          <svg id="jersey-4-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
-            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
-            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
-            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
-          </svg>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
-          <div class="rf-mini-carousel__dots" id="jersey-4-dots"></div>
-        </div>
-        <div class="rf-jersey-row__info">
-          <div class="rf-jersey-row__info-inner">
-            <div class="rf-jersey-row__tag" id="jersey-4-tag">Coming Soon</div>
-            <h3 class="rf-jersey-row__name" id="jersey-4-name">Fourth Jersey</h3>
-            <p class="rf-jersey-row__desc" id="jersey-4-desc"></p>
-            <div class="rf-jersey-row__price" id="jersey-4-price"></div>
-            <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+        <span class="rf-jersey-row__page">004</span>
+        <div class="rf-jersey-row__spread">
+          <div class="rf-jersey-row__img" id="jersey-4-img-wrap">
+            <div class="rf-mini-carousel__track" id="jersey-4-track"></div>
+            <svg id="jersey-4-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.12;">
+              <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+              <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+            </svg>
+            <div class="rf-jersey-row__edge-label"><span id="jersey-4-edge">Ladderice</span></div>
+            <div class="rf-jersey-row__img-overlay">
+              <span class="rf-jersey-row__img-overlay__tag" id="jersey-4-overlay-tag">Coming Soon</span>
+              <div class="rf-jersey-row__img-overlay__name" id="jersey-4-overlay-name">Fourth Jersey</div>
+            </div>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+            <div class="rf-mini-carousel__dots" id="jersey-4-dots"></div>
+          </div>
+          <div class="rf-jersey-row__sidebar">
+            <div class="rf-jersey-row__sidebar-desc">
+              <p class="rf-jersey-row__desc" id="jersey-4-desc"></p>
+            </div>
+            <div class="rf-jersey-row__img-secondary" id="jersey-4-secondary"></div>
+            <div class="rf-jersey-row__img-tertiary" id="jersey-4-tertiary"></div>
+            <div class="rf-jersey-row__info">
+              <div class="rf-jersey-row__info-inner">
+                <div class="rf-jersey-row__tag" id="jersey-4-tag">Coming Soon</div>
+                <h3 class="rf-jersey-row__name" id="jersey-4-name">Fourth Jersey</h3>
+                <div class="rf-jersey-row__price" id="jersey-4-price"></div>
+                <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Jersey 5 — Product 5 -->
       <div class="rf-jersey-row" id="jersey-card-5">
-        <div class="rf-jersey-row__img" id="jersey-5-img-wrap">
-          <div class="rf-mini-carousel__track" id="jersey-5-track"></div>
-          <svg id="jersey-5-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
-            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
-            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
-            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
-          </svg>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
-          <div class="rf-mini-carousel__dots" id="jersey-5-dots"></div>
-        </div>
-        <div class="rf-jersey-row__info">
-          <div class="rf-jersey-row__info-inner">
-            <div class="rf-jersey-row__tag" id="jersey-5-tag">Coming Soon</div>
-            <h3 class="rf-jersey-row__name" id="jersey-5-name">Fifth Jersey</h3>
-            <p class="rf-jersey-row__desc" id="jersey-5-desc"></p>
-            <div class="rf-jersey-row__price" id="jersey-5-price"></div>
-            <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+        <span class="rf-jersey-row__page">005</span>
+        <div class="rf-jersey-row__spread">
+          <div class="rf-jersey-row__img" id="jersey-5-img-wrap">
+            <div class="rf-mini-carousel__track" id="jersey-5-track"></div>
+            <svg id="jersey-5-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.12;">
+              <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+              <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+            </svg>
+            <div class="rf-jersey-row__edge-label"><span id="jersey-5-edge">Ladderice</span></div>
+            <div class="rf-jersey-row__img-overlay">
+              <span class="rf-jersey-row__img-overlay__tag" id="jersey-5-overlay-tag">Coming Soon</span>
+              <div class="rf-jersey-row__img-overlay__name" id="jersey-5-overlay-name">Fifth Jersey</div>
+            </div>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+            <div class="rf-mini-carousel__dots" id="jersey-5-dots"></div>
+          </div>
+          <div class="rf-jersey-row__sidebar">
+            <div class="rf-jersey-row__sidebar-desc">
+              <p class="rf-jersey-row__desc" id="jersey-5-desc"></p>
+            </div>
+            <div class="rf-jersey-row__img-secondary" id="jersey-5-secondary"></div>
+            <div class="rf-jersey-row__img-tertiary" id="jersey-5-tertiary"></div>
+            <div class="rf-jersey-row__info">
+              <div class="rf-jersey-row__info-inner">
+                <div class="rf-jersey-row__tag" id="jersey-5-tag">Coming Soon</div>
+                <h3 class="rf-jersey-row__name" id="jersey-5-name">Fifth Jersey</h3>
+                <div class="rf-jersey-row__price" id="jersey-5-price"></div>
+                <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Jersey 6 — Product 6 -->
       <div class="rf-jersey-row" id="jersey-card-6">
-        <div class="rf-jersey-row__img" id="jersey-6-img-wrap">
-          <div class="rf-mini-carousel__track" id="jersey-6-track"></div>
-          <svg id="jersey-6-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.18;">
-            <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
-            <path d="M120 52c18 16 42 16 60 0l-8-12c-10 12-34 12-44 0Z" fill="#999"/>
-            <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
-          </svg>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
-          <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
-          <div class="rf-mini-carousel__dots" id="jersey-6-dots"></div>
-        </div>
-        <div class="rf-jersey-row__info">
-          <div class="rf-jersey-row__info-inner">
-            <div class="rf-jersey-row__tag" id="jersey-6-tag">Coming Soon</div>
-            <h3 class="rf-jersey-row__name" id="jersey-6-name">Sixth Jersey</h3>
-            <p class="rf-jersey-row__desc" id="jersey-6-desc"></p>
-            <div class="rf-jersey-row__price" id="jersey-6-price"></div>
-            <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+        <span class="rf-jersey-row__page">006</span>
+        <div class="rf-jersey-row__spread">
+          <div class="rf-jersey-row__img" id="jersey-6-img-wrap">
+            <div class="rf-mini-carousel__track" id="jersey-6-track"></div>
+            <svg id="jersey-6-svg" viewBox="0 0 300 360" fill="none" style="opacity:0.12;">
+              <path d="M90 30L30 90l30 15v225h180V105l30-15L210 30l-30 22c-12 16-48 16-60 0Z" fill="#181818"/>
+              <text x="150" y="225" text-anchor="middle" font-family="'Playfair Display',Georgia,serif" font-size="68" font-weight="500" fill="#181818" opacity="0.4">?</text>
+            </svg>
+            <div class="rf-jersey-row__edge-label"><span id="jersey-6-edge">Ladderice</span></div>
+            <div class="rf-jersey-row__img-overlay">
+              <span class="rf-jersey-row__img-overlay__tag" id="jersey-6-overlay-tag">Coming Soon</span>
+              <div class="rf-jersey-row__img-overlay__name" id="jersey-6-overlay-name">Sixth Jersey</div>
+            </div>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--prev" aria-label="Previous">&#8249;</button>
+            <button class="rf-mini-carousel__btn rf-mini-carousel__btn--next" aria-label="Next">&#8250;</button>
+            <div class="rf-mini-carousel__dots" id="jersey-6-dots"></div>
+          </div>
+          <div class="rf-jersey-row__sidebar">
+            <div class="rf-jersey-row__sidebar-desc">
+              <p class="rf-jersey-row__desc" id="jersey-6-desc"></p>
+            </div>
+            <div class="rf-jersey-row__img-secondary" id="jersey-6-secondary"></div>
+            <div class="rf-jersey-row__img-tertiary" id="jersey-6-tertiary"></div>
+            <div class="rf-jersey-row__info">
+              <div class="rf-jersey-row__info-inner">
+                <div class="rf-jersey-row__tag" id="jersey-6-tag">Coming Soon</div>
+                <h3 class="rf-jersey-row__name" id="jersey-6-name">Sixth Jersey</h3>
+                <div class="rf-jersey-row__price" id="jersey-6-price"></div>
+                <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2261,10 +2409,13 @@
 
           set('jersey-' + n + '-tag',  s['product_' + n + '_tag']);
           set('jersey-' + n + '-name', s['product_' + n + '_name']);
+          set('jersey-' + n + '-edge', s['product_' + n + '_tag']);
+          set('jersey-' + n + '-overlay-tag', s['product_' + n + '_tag']);
+          set('jersey-' + n + '-overlay-name', s['product_' + n + '_name']);
 
           // Set description text in the info panel
           if (descEl && s['product_' + n + '_desc']) {
-            descEl.innerHTML = s['product_' + n + '_desc'].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n\n/g,'<br><br>').replace(/\n/g,' ');
+            descEl.innerHTML = s['product_' + n + '_desc'].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
           }
 
           if (s['product_' + n + '_price']) {
@@ -2290,7 +2441,24 @@
           // Hide SVG fallback
           if (svg) svg.style.display = 'none';
 
-          // Build image-only slides (no desc slide — desc is in info panel)
+          // Populate secondary photo (image 2)
+          var secondaryEl = document.getElementById('jersey-' + n + '-secondary');
+          if (secondaryEl && s['product_' + n + '_img_2']) {
+            var secImg = document.createElement('img');
+            secImg.src = s['product_' + n + '_img_2'];
+            secImg.alt = '';
+            secondaryEl.appendChild(secImg);
+          }
+          // Populate tertiary photo (image 3)
+          var tertiaryEl = document.getElementById('jersey-' + n + '-tertiary');
+          if (tertiaryEl && s['product_' + n + '_img_3']) {
+            var terImg = document.createElement('img');
+            terImg.src = s['product_' + n + '_img_3'];
+            terImg.alt = '';
+            tertiaryEl.appendChild(terImg);
+          }
+
+          // Build image-only slides for the main photo carousel
           var totalSlides = imgs.length;
           imgs.forEach(function(src) {
             var img = document.createElement('img');
