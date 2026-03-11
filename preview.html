@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'Druk Trial';
+      src: url('/server/public/DrukTextWide-Super-Trial.otf') format('opentype');
+      font-weight: 800;
+      font-style: normal;
+    }
 
     /* ── Ladderice exact theme tokens ── */
     :root {
@@ -25,6 +31,7 @@
       --header-borders:           rgba(255,238,208,0.08);
       --header-grid-borders:      rgba(255,238,208,0.1);
 
+      --font-stack-display:       'Druk Trial', 'IBM Plex Mono', monospace;
       --font-stack-headings:      'IBM Plex Mono', monospace;
       --font-weight-headings:     600;
       --font-stack-body:          'IBM Plex Mono', monospace;
@@ -202,11 +209,12 @@
 
     .rf-tag {
       display: inline-block; padding: 5px 14px; background: var(--rf-red); color: #fff;
+      font-family: 'Druk Trial', sans-serif;
       font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
       border-radius: 30px; margin-bottom: 20px;
     }
     .rf-featured__title {
-      font-family: var(--font-stack-headings); font-size: clamp(32px,4.5vw,58px);
+      font-family: 'Druk Trial', sans-serif; font-size: clamp(32px,4.5vw,58px);
       font-weight: 800; line-height: 1.0; letter-spacing: -0.02em; text-transform: uppercase;
       color: var(--main-text); margin: 0 0 16px;
     }
@@ -256,10 +264,17 @@
     }
     @media(max-width:768px){ .rf-collection__header{flex-direction:column;align-items:flex-start;gap:16px;padding:40px 24px 24px} }
 
-    .rf-label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rf-red); margin-bottom: 6px; }
+    .rf-label { display: block; font-family: var(--font-stack-display); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rf-red); margin-bottom: 6px; }
     .rf-label--light { color: rgba(255,238,208,0.4); }
+    .rf-dashboard .rf-label {
+      display: inline-block;
+      width: fit-content;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,238,208,0.12);
+      margin-bottom: 18px;
+    }
 
-    .rf-collection__title { font-family: var(--font-stack-headings); font-size: clamp(24px,3.5vw,44px); font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; color: var(--main-text); margin: 0; line-height: 1; }
+    .rf-collection__title { font-family: var(--font-stack-display); font-size: clamp(24px,3.5vw,44px); font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; color: var(--main-text); margin: 0; line-height: 1; }
 
     .rf-grid { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--grid-borders); }
     @media(max-width:768px){ .rf-grid{grid-template-columns:1fr} }
@@ -306,7 +321,7 @@
     .rf-dashboard__header { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 64px; align-items: end; }
     @media(max-width:768px){ .rf-dashboard__header{grid-template-columns:1fr;gap:20px} .rf-dashboard{padding:60px 0} .rf-dashboard__wrap{padding:0 24px} }
 
-    .rf-dashboard__title { font-family: var(--font-stack-headings); font-size: clamp(32px,4.5vw,58px); font-weight: 800; line-height: 1.05; color: var(--rf-cream); margin: 8px 0 0; letter-spacing: -0.02em; }
+    .rf-dashboard__title { font-family: var(--font-stack-display); font-size: clamp(32px,4.5vw,58px); font-weight: 800; line-height: 1.05; color: var(--rf-cream); margin: 8px 0 0; letter-spacing: -0.02em; }
     .rf-dashboard__title em { color: var(--rf-red); font-style: italic; }
     .rf-dashboard__desc { font-size: 14px; font-weight: 400; line-height: 1.8; color: rgba(255,238,208,0.45); margin: 0; border-left: 1px solid rgba(255,238,208,0.1); padding-left: 24px; }
 
@@ -332,7 +347,7 @@
 
     /* Voting */
     .rf-vote { border-top: 1px solid rgba(255,238,208,0.07); padding-top: 64px; }
-    .rf-vote__title { font-family: var(--font-stack-headings); font-size: clamp(28px,4vw,50px); font-weight: 800; color: var(--rf-cream); margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 1.05; }
+    .rf-vote__title { font-family: var(--font-stack-display); font-size: clamp(28px,4vw,50px); font-weight: 800; color: var(--rf-cream); margin: 8px 0 12px; letter-spacing: -0.02em; line-height: 1.05; }
     .rf-vote__sub { font-size: 13px; font-weight: 400; color: rgba(255,238,208,0.4); margin: 0 0 40px; line-height: 1.65; max-width: 500px; }
 
     /* Gate */

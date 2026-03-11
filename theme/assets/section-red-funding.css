@@ -15,7 +15,7 @@
   --rf-off-white: #F4F2EE;
   --rf-mid:       #888880;
   --rf-border:    rgba(255,255,255,0.08);
-  --rf-display:   'IBM Plex Mono', var(--font-stack-headings, monospace);
+  --rf-display:   'Druk Trial', var(--font-stack-headings, monospace);
   --rf-serif:     'IBM Plex Mono', var(--font-stack-headings, monospace);
   --rf-body:      'IBM Plex Mono', var(--font-stack-body, monospace);
 }
@@ -371,7 +371,7 @@
   padding: 4px 14px;
   background: var(--rf-red);
   color: var(--rf-white);
-  font-family: var(--rf-body);
+  font-family: 'Druk Trial', sans-serif;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.24em;
@@ -381,9 +381,9 @@
 }
 
 .rf-featured__title {
-  font-family: var(--rf-display);
+  font-family: 'Druk Trial', sans-serif;
   font-size: clamp(40px, 5.5vw, 72px);
-  font-weight: 900;
+  font-weight: 800;
   line-height: 0.93;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -541,10 +541,10 @@
 
 .rf-section-label {
   display: block;
-  font-family: var(--rf-body);
+  font-family: var(--rf-display);
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--rf-red);
   margin-bottom: 8px;
@@ -636,12 +636,20 @@
 }
 
 .rf-dashboard__title {
-  font-family: var(--rf-serif);
+  font-family: var(--rf-display);
   font-size: clamp(36px, 5vw, 64px);
   font-weight: 400;
   line-height: 1.08;
   color: var(--rf-white);
   margin: 8px 0 0;
+}
+
+.rf-dashboard .rf-section-label {
+  display: inline-block;
+  width: fit-content;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  margin-bottom: 18px;
 }
 
 .rf-dashboard__title em {
@@ -783,7 +791,7 @@
 .rf-vote__header { margin-bottom: 44px; }
 
 .rf-vote__title {
-  font-family: var(--rf-serif);
+  font-family: var(--rf-display);
   font-size: clamp(32px, 4.5vw, 56px);
   font-weight: 400;
   color: var(--rf-white);
