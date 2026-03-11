@@ -3,7 +3,7 @@
    KrownThemes Split — Custom Section
 ============================================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,700&family=DM+Serif+Display:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
 /* ── Variables ──────────────────────────────────────────────────────────── */
 
@@ -15,9 +15,9 @@
   --rf-off-white: #F4F2EE;
   --rf-mid:       #888880;
   --rf-border:    rgba(255,255,255,0.08);
-  --rf-display:   'Source Code Pro', var(--font-stack-headings, monospace);
-  --rf-serif:     'DM Serif Display', Georgia, serif;
-  --rf-body:      'Source Code Pro', var(--font-stack-body, monospace);
+  --rf-display:   'IBM Plex Mono', var(--font-stack-headings, monospace);
+  --rf-serif:     'IBM Plex Mono', var(--font-stack-headings, monospace);
+  --rf-body:      'IBM Plex Mono', var(--font-stack-body, monospace);
 }
 
 .red-funding { display: block; overflow: hidden; }

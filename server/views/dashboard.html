@@ -6,10 +6,10 @@
   <title>Dashboard — Red Funding Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Source Code Pro', monospace; background: #f4f2ee; color: #111; min-height: 100vh; }
+    body { font-family: 'IBM Plex Mono', monospace; background: #f4f2ee; color: #111; min-height: 100vh; }
 
     /* ── Header ── */
     .header {
@@ -50,7 +50,7 @@
     .upload-zone small { display: block; margin-top: 6px; font-size: 11px; color: rgba(17,17,17,0.35); }
 
     .upload-actions { display: flex; gap: 12px; margin-top: 20px; align-items: center; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 30px; font-family: 'Source Code Pro', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
     .btn--primary { background: #1c2b16; color: #ffeed0; }
     .btn--primary:hover { background: #253d1d; }
     .btn--red { background: #E8000D; color: #fff; }
@@ -121,7 +121,7 @@
     .cms-field label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(17,17,17,0.45); }
     .cms-field input, .cms-field textarea {
       padding: 10px 14px; border: 1px solid rgba(17,17,17,0.12); border-radius: 8px;
-      font-family: 'Source Code Pro', monospace; font-size: 13px; font-weight: 500; color: #111;
+      font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #111;
       background: #fafafa; outline: none; transition: border-color 0.2s;
     }
     .cms-field input:focus, .cms-field textarea:focus { border-color: #1c2b16; background: #fff; }
@@ -314,7 +314,7 @@
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
           <button class="btn btn--primary" onclick="saveEmailSettings()">Save SMTP Settings</button>
           <div style="display:flex;gap:8px;align-items:flex-end;flex:1;min-width:250px">
-            <input type="email" id="email-test-recipient" placeholder="sira@turfmapp.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Source Code Pro',monospace;font-size:13px;height:39px" value="sira@turfmapp.com">
+            <input type="email" id="email-test-recipient" placeholder="sira@turfmapp.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px;height:39px" value="sira@turfmapp.com">
             <button class="btn btn--outline" onclick="sendTestEmail()">Test Email</button>
           </div>
           <div id="email-settings-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></div>
@@ -425,8 +425,8 @@
         <div class="section-heading">Active Tokens</div>
 
         <div style="margin-bottom:20px;display:flex;gap:12px">
-          <input type="text" id="email-manual-email" placeholder="customer@example.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Source Code Pro',monospace;font-size:13px">
-          <input type="text" id="email-manual-name" placeholder="Customer Name (optional)" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'Source Code Pro',monospace;font-size:13px">
+          <input type="text" id="email-manual-email" placeholder="customer@example.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px">
+          <input type="text" id="email-manual-name" placeholder="Customer Name (optional)" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px">
           <button class="btn btn--outline" onclick="createManualToken()">Add Token</button>
         </div>
 
