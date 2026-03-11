@@ -307,7 +307,7 @@
 
     .rf-manifesto__text {
       font-family: var(--font-stack-body);
-      font-size: clamp(12px, 1.18vw, 16px);
+      font-size: clamp(10px, 0.92vw, 12px);
       font-weight: 200;
       line-height: 1.95;
       letter-spacing: 0.06em;
@@ -325,24 +325,28 @@
     }
     .rf-manifesto__text .mw {
       opacity: 0.15;
-      transition: opacity 1s ease;
+      transition: opacity 0.3s ease;
       display: inline;
     }
     .rf-manifesto__text .mw.is-lit {
       opacity: 1;
       color: #fff;
     }
-    /* Thai flag: Red */
+    /* Unified manifesto accent */
     .rf-manifesto__text .mw.is-lit[data-c="red"] {
-      color: #EF3340;
+      color: #f8255a;
     }
-    /* Thai flag: Blue */
-    .rf-manifesto__text .mw.is-lit[data-c="blue"] {
-      color: #0047AB;
+    /* Unified manifesto accent */
+    .rf-manifesto__text .mw.is-lit[data-c="purple"] {
+      color: #f8255a;
     }
-    /* Thai flag: White */
-    .rf-manifesto__text .mw.is-lit[data-c="white"] {
-      color: #ffffff;
+    /* Unified manifesto accent */
+    .rf-manifesto__text .mw.is-lit[data-c="orange"] {
+      color: #f8255a;
+    }
+    /* Unified manifesto accent */
+    .rf-manifesto__text .mw.is-lit[data-c="yellow"] {
+      color: #f8255a;
     }
 
     @media (max-width: 768px) {
@@ -361,7 +365,7 @@
         max-height: 34vh;
       }
       .rf-manifesto__text {
-        font-size: 12px;
+        font-size: 9px;
         line-height: 1.85;
         letter-spacing: 0.05em;
         width: 100%;
@@ -1289,7 +1293,7 @@
           <span class="rf-manifesto__timer-unit">Seconds</span>
         </div>
       </div>
-      <p class="rf-manifesto__text" id="rf-manifesto-text"><mark data-color="red">Siamese Dreams</mark> is more than a drop. It's a signal. A reminder that <mark data-color="white">football culture in Thailand</mark> has always been bigger than the systems around it. <mark data-color="blue">Three kits. Three paths forward.</mark> <mark data-color="white">From the streets. Through our heritage. Toward the future.</mark> And maybe, just maybe — one day <mark data-color="red">the dream plays on the world's biggest stage.</mark></p>
+      <p class="rf-manifesto__text" id="rf-manifesto-text"><mark data-color="red">Siamese Dreams</mark> is more than a drop. It's a signal. A reminder that <mark data-color="purple">football culture in Thailand</mark> has always been bigger than the systems around it. <mark data-color="orange">Three kits. Three paths forward.</mark> From the streets. Through our heritage. Toward the future. And maybe, just maybe — one day <mark data-color="yellow">the dream plays on the world's biggest stage.</mark></p>
       <div class="rf-manifesto__canvas-wrap">
         <video id="acss-logo-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
           <source src="/public/manifesto-logo-loop.mp4" type="video/mp4">
