@@ -143,18 +143,18 @@
 
     /* Font variables */
 
-    --font-stack-headings: {{ headings_font.family }}, {{ headings_font.fallback_families }};
-    --font-weight-headings: {{ headings_font.weight }};
-    --font-style-headings: {{ headings_font.style }};
+    --font-stack-headings: 'Source Code Pro', monospace;
+    --font-weight-headings: 400;
+    --font-style-headings: normal;
 
-    --font-stack-body: {{ body_font.family }}, {{ body_font.fallback_families }};
-    --font-weight-body: {{ body_font.weight }};
+    --font-stack-body: 'Source Code Pro', monospace;
+    --font-weight-body: 400;
     {%- if body_font_bold -%}
       --font-weight-body-bold: {{ body_font_bold.weight }}; 
     {%- else -%}
       --font-weight-body-bold: 700;
     {%- endif -%}
-    --font-style-body: {{ body_font.style }};
+    --font-style-body: normal;
 
     --base-headings-size: {{ settings.headings_size }};
     --base-headings-line: {{ settings.headings_line }};

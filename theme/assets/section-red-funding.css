@@ -15,9 +15,9 @@
   --rf-off-white: #F4F2EE;
   --rf-mid:       #888880;
   --rf-border:    rgba(255,255,255,0.08);
-  --rf-display:   'Barlow Condensed', var(--font-stack-headings, sans-serif);
+  --rf-display:   'Source Code Pro', var(--font-stack-headings, monospace);
   --rf-serif:     'DM Serif Display', Georgia, serif;
-  --rf-body:      'Barlow', var(--font-stack-body, sans-serif);
+  --rf-body:      'Source Code Pro', var(--font-stack-body, monospace);
 }
 
 .red-funding { display: block; overflow: hidden; }
