@@ -6,7 +6,7 @@
   <title>Ladderice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
   <style>
 
     /* ── ALD-inspired theme tokens ── */
@@ -26,9 +26,9 @@
       --header-text:              #181818;
       --header-borders:           rgba(24,24,24,0.08);
 
-      --font-stack-headings:      'Source Code Pro', monospace;
+      --font-stack-headings:      'IBM Plex Mono', monospace;
       --font-weight-headings:     400;
-      --font-stack-body:          'Source Code Pro', monospace;
+      --font-stack-body:          'IBM Plex Mono', monospace;
       --font-weight-body:         400;
       --buttons-radius:           2px;
 
@@ -104,7 +104,7 @@
       border-bottom-color: var(--grid-borders);
     }
     .site-ticker__text {
-      font-family: var(--font-stack-body); font-size: 10px; font-weight: 400;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 300;
       letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5);
       transition: color 0.4s;
     }
@@ -282,9 +282,9 @@
       min-width: 78px;
     }
     .rf-manifesto__timer-value {
-      font-family: var(--font-stack-heading);
+      font-family: var(--font-stack-headings);
       font-size: clamp(28px, 3.4vw, 42px);
-      font-weight: 500;
+      font-weight: 300;
       line-height: 1;
       letter-spacing: -0.04em;
       color: rgba(255,255,255,0.94);
@@ -293,7 +293,7 @@
     .rf-manifesto__timer-unit {
       font-family: var(--font-stack-body);
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 300;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.48);
@@ -308,7 +308,7 @@
     .rf-manifesto__text {
       font-family: var(--font-stack-body);
       font-size: clamp(12px, 1.18vw, 16px);
-      font-weight: 400;
+      font-weight: 200;
       line-height: 1.95;
       letter-spacing: 0.06em;
       max-width: 52ch;
