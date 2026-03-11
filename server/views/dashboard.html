@@ -288,8 +288,35 @@
     <!-- ═══ EMAIL CAMPAIGN TAB ═══ -->
     <div class="tab-panel" id="tab-email">
       <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:24px;line-height:1.7;">
-        Manage vote invitation emails. Upload a CSV of customer emails from Shopify, configure SMTP settings, then send vote invitation emails to customers.
+        Configure Shopify order verification for vote links, and keep SMTP/manual token tools available as a fallback for backfill or support cases.
       </p>
+
+      <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
+        <div class="section-title">Shopify Verification</div>
+        <div class="section-heading">Order Lookup Settings</div>
+
+        <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:20px;line-height:1.7;">
+          These credentials let Ladderice verify paid Shopify orders when a customer clicks the vote link from the Shopify order confirmation email or POS receipt.
+        </p>
+
+        <div class="cms-grid" style="margin-bottom:20px">
+          <div class="cms-field"><label>Store Domain</label><input type="text" id="shopify-store-domain" placeholder="ladderice.myshopify.com"></div>
+          <div class="cms-field"><label>Admin API Version</label><input type="text" id="shopify-api-version" placeholder="2025-01"></div>
+          <div class="cms-field"><label>Client ID</label><input type="text" id="shopify-client-id" placeholder="Shopify app client id"></div>
+          <div class="cms-field"><label>Client Secret</label><input type="password" id="shopify-client-secret" placeholder="Shopify app client secret"></div>
+          <div class="cms-field cms-field--full"><label>Static Admin Access Token <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(optional fallback)</span></label><input type="password" id="shopify-admin-token" placeholder="shpat_..."></div>
+          <div class="cms-field cms-field--full">
+            <label>Vote Link Template for Shopify Notifications</label>
+            <textarea id="shopify-notification-template" readonly style="min-height:92px;background:rgba(17,17,17,0.03)"></textarea>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn--primary" onclick="saveShopifySettings()">Save Shopify Settings</button>
+          <button class="btn btn--outline" onclick="testShopifyConnection()">Test Shopify Connection</button>
+          <span id="shopify-settings-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></span>
+        </div>
+      </div>
 
       <!-- SMTP Settings -->
       <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
@@ -468,7 +495,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_1_tag" placeholder="Main Jersey"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_1_name" placeholder="The Campaign Kit"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_1_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_1_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_1_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_1_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Short Description (shown under title)</label><textarea id="cms-product_1_short_desc" placeholder="Limited edition jersey where 100% of net proceeds go directly to the community…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Full Description (shown on 2nd carousel slide)</label><textarea id="cms-product_1_desc" placeholder="Detailed description for the carousel slide…"></textarea></div>
         </div>
@@ -499,7 +527,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_2_tag" placeholder="Away Kit"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_2_name" placeholder="Black — No. 07"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_2_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_2_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_2_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_2_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_2_desc" placeholder="Blacked-out with red accents…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_2_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -530,7 +559,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_3_tag" placeholder="Special Edition"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_3_name" placeholder="White — No. 10"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_3_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_3_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_3_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_3_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_3_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_3_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -561,7 +591,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_4_tag" placeholder="Special Edition"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_4_name" placeholder="Fourth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_4_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_4_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_4_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_4_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_4_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_4_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -592,7 +623,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_5_tag" placeholder="Special Edition"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_5_name" placeholder="Fifth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_5_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_5_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_5_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_5_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_5_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_5_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -623,7 +655,8 @@
           <div class="cms-field"><label>Tag / Label</label><input type="text" id="cms-product_6_tag" placeholder="Special Edition"></div>
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_6_name" placeholder="Sixth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_6_price" placeholder="฿1,590"></div>
-          <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_6_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product URL</label><input type="url" id="cms-product_6_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Product ID</label><input type="text" id="cms-product_6_shopify_product_id" placeholder="1234567890123"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_6_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_6_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -1049,7 +1082,7 @@
   });
 
   // ── Products CMS ──────────────────────────────────────────────────────────
-  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','short_desc','desc','desc_2'];
+  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','shopify_product_id','short_desc','desc','desc_2'];
 
   function loadProductSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
@@ -1142,8 +1175,26 @@
     loadAllTokens();
   }
 
+  function updateShopifyNotificationTemplate() {
+    var siteUrl = (document.getElementById('email-site_url').value.trim() || window.location.origin || '').replace(/\/$/, '');
+    var template = siteUrl
+      ? siteUrl + '/api/vote/start?order_id={{ order.id }}&email={{ email | url_encode }}'
+      : '/api/vote/start?order_id={{ order.id }}&email={{ email | url_encode }}';
+    document.getElementById('shopify-notification-template').value = template;
+  }
+
+  var siteUrlInput = document.getElementById('email-site_url');
+  if (siteUrlInput) {
+    siteUrlInput.addEventListener('input', updateShopifyNotificationTemplate);
+  }
+
   function loadEmailSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
+      document.getElementById('shopify-store-domain').value = s.shopify_store_domain || '';
+      document.getElementById('shopify-api-version').value = s.shopify_api_version || '2025-01';
+      document.getElementById('shopify-client-id').value = s.shopify_client_id || '';
+      document.getElementById('shopify-client-secret').value = s.shopify_client_secret || '';
+      document.getElementById('shopify-admin-token').value = s.shopify_admin_access_token || '';
       document.getElementById('email-smtp_host').value = s.smtp_host || '';
       document.getElementById('email-smtp_port').value = s.smtp_port || '587';
       document.getElementById('email-smtp_user').value = s.smtp_user || '';
@@ -1161,6 +1212,7 @@
       document.getElementById('email-cms-cta').value = s.email_cta_text || '';
       document.getElementById('email-cms-signoff').value = s.email_signoff || '';
       document.getElementById('email-cms-footer').value = s.email_footer_text || '';
+      updateShopifyNotificationTemplate();
     });
   }
 
@@ -1221,6 +1273,60 @@
     });
   }
 
+  function saveShopifySettings() {
+    var pairs = {
+      'shopify_store_domain': document.getElementById('shopify-store-domain').value.trim(),
+      'shopify_api_version': document.getElementById('shopify-api-version').value.trim() || '2025-01',
+      'shopify_client_id': document.getElementById('shopify-client-id').value.trim(),
+      'shopify_client_secret': document.getElementById('shopify-client-secret').value.trim(),
+      'shopify_admin_access_token': document.getElementById('shopify-admin-token').value.trim()
+    };
+    var status = document.getElementById('shopify-settings-status');
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fetch('/admin/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pairs)
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        status.textContent = '✓ Shopify settings saved';
+        status.style.color = '#2e7d32';
+        updateShopifyNotificationTemplate();
+      } else {
+        status.textContent = 'Error: ' + data.error;
+        status.style.color = '#A50009';
+      }
+    }).catch(function() {
+      status.textContent = 'Network error.';
+      status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Save Shopify Settings';
+      setTimeout(function() { status.textContent = ''; }, 4000);
+    });
+  }
+
+  function testShopifyConnection() {
+    var status = document.getElementById('shopify-settings-status');
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Testing…';
+    fetch('/admin/test-shopify').then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        status.textContent = '✓ Connected to ' + ((data.shop && data.shop.myshopify_domain) || data.shopDomain || 'Shopify');
+        status.style.color = '#2e7d32';
+      } else {
+        status.textContent = 'Error: ' + data.error;
+        status.style.color = '#A50009';
+      }
+    }).catch(function() {
+      status.textContent = 'Network error.';
+      status.style.color = '#A50009';
+    }).finally(function() {
+      btn.disabled = false; btn.textContent = 'Test Shopify Connection';
+      setTimeout(function() { status.textContent = ''; }, 5000);
+    });
+  }
+
   function sendTestEmail() {
     var email = document.getElementById('email-test-recipient').value.trim();
     if (!email) { alert('Please enter a test email address.'); return; }
@@ -1262,7 +1368,7 @@
       document.getElementById('tokens-body').innerHTML = tokens.map(function(t, i) {
         return '<tr>' +
           '<td style="color:rgba(17,17,17,.55)">' + t.email + '</td>' +
-          '<td>' + (t.name || '—') + '</td>' +
+          '<td>' + (t.name || '—') + (t.source === 'shopify' ? ' <span style="color:rgba(17,17,17,.35);font-size:11px">(' + (t.votes_used || 0) + '/' + (t.votes_total || 1) + ')</span>' : '') + '</td>' +
           '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(t.created_at) + '</td>' +
           '<td><span class="badge ' + (t.email_sent ? 'badge--green">✓' : 'badge--red">✗') + '</span></td>' +
           '<td><span class="badge ' + (t.used ? 'badge--red">✓' : 'badge--green">—') + '</span></td>' +

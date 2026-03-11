@@ -7,10 +7,13 @@ const path     = require('path');
 const fs       = require('fs');
 const db       = require('../database');
 const mailer   = require('../mailer');
+const shopify  = require('../shopify');
 const { requireAdmin } = require('../middleware/auth');
 
 const router  = express.Router();
 const upload  = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || '';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 // Ensure uploads directory exists (persisted via Docker volume at /app/data)
 const UPLOADS_DIR = path.join(__dirname, '../data/uploads');
@@ -55,10 +58,11 @@ router.get('/login', (req, res) => {
 router.post('/login', express.json(), express.urlencoded({ extended: false }), (req, res) => {
   const { username, password } = req.body;
   const isJson = req.headers['content-type'] && req.headers['content-type'].includes('application/json');
-  if (
-    username === 'admin' &&
-    password === 'bss@5432'
-  ) {
+  if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
+    if (isJson) return res.status(503).json({ ok: false, error: 'Admin credentials are not configured in the environment.' });
+    return res.redirect('/admin/login?error=2');
+  }
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
     req.session.admin = true;
     if (isJson) return res.json({ ok: true, redirect: '/admin/dashboard' });
     return res.redirect('/admin/dashboard');
@@ -157,6 +161,22 @@ router.get('/settings', requireAdmin, (req, res) => {
   res.json(db.getAllSettings());
 });
 
+router.get('/test-shopify', requireAdmin, async (req, res) => {
+  try {
+    const config = shopify.getConfig();
+    const shop = await shopify.getShopInfo();
+    res.json({
+      ok: true,
+      configured: !!(config.shopDomain && (config.accessToken || (config.clientId && config.clientSecret))),
+      shopDomain: config.shopDomain,
+      apiVersion: config.apiVersion,
+      shop,
+    });
+  } catch (error) {
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 // ── POST /admin/settings ──────────────────────────────────────────────────────
 // Body: JSON object of key/value pairs to save
 
@@ -231,9 +251,8 @@ router.post('/upload-voters', requireAdmin, upload.single('csv'), (req, res) => 
 
     if (!email) continue; // skip rows without email
 
-    // Check if email already has a token
-    const existing = db.findOrder(email); // use findOrder as a workaround to check if exists
-    if (!existing) { // only create if not existing
+    const existing = db.findTokenByEmail(email);
+    if (!existing) {
       rows.push({ email, name });
     }
   }

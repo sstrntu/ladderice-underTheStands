@@ -26,6 +26,11 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
     smtp_from_name: process.env.SMTP_FROM_NAME,
     site_url: process.env.SITE_URL,
     smtp_secure: '1',
+    shopify_store_domain: process.env.SHOPIFY_STORE_DOMAIN,
+    shopify_admin_access_token: process.env.SHOPIFY_ADMIN_ACCESS_TOKEN,
+    shopify_client_id: process.env.SHOPIFY_CLIENT_ID,
+    shopify_client_secret: process.env.SHOPIFY_CLIENT_SECRET,
+    shopify_api_version: process.env.SHOPIFY_API_VERSION,
   };
 
   const toUpdate = {};

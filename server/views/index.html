@@ -1704,6 +1704,9 @@
   var voted         = false;
   var selected      = null;
   var verifiedOrder = null;
+  var totalVotes    = 0;
+  var votesUsed     = 0;
+  var votesRemaining = 0;
 
   // ── Apply live vote counts ────────────────────────────
   function applyVoteCounts(votes, total) {
@@ -1723,6 +1726,54 @@
     if (heroCount) heroCount.textContent = total;
     var statTotal = document.getElementById('vote-stat-total');
     if (statTotal) statTotal.textContent = total;
+  }
+
+  function setVoteNote(message, color) {
+    if (!note) return;
+    note.textContent = message;
+    note.style.color = color || '';
+  }
+
+  function unlockVoting() {
+    document.querySelectorAll('.rf-charity').forEach(function (card) { card.classList.add('selectable'); });
+    document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = false; });
+  }
+
+  function lockVoting() {
+    document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = true; });
+  }
+
+  function showVoteConfirmation(charityName, remaining) {
+    var confirm = document.getElementById('rf-confirm');
+    var strong = document.querySelector('#rf-confirm-text strong');
+    var confirmText = document.getElementById('rf-confirm-text');
+    if (strong) strong.textContent = charityName;
+    if (confirmText) {
+      confirmText.innerHTML = remaining > 0
+        ? 'Your vote has been cast for <strong>' + charityName + '</strong>. You have ' + remaining + ' vote' + (remaining === 1 ? '' : 's') + ' remaining.'
+        : 'Your vote has been cast for <strong>' + charityName + '</strong>. Thank you for making a difference.';
+    }
+    if (confirm) {
+      confirm.removeAttribute('hidden');
+      void confirm.offsetWidth;
+      confirm.classList.add('show');
+    }
+  }
+
+  function handleVoteStartError() {
+    var error = new URLSearchParams(window.location.search).get('vote_error');
+    if (!error) return;
+    var messages = {
+      missing_order: 'This vote link is incomplete. Please use the link from your Shopify email receipt.',
+      shopify_unavailable: 'We could not verify your Shopify order right now. Please try again shortly.',
+      order_not_found: 'We could not find that Shopify order.',
+      order_unpaid: 'This order is not marked as paid yet, so voting is still locked.',
+      email_mismatch: 'This vote link does not match the customer email on the Shopify order.',
+      not_configured: 'Voting is not configured yet for Shopify products.',
+      not_eligible: 'This order does not contain a vote-eligible Ladderice product.',
+      token_failed: 'We could not create your vote session. Please contact Ladderice support.',
+    };
+    setVoteNote(messages[error] || 'We could not start your vote session.', 'var(--error-color)');
   }
 
   // ── Load live counts on page load ────────────────────
@@ -2138,6 +2189,8 @@
   })();
 
   // ── Token-based voting (magic links) ─────────────────
+  handleVoteStartError();
+
   (function checkTokenAndSetup() {
     var token = new URLSearchParams(window.location.search).get('token');
     if (!token) return; // no token — cards stay read-only
@@ -2146,31 +2199,34 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (!data.ok) {
-          note.textContent = 'This vote link is invalid or has already been used.';
-          note.style.color = 'var(--error-color)';
+          setVoteNote('This vote link is invalid or has already been used.', 'var(--error-color)');
           return;
         }
+
+        totalVotes = data.votesTotal || 1;
+        votesUsed = data.votesUsed || 0;
+        votesRemaining = data.votesRemaining || 0;
 
         if (data.alreadyVoted) {
           voted = true;
-          note.textContent = '\u2713 You already voted for ' + data.votedForName + '. Thank you!';
-          note.style.color = '#4CAF50';
-          var votedCard = document.querySelector('.rf-charity[data-id="' + data.votedFor + '"]');
-          if (votedCard) votedCard.classList.add('voted');
+          var usedMessage = totalVotes > 1
+            ? '\u2713 You have used all ' + totalVotes + ' votes from this order. Thank you!'
+            : '\u2713 You already voted' + (data.votedForName ? ' for ' + data.votedForName : '') + '. Thank you!';
+          setVoteNote(usedMessage, '#4CAF50');
+          lockVoting();
           return;
         }
 
-        // Valid unused token — unlock voting
         verifiedOrder = token;
         verified = true;
-        note.textContent = '\u2713 Hi' + (data.name ? ', ' + data.name : '') + '! Select a cause and cast your vote.';
-        note.style.color = '#4CAF50';
-        document.querySelectorAll('.rf-charity').forEach(function (card) { card.classList.add('selectable'); });
-        document.querySelectorAll('.rf-vote-btn').forEach(function (btn) { btn.disabled = false; });
+        setVoteNote(
+          '\u2713 Hi' + (data.name ? ', ' + data.name : '') + '! You have ' + votesRemaining + ' vote' + (votesRemaining === 1 ? '' : 's') + ' remaining.',
+          '#4CAF50'
+        );
+        unlockVoting();
       })
       .catch(function () {
-        note.textContent = 'Could not validate your vote link. Please try again.';
-        note.style.color = 'var(--error-color)';
+        setVoteNote('Could not validate your vote link. Please try again.', 'var(--error-color)');
       });
   })();
 
@@ -2203,7 +2259,7 @@
     var charityId   = card.dataset.id;
     var charityName = (card.querySelector('.rf-charity__name') || {}).textContent || '';
 
-    document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = true; });
+    lockVoting();
 
     // Check if verifiedOrder is a token (long string) or order number
     var isToken = verifiedOrder && verifiedOrder.length > 20;
@@ -2220,32 +2276,45 @@
     .then(function (r) { return r.json(); })
     .then(function (data) {
       if (!data.ok) {
-        document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
-        note.textContent = data.error === 'already_voted' ? 'You have already voted.' : 'Vote failed. Please try again.';
-        note.style.color = 'var(--error-color)';
+        unlockVoting();
+        setVoteNote(
+          data.error === 'already_voted'
+            ? 'This vote link has no votes remaining.'
+            : 'Vote failed. Please try again.',
+          'var(--error-color)'
+        );
         return;
       }
 
-      voted = true;
-      card.classList.add('voted');
+      totalVotes = data.votesTotal || totalVotes;
+      votesUsed = data.votesUsed || (votesUsed + 1);
+      votesRemaining = data.votesRemaining || 0;
       applyVoteCounts(data.votes, data.total);
 
       document.querySelectorAll('.rf-bar-fill').forEach(function (f) {
         f.classList.remove('animate'); void f.offsetWidth; f.classList.add('animate');
       });
 
-      var strong = document.querySelector('#rf-confirm-text strong');
-      if (strong) strong.textContent = charityName;
+      showVoteConfirmation(charityName, votesRemaining);
+      document.querySelectorAll('.rf-charity').forEach(function (c) { c.classList.remove('selected'); });
+      selected = null;
 
-      setTimeout(function () {
-        var confirm = document.getElementById('rf-confirm');
-        if (confirm) { confirm.removeAttribute('hidden'); void confirm.offsetWidth; confirm.classList.add('show'); }
-      }, 300);
+      if (votesRemaining > 0) {
+        setVoteNote(
+          '\u2713 Vote recorded for ' + charityName + '. You have ' + votesRemaining + ' vote' + (votesRemaining === 1 ? '' : 's') + ' remaining.',
+          '#4CAF50'
+        );
+        unlockVoting();
+        return;
+      }
+
+      voted = true;
+      setVoteNote('\u2713 All your votes have been used. Thank you!', '#4CAF50');
+      lockVoting();
     })
     .catch(function () {
-      document.querySelectorAll('.rf-vote-btn').forEach(function (b) { b.disabled = false; });
-      note.textContent = 'Connection error. Please try again.';
-      note.style.color = 'var(--error-color)';
+      unlockVoting();
+      setVoteNote('Connection error. Please try again.', 'var(--error-color)');
     });
   }
 
