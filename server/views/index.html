@@ -132,7 +132,7 @@
       border-bottom-color: var(--grid-borders);
     }
     .site-ticker__text {
-      font-family: var(--font-stack-body); font-size: 8px; font-weight: 400;
+      font-family: var(--font-stack-body); font-size: 5px; font-weight: 400;
       letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.5);
       transition: color 0.4s;
     }
@@ -2661,11 +2661,7 @@
   (function () {
     var el = document.getElementById('site-ticker-text');
     if (!el) return;
-    var now = new Date();
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    var h = now.getHours(); var m = now.getMinutes();
-    el.textContent = 'Bangkok, TH  |  ' + days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + String(now.getDate()).padStart(2,'0') + ', ' + now.getFullYear() + '  |  ' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ' ICT';
+    el.textContent = '20/2 Rama I Rd, Wang Mai, Pathum Wan, Bangkok 10330';
   })();
 
   // ── Header transparent → solid on scroll past hero ─────────────────────
