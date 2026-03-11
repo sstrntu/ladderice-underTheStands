@@ -112,6 +112,15 @@
       color: var(--main-text-subtle);
     }
 
+    @media (max-width: 768px) {
+      .site-ticker {
+        padding: 7px 20px;
+      }
+      .site-ticker__text {
+        font-size: 5px;
+        letter-spacing: 0.14em;
+      }
+    }
     /* ══════════════════════════════════════
        ANTI CORRUPTION — CAMPAIGN HERO
     ══════════════════════════════════════ */
@@ -2541,7 +2550,7 @@
   (function () {
     var el = document.getElementById('site-ticker-text');
     if (!el) return;
-    el.textContent = '20 2 Rama I Rd, Wang Mai, Pathum Wan, Bangkok 10330';
+    el.textContent = '20/2 Rama I Rd, Wang Mai, Pathum Wan, Bangkok 10330';
   })();
 
   // ── Countdown ─────────────────────────────────────────────────────────
