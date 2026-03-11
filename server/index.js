@@ -11,7 +11,7 @@ const apiRoutes   = require('./routes/api');
 const db = require('./database');
 
 const app  = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3003;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 
 // ── Initialize SMTP settings from .env if not in database ──────────────────

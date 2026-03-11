@@ -47,8 +47,18 @@
 
     /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--font-stack-body); background: var(--main-background); color: var(--main-text); }
+    html {
+      scroll-behavior: auto;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-stack-body);
+      background: var(--main-background);
+      color: var(--main-text);
+    }
     img  { display: block; max-width: 100%; }
     a    { text-decoration: none; color: inherit; }
 
@@ -59,7 +69,8 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: transparent;
       color: #fff;
-      display: grid; grid-template-columns: 1fr auto 1fr;
+      display: flex;
+      justify-content: center;
       align-items: center;
       padding: 0 40px; height: 52px;
       border-bottom: 1px solid transparent;
@@ -70,7 +81,6 @@
       color: var(--header-text);
       border-bottom-color: var(--header-borders);
     }
-    .site-header__left { display: flex; align-items: center; }
     .site-header__center { display: flex; justify-content: center; }
     .site-header__logo { display: flex; align-items: center; }
     .site-header__logo img {
@@ -81,37 +91,6 @@
     .site-header.is-solid .site-header__logo img {
       filter: invert(1);
     }
-    .site-header__right { display: flex; justify-content: flex-end; gap: 24px; align-items: center; }
-    .site-header__nav-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 74px;
-      height: 30px;
-      padding: 0 14px;
-      font-family: var(--font-stack-body);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.78);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      transition: color 0.4s, border-color 0.4s, background 0.4s;
-    }
-    .site-header__nav-link:hover { color: #fff; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-    .site-header.is-solid .site-header__nav-link {
-      color: var(--main-text-muted);
-      border-color: rgba(24,24,24,0.12);
-      background: rgba(24,24,24,0.02);
-    }
-    .site-header.is-solid .site-header__nav-link:hover {
-      color: var(--main-text);
-      border-color: rgba(24,24,24,0.22);
-      background: rgba(24,24,24,0.04);
-    }
-
     /* Date ticker */
     .site-ticker {
       position: fixed; top: 52px; left: 0; right: 0; z-index: 99;
@@ -215,6 +194,20 @@
       background: var(--main-text-muted); flex-shrink: 0;
     }
 
+    .rf-hero,
+    .rf-countdown-page,
+    .rf-dashboard,
+    .rf-featured,
+    .rf-vote-section,
+    .rf-collection {
+      display: none;
+    }
+    .rf-below-hero {
+      margin-top: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     /* ══════════════════════════════════════
        MANIFESTO — scroll-highlight text
     ══════════════════════════════════════ */
@@ -222,8 +215,8 @@
       position: relative;
       background: #000;
       color: #fff;
-      height: 400vh;
-      overflow: visible;
+      min-height: calc(100vh - 86px);
+      overflow: hidden;
     }
     .rf-manifesto::after {
       content: '';
@@ -235,18 +228,16 @@
       z-index: 2;
     }
     .rf-manifesto__wrap {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
+      position: relative;
+      min-height: calc(100vh - 86px);
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       gap: 24px;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 128px 7vw 40px;
+      padding: 128px 7vw 56px;
       z-index: 1;
     }
     .rf-manifesto__canvas-wrap {
@@ -265,6 +256,53 @@
       inset: 0;
       width: 100%;
       height: 100%;
+    }
+    .rf-manifesto__canvas-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+    }
+    .rf-manifesto__timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      margin: 0;
+    }
+    .rf-manifesto__timer-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 78px;
+    }
+    .rf-manifesto__timer-value {
+      font-family: var(--font-stack-heading);
+      font-size: clamp(28px, 3.4vw, 42px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.94);
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .rf-manifesto__timer-unit {
+      font-family: var(--font-stack-body);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.48);
+    }
+    .rf-manifesto__timer-sep {
+      color: rgba(255,255,255,0.28);
+      font-family: var(--font-stack-heading);
+      font-size: clamp(20px, 2.2vw, 28px);
+      transform: translateY(-10px);
     }
 
     .rf-manifesto__text {
@@ -287,7 +325,7 @@
     }
     .rf-manifesto__text .mw {
       opacity: 0.15;
-      transition: opacity 0.3s ease;
+      transition: opacity 1s ease;
       display: inline;
     }
     .rf-manifesto__text .mw.is-lit {
@@ -300,7 +338,7 @@
     }
     /* Thai flag: Blue */
     .rf-manifesto__text .mw.is-lit[data-c="blue"] {
-      color: #2D2A7A;
+      color: #0047AB;
     }
     /* Thai flag: White */
     .rf-manifesto__text .mw.is-lit[data-c="white"] {
@@ -308,8 +346,14 @@
     }
 
     @media (max-width: 768px) {
-      .rf-manifesto { height: 300vh; }
-      .rf-manifesto__wrap { padding: 108px 24px 32px; }
+      .rf-manifesto {
+        min-height: calc(100vh - 86px);
+        height: auto;
+      }
+      .rf-manifesto__wrap {
+        min-height: calc(100vh - 86px);
+        padding: 108px 24px 40px;
+      }
       .rf-manifesto__canvas-wrap {
         flex-basis: min(34vh, 280px);
         width: min(48vw, 220px);
@@ -321,6 +365,24 @@
         line-height: 1.85;
         letter-spacing: 0.05em;
         max-width: 34ch;
+      }
+      .rf-manifesto__timer {
+        gap: 10px;
+      }
+      .rf-manifesto__timer-block {
+        min-width: 56px;
+        gap: 6px;
+      }
+      .rf-manifesto__timer-value {
+        font-size: 24px;
+      }
+      .rf-manifesto__timer-unit {
+        font-size: 9px;
+        letter-spacing: 0.16em;
+      }
+      .rf-manifesto__timer-sep {
+        font-size: 18px;
+        transform: translateY(-8px);
       }
     }
 
@@ -1161,53 +1223,16 @@
 
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 
-    /* ══════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════ */
-    .site-footer {
-      background: var(--main-background-warm);
-      border-top: 1px solid var(--grid-borders);
-      padding: 20px 7vw;
-    }
-    .site-footer__inner {
-      max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .site-footer__brand {
-      display: flex; align-items: center;
-    }
-    .site-footer__brand img {
-      height: 20px; width: auto; display: block;
-      filter: invert(1);
-    }
-    .site-footer__copy {
-      font-family: var(--font-stack-body); font-size: 10px; font-weight: 400;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--main-text-subtle);
-    }
-    .site-footer__link {
-      font-family: var(--font-stack-body); font-size: 11px; font-weight: 400;
-      color: var(--main-text-muted); text-decoration: underline;
-      text-underline-offset: 3px; transition: color 0.2s;
-    }
-    .site-footer__link:hover { color: var(--main-text); }
-    @media(max-width:768px) { .site-footer__inner { flex-direction: column; gap: 16px; text-align: center; } }
-
   </style>
 </head>
 <body>
 
   <!-- ── HEADER ── -->
   <header class="site-header">
-    <div class="site-header__left">
-      <a href="#rf-vote-section" class="site-header__nav-link">Vote</a>
-    </div>
     <div class="site-header__center">
       <a href="/" class="site-header__logo">
         <img src="/public/ladderice-logo.png" alt="Ladderice" id="header-logo-img">
       </a>
-    </div>
-    <div class="site-header__right">
-      <a href="#rf-vote-section" class="site-header__nav-link">Vote</a>
     </div>
   </header>
 
@@ -1238,9 +1263,32 @@
   <!-- ── MANIFESTO ── -->
   <div class="rf-manifesto" id="rf-manifesto">
     <div class="rf-manifesto__wrap">
+      <div class="rf-manifesto__timer" id="rf-countdown-timer" data-target="2026-03-13T19:00:00+07:00" aria-label="Countdown timer">
+        <div class="rf-manifesto__timer-block">
+          <span class="rf-manifesto__timer-value" id="rf-countdown-days">00</span>
+          <span class="rf-manifesto__timer-unit">Days</span>
+        </div>
+        <span class="rf-manifesto__timer-sep">:</span>
+        <div class="rf-manifesto__timer-block">
+          <span class="rf-manifesto__timer-value" id="rf-countdown-hours">00</span>
+          <span class="rf-manifesto__timer-unit">Hours</span>
+        </div>
+        <span class="rf-manifesto__timer-sep">:</span>
+        <div class="rf-manifesto__timer-block">
+          <span class="rf-manifesto__timer-value" id="rf-countdown-minutes">00</span>
+          <span class="rf-manifesto__timer-unit">Minutes</span>
+        </div>
+        <span class="rf-manifesto__timer-sep">:</span>
+        <div class="rf-manifesto__timer-block">
+          <span class="rf-manifesto__timer-value" id="rf-countdown-seconds">00</span>
+          <span class="rf-manifesto__timer-unit">Seconds</span>
+        </div>
+      </div>
       <p class="rf-manifesto__text" id="rf-manifesto-text"><mark data-color="red">Siamese Dreams</mark> is more than a drop. It's a signal. A reminder that <mark data-color="white">football culture in Thailand</mark> has always been bigger than the systems around it. <mark data-color="blue">Three kits. Three paths forward.</mark> <mark data-color="white">From the streets. Through our heritage. Toward the future.</mark> And maybe, just maybe — one day <mark data-color="red">the dream plays on the world's biggest stage.</mark></p>
       <div class="rf-manifesto__canvas-wrap">
-        <canvas id="acss-canvas"></canvas>
+        <video id="acss-logo-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+          <source src="/public/manifesto-logo-loop.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </div>
@@ -1680,17 +1728,6 @@
 
   </div><!-- /.rf-below-hero -->
 
-  <!-- ── FOOTER ── -->
-  <footer class="site-footer">
-    <div class="site-footer__inner">
-      <div class="site-footer__brand">
-        <img id="footer-logo-img" src="/public/ladderice-logo.png" alt="Ladderice">
-      </div>
-      <span class="site-footer__copy">&copy; 2026 Ladderice. All rights reserved.</span>
-      <a href="https://ladderice.co" target="_blank" rel="noopener" class="site-footer__link">ladderice.co</a>
-    </div>
-  </footer>
-
 <script>
 (function () {
   'use strict';
@@ -1830,130 +1867,46 @@
   (function () {
     var el = document.getElementById('rf-manifesto-text');
     if (!el) return;
-    // Walk child nodes, wrap each word in a span, preserving <mark data-color> as data-c
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function appendAnimatedTokens(text, color, parts) {
+      text.split(/(\s+)/).forEach(function(token) {
+        if (!token) return;
+        if (/^\s+$/.test(token)) {
+          parts.push(escapeHtml(token));
+          return;
+        }
+        var safe = escapeHtml(token);
+        if (color) parts.push('<span class="mw" data-c="' + color + '">' + safe + '</span>');
+        else parts.push('<span class="mw">' + safe + '</span>');
+      });
+    }
+
     var html = '';
-    el.childNodes.forEach(function (node) {
+    var parts = [];
+    el.childNodes.forEach(function(node) {
       if (node.nodeType === 3) {
-        // text node
-        node.textContent.split(/(\s+)/).forEach(function (part) {
-          if (/^\s+$/.test(part)) { html += ' '; }
-          else if (part) { html += '<span class="mw">' + part + '</span>'; }
-        });
+        appendAnimatedTokens(node.textContent, '', parts);
       } else if (node.nodeName === 'MARK') {
         var color = node.getAttribute('data-color') || '';
-        node.textContent.split(/(\s+)/).forEach(function (part) {
-          if (/^\s+$/.test(part)) { html += ' '; }
-          else if (part) { html += '<span class="mw" data-c="' + color + '">' + part + '</span>'; }
-        });
+        appendAnimatedTokens(node.textContent, color, parts);
       }
     });
+    html = parts.join('');
     el.innerHTML = html;
     var spans = el.querySelectorAll('.mw');
-    var section = document.getElementById('rf-manifesto');
 
-    function onScroll() {
-      var rect = section.getBoundingClientRect();
-      var vh = window.innerHeight;
-      var sectionH = section.offsetHeight;
-      var stickyH = 100 * vh / 100; // sticky inner is 100vh
-      var scrollableH = sectionH - stickyH; // scrollable range = section height - sticky height
-      // progress: 0 when section top enters (rect.top = vh), 1 when we've scrolled through the scrollable height
-      var scrolled = vh - rect.top;
-      var progress = scrolled / scrollableH;
-      progress = Math.max(0, Math.min(1, progress));
-
-      var count = spans.length;
-      var litCount = Math.floor(progress * count);
-      for (var i = 0; i < count; i++) {
-        if (i < litCount) {
-          spans[i].classList.add('is-lit');
-        } else {
-          spans[i].classList.remove('is-lit');
-        }
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  })();
-
-  // ── ACSS manifesto scroll animation ───────────────────
-  (function () {
-    var canvas     = document.getElementById('acss-canvas');
-    var canvasWrap = canvas ? canvas.parentElement : null;
-    var section    = document.getElementById('rf-manifesto');
-    if (!canvas || !section) return;
-
-    var ctx        = canvas.getContext('2d');
-    var TOTAL      = 121;
-    var frames     = new Array(TOTAL);
-    var loaded     = 0;
-    var currentIdx = -1;
-    var ticking    = false;
-
-    function drawFrame(idx) {
-      if (idx === currentIdx) return;
-      var img = frames[idx];
-      if (!img || !img.complete) return;
-      currentIdx = idx;
-
-      var cw = canvas.width;
-      var ch = canvas.height;
-      var iw = img.naturalWidth;
-      var ih = img.naturalHeight;
-
-      // Contain-fit: fill height, center horizontally
-      var scale = Math.min(cw / iw, ch / ih);
-      var dw = iw * scale;
-      var dh = ih * scale;
-      var dx = (cw - dw) / 2;
-      var dy = (ch - dh) / 2;
-
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, 0, 0, iw, ih, dx, dy, dw, dh);
-    }
-
-    function resizeCanvas() {
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width  = canvas.offsetWidth * dpr;
-      canvas.height = canvas.offsetHeight * dpr;
-      currentIdx = -1;
-    }
-
-    function onScroll() {
-      var rect       = section.getBoundingClientRect();
-      var vh         = window.innerHeight;
-      var sectionH   = section.offsetHeight;
-      var scrollableH = sectionH - vh;
-      if (scrollableH <= 0) return;
-
-      var scrolled  = vh - rect.top;
-      var progress  = Math.max(0, Math.min(1, scrolled / scrollableH));
-      var idx       = Math.min(TOTAL - 1, Math.floor(progress * TOTAL));
-      drawFrame(idx);
-      ticking = false;
-    }
-
-    window.addEventListener('scroll', function () {
-      if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
-    }, { passive: true });
-
-    window.addEventListener('resize', function () { resizeCanvas(); onScroll(); });
-
-    function loadFrame(i) {
-      var img = new Image();
-      img.onload = function () {
-        frames[i] = img;
-        loaded++;
-        if (i === 0) { resizeCanvas(); drawFrame(0); }
-      };
-      img.src = '/public/acss-frames/ezgif-frame-' + String(i + 1).padStart(3, '0') + '.jpg';
-    }
-
-    loadFrame(0);
-    for (var i = 1; i < TOTAL; i++) { loadFrame(i); }
-
-    resizeCanvas();
+    spans.forEach(function(span, index) {
+      window.setTimeout(function() {
+        span.classList.add('is-lit');
+      }, 110 * index);
+    });
   })();
 
   // ── Featured carousel ──────────────────────────────────
@@ -2008,6 +1961,7 @@
     var content = heroEl ? heroEl.querySelector('.rf-hero__content') : null;
     var sticky  = heroEl ? heroEl.querySelector('.rf-hero__sticky') : null;
     if (!canvas || !heroEl) return;
+    if (window.getComputedStyle(heroEl).display === 'none') return;
 
     var ctx        = canvas.getContext('2d');
     var TOTAL      = 151;
@@ -2339,7 +2293,14 @@
           }).format(num);
         }
 
+        function setCountdownTarget(val) {
+          var timer = document.getElementById('rf-countdown-timer');
+          if (timer && val) timer.dataset.target = val;
+        }
+
         // ── Financial figures ───────────────────────────────────────────────
+        setCountdownTarget(s.countdown_target);
+
         set('cms-fin-revenue',       s.fin_revenue_display);
         set('cms-fin-expenses',      s.fin_expenses_display);
         set('cms-fin-profit',        s.fin_profit_display);
@@ -2562,8 +2523,6 @@
         if (s.logo_img) {
           var headerLogo = document.getElementById('header-logo-img');
           if (headerLogo) headerLogo.src = s.logo_img;
-          var footerLogo = document.getElementById('footer-logo-img');
-          if (footerLogo) footerLogo.src = s.logo_img;
         }
       })
       .catch(function () {});
@@ -2573,11 +2532,59 @@
   (function () {
     var el = document.getElementById('site-ticker-text');
     if (!el) return;
-    var now = new Date();
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    var h = now.getHours(); var m = now.getMinutes();
-    el.textContent = 'Bangkok, TH  |  ' + days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + String(now.getDate()).padStart(2,'0') + ', ' + now.getFullYear() + '  |  ' + String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ' ICT';
+    el.textContent = '20 2 Rama I Rd, Wang Mai, Pathum Wan, Bangkok 10330';
+  })();
+
+  // ── Countdown ─────────────────────────────────────────────────────────
+  (function () {
+    var timer = document.getElementById('rf-countdown-timer');
+    if (!timer) return;
+
+    var daysEl = document.getElementById('rf-countdown-days');
+    var hoursEl = document.getElementById('rf-countdown-hours');
+    var minutesEl = document.getElementById('rf-countdown-minutes');
+    var secondsEl = document.getElementById('rf-countdown-seconds');
+
+    function pad(value, width) {
+      return String(value).padStart(width, '0');
+    }
+
+    function zeroOut() {
+      if (daysEl) daysEl.textContent = '00';
+      if (hoursEl) hoursEl.textContent = '00';
+      if (minutesEl) minutesEl.textContent = '00';
+      if (secondsEl) secondsEl.textContent = '00';
+    }
+
+    function tick() {
+      var rawTarget = timer.dataset.target;
+      var target = new Date(rawTarget);
+
+      if (isNaN(target.getTime())) {
+        zeroOut();
+        return;
+      }
+
+      var diff = target.getTime() - Date.now();
+      if (diff <= 0) {
+        zeroOut();
+        return;
+      }
+
+      var totalSeconds = Math.floor(diff / 1000);
+      var days = Math.floor(totalSeconds / 86400);
+      var hours = Math.floor((totalSeconds % 86400) / 3600);
+      var minutes = Math.floor((totalSeconds % 3600) / 60);
+      var seconds = totalSeconds % 60;
+
+      if (daysEl) daysEl.textContent = pad(days, 2);
+      if (hoursEl) hoursEl.textContent = pad(hours, 2);
+      if (minutesEl) minutesEl.textContent = pad(minutes, 2);
+      if (secondsEl) secondsEl.textContent = pad(seconds, 2);
+    }
+
+    tick();
+    window.setInterval(tick, 1000);
   })();
 
   // ── Header transparent → solid on scroll past hero ─────────────────────
@@ -2586,6 +2593,11 @@
     var ticker = document.querySelector('.site-ticker');
     var hero   = document.getElementById('rf-hero');
     if (!header || !hero) return;
+    if (window.getComputedStyle(hero).display === 'none') {
+      header.classList.remove('is-solid');
+      if (ticker) ticker.classList.remove('is-solid');
+      return;
+    }
     var solid = false;
 
     var dashboard = document.querySelector('.rf-dashboard');
