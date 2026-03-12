@@ -3,138 +3,665 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Red Funding Admin</title>
+  <title>Dashboard — Twenty-Thirty Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
   <style>
+    @font-face {
+      font-family: 'Druk Trial';
+      src: url('/public/DrukTextWide-Super-Trial.otf') format('opentype');
+      font-weight: 800;
+      font-style: normal;
+    }
+
+    :root {
+      --main-text: #181818;
+      --main-text-muted: rgba(24,24,24,0.56);
+      --main-text-subtle: rgba(24,24,24,0.34);
+      --main-background: #ffffff;
+      --main-background-warm: #fafaf8;
+      --main-background-soft: rgba(24,24,24,0.03);
+      --main-border: rgba(24,24,24,0.08);
+      --grid-border: rgba(24,24,24,0.06);
+      --rf-red: #c41e1e;
+      --rf-red-dark: #9a1818;
+      --forest: #1c2b16;
+      --forest-ink: #22361b;
+      --cream: #ffeed0;
+      --shadow-soft: 0 24px 80px rgba(24,24,24,0.06);
+      --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'IBM Plex Mono', monospace; background: #f4f2ee; color: #111; min-height: 100vh; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background:
+        radial-gradient(circle at top left, rgba(196,30,30,0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(28,43,22,0.06), transparent 24%),
+        linear-gradient(180deg, #f6f3ee 0%, var(--main-background) 180px, var(--main-background) 100%);
+      color: var(--main-text);
+      min-height: 100vh;
+    }
+
+    .page-frame {
+      position: fixed;
+      inset: 16px;
+      border: 1px solid rgba(24,24,24,0.05);
+      pointer-events: none;
+      z-index: 1;
+    }
+    @media(max-width: 900px) {
+      .page-frame { inset: 10px; }
+    }
 
     /* ── Header ── */
     .header {
-      background: #1c2b16; color: #ffeed0;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px; height: 58px;
-      border-bottom: 1px solid rgba(255,238,208,0.08);
-      position: sticky; top: 0; z-index: 100;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+      min-height: 68px;
+      padding: 14px 36px;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--grid-border);
     }
-    .header__logo { font-size: 16px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-    .header__logo span { color: #E8000D; }
-    .header__right { display: flex; align-items: center; gap: 20px; }
-    .header__tag { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,238,208,0.4); }
-    .header__logout { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,238,208,0.6); text-decoration: none; padding: 6px 14px; border: 1px solid rgba(255,238,208,0.15); border-radius: 30px; transition: all 0.2s; }
-    .header__logout:hover { color: #ffeed0; border-color: rgba(255,238,208,0.4); }
+    .header__eyebrow,
+    .header__tag {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--main-text-subtle);
+    }
+    .header__eyebrow { justify-self: start; }
+    .header__center { display: flex; justify-content: center; }
+    .header__logo {
+      display: inline-flex;
+      align-items: center;
+    }
+    .header__logo img {
+      height: 18px;
+      width: auto;
+      display: block;
+    }
+    .header__right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+    }
+    .header__logout {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 106px;
+      height: 34px;
+      padding: 0 16px;
+      border: 1px solid rgba(24,24,24,0.12);
+      border-radius: 999px;
+      background: rgba(24,24,24,0.02);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--main-text-muted);
+      text-decoration: none;
+      transition: all 0.25s var(--ease-smooth);
+    }
+    .header__logout:hover {
+      color: var(--main-text);
+      border-color: rgba(24,24,24,0.2);
+      background: rgba(24,24,24,0.04);
+    }
 
     /* ── Layout ── */
-    .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+    .main {
+      position: relative;
+      z-index: 2;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 36px 28px 96px;
+    }
+    .admin-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+      gap: 22px;
+      margin-bottom: 28px;
+      align-items: stretch;
+    }
+    .admin-hero__intro,
+    .admin-hero__panel {
+      position: relative;
+      overflow: hidden;
+      background: var(--main-background);
+      border: 1px solid var(--main-border);
+      box-shadow: var(--shadow-soft);
+    }
+    .admin-hero__intro {
+      padding: 36px 38px 34px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .admin-hero__intro::after {
+      content: '';
+      position: absolute;
+      right: -50px;
+      bottom: -62px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,30,30,0.12), rgba(196,30,30,0) 70%);
+      pointer-events: none;
+    }
+    .admin-hero__panel {
+      padding: 28px 30px;
+      background:
+        linear-gradient(180deg, rgba(24,24,24,0.01), transparent 40%),
+        var(--main-background-warm);
+    }
+    .admin-hero__kicker {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rf-red);
+      margin-bottom: 14px;
+    }
+    .admin-hero__title {
+      font-family: 'Druk Trial', 'IBM Plex Mono', monospace;
+      font-size: clamp(38px, 5.2vw, 72px);
+      line-height: 0.94;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      max-width: 10ch;
+      margin-bottom: 18px;
+    }
+    .admin-hero__lead {
+      max-width: 64ch;
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--main-text-muted);
+    }
+    .admin-hero__meta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 26px;
+    }
+    .admin-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(24,24,24,0.1);
+      background: rgba(24,24,24,0.02);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--main-text-muted);
+    }
+    .admin-chip::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rf-red);
+      flex-shrink: 0;
+    }
+    .admin-hero__panel-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--main-text-subtle);
+      margin-bottom: 18px;
+    }
+    .admin-hero__list {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .admin-hero__item {
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--grid-border);
+    }
+    .admin-hero__item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .admin-hero__item-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--main-text-subtle);
+      margin-bottom: 6px;
+    }
+    .admin-hero__item-copy {
+      font-size: 12px;
+      line-height: 1.75;
+      color: var(--main-text-muted);
+    }
 
     /* ── Section titles ── */
-    .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #E8000D; margin-bottom: 8px; }
-    .section-heading { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; color: #111; margin-bottom: 24px; }
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rf-red);
+      margin-bottom: 8px;
+    }
+    .section-heading {
+      font-family: 'Druk Trial', 'IBM Plex Mono', monospace;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--main-text);
+      margin-bottom: 22px;
+    }
 
     /* ── Cards ── */
-    .card { background: #fff; border: 1px solid rgba(17,17,17,0.08); border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; }
+    .card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--main-border);
+      box-shadow: var(--shadow-soft);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
 
     /* ── Upload area ── */
     .upload-zone {
-      border: 2px dashed rgba(17,17,17,0.15); border-radius: 12px; padding: 40px 24px;
-      text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+      border: 1px dashed rgba(24,24,24,0.15);
+      padding: 44px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
       position: relative;
+      background:
+        linear-gradient(180deg, rgba(24,24,24,0.01), transparent),
+        var(--main-background-warm);
     }
-    .upload-zone:hover, .upload-zone.drag-over { border-color: #E8000D; background: rgba(232,0,13,0.02); }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--rf-red); background: rgba(196,30,30,0.025); transform: translateY(-1px); }
     .upload-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
     .upload-icon { font-size: 32px; margin-bottom: 12px; }
-    .upload-zone p { font-size: 14px; font-weight: 500; color: rgba(17,17,17,0.5); }
-    .upload-zone strong { color: #111; }
-    .upload-zone small { display: block; margin-top: 6px; font-size: 11px; color: rgba(17,17,17,0.35); }
+    .upload-zone p { font-size: 14px; font-weight: 500; color: var(--main-text-muted); }
+    .upload-zone strong { color: var(--main-text); }
+    .upload-zone small { display: block; margin-top: 6px; font-size: 11px; color: var(--main-text-subtle); }
 
     .upload-actions { display: flex; gap: 12px; margin-top: 20px; align-items: center; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; }
-    .btn--primary { background: #1c2b16; color: #ffeed0; }
-    .btn--primary:hover { background: #253d1d; }
-    .btn--red { background: #E8000D; color: #fff; }
-    .btn--red:hover { background: #A50009; }
-    .btn--outline { background: transparent; color: #111; border: 1px solid rgba(17,17,17,0.15); }
-    .btn--outline:hover { background: #111; color: #fff; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 999px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s var(--ease-smooth); border: none; text-decoration: none;
+    }
+    .btn--primary { background: var(--forest); color: var(--cream); }
+    .btn--primary:hover { background: var(--forest-ink); transform: translateY(-1px); }
+    .btn--red { background: var(--rf-red); color: #fff; }
+    .btn--red:hover { background: var(--rf-red-dark); transform: translateY(-1px); }
+    .btn--outline { background: transparent; color: var(--main-text); border: 1px solid rgba(24,24,24,0.15); }
+    .btn--outline:hover { background: var(--main-text); color: #fff; border-color: var(--main-text); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* ── Preview table ── */
-    .preview-box { margin-top: 20px; background: #fafafa; border: 1px solid rgba(17,17,17,0.07); border-radius: 10px; overflow: hidden; display: none; }
+    .preview-box { margin-top: 20px; background: var(--main-background-warm); border: 1px solid var(--grid-border); overflow: hidden; display: none; }
     .preview-box.visible { display: block; }
-    .preview-header { padding: 12px 20px; border-bottom: 1px solid rgba(17,17,17,0.07); display: flex; align-items: center; justify-content: space-between; }
-    .preview-header span { font-size: 12px; font-weight: 600; color: rgba(17,17,17,0.5); }
-    .preview-header strong { font-size: 14px; font-weight: 700; color: #111; }
+    .preview-header { padding: 12px 20px; border-bottom: 1px solid var(--grid-border); display: flex; align-items: center; justify-content: space-between; }
+    .preview-header span { font-size: 12px; font-weight: 600; color: var(--main-text-muted); }
+    .preview-header strong { font-size: 14px; font-weight: 700; color: var(--main-text); }
 
     /* ── Upload status ── */
-    .status-msg { padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 500; margin-top: 14px; display: none; }
+    .status-msg { padding: 12px 18px; font-size: 13px; font-weight: 500; margin-top: 14px; display: none; }
     .status-msg.success { background: rgba(76,175,80,0.08); border: 1px solid rgba(76,175,80,0.25); color: #2e7d32; }
-    .status-msg.error   { background: rgba(232,0,13,0.06); border: 1px solid rgba(232,0,13,0.2); color: #A50009; }
+    .status-msg.error   { background: rgba(196,30,30,0.06); border: 1px solid rgba(196,30,30,0.2); color: var(--rf-red-dark); }
 
     /* ── Stats row ── */
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
     @media(max-width:600px){ .stats{grid-template-columns:1fr} }
-    .stat { background: #fff; border: 1px solid rgba(17,17,17,0.08); border-radius: 12px; padding: 22px 24px; }
-    .stat__label { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(17,17,17,0.35); margin-bottom: 8px; }
-    .stat__value { font-size: 32px; font-weight: 800; color: #111; line-height: 1; }
-    .stat__value--red { color: #E8000D; }
+    .stat { background: rgba(255,255,255,0.88); border: 1px solid var(--main-border); padding: 22px 24px; box-shadow: var(--shadow-soft); }
+    .stat__label { font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 10px; }
+    .stat__value { font-family: 'Druk Trial', 'IBM Plex Mono', monospace; font-size: clamp(36px, 4vw, 52px); color: var(--main-text); line-height: 0.94; text-transform: uppercase; }
+    .stat__value--red { color: var(--rf-red); }
 
     /* ── Vote bars ── */
-    .charity-row { padding: 16px 0; border-bottom: 1px solid rgba(17,17,17,0.06); }
+    .charity-row { padding: 18px 0; border-bottom: 1px solid var(--grid-border); }
     .charity-row:last-child { border-bottom: none; }
     .charity-row__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .charity-row__name { font-size: 14px; font-weight: 700; color: #111; }
-    .charity-row__stats { font-size: 12px; font-weight: 500; color: rgba(17,17,17,0.45); }
-    .charity-row__stats strong { color: #111; }
-    .bar-track { height: 6px; background: rgba(17,17,17,0.07); border-radius: 30px; overflow: hidden; }
-    .bar-fill { height: 100%; background: #1c2b16; border-radius: 30px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
-    .bar-fill--red { background: #E8000D; }
+    .charity-row__name { font-size: 13px; font-weight: 700; color: var(--main-text); text-transform: uppercase; letter-spacing: 0.08em; }
+    .charity-row__stats { font-size: 12px; font-weight: 500; color: var(--main-text-muted); }
+    .charity-row__stats strong { color: var(--main-text); }
+    .bar-track { height: 5px; background: rgba(24,24,24,0.07); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--forest); border-radius: 999px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .bar-fill--red { background: var(--rf-red); }
 
     /* ── Data table ── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th { text-align: left; padding: 10px 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(17,17,17,0.4); border-bottom: 1px solid rgba(17,17,17,0.08); white-space: nowrap; }
-    tbody td { padding: 12px 14px; border-bottom: 1px solid rgba(17,17,17,0.05); vertical-align: middle; }
+    thead th { text-align: left; padding: 12px 14px; font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--main-text-subtle); border-bottom: 1px solid var(--main-border); white-space: nowrap; }
+    tbody td { padding: 14px; border-bottom: 1px solid var(--grid-border); vertical-align: middle; }
     tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: rgba(17,17,17,0.02); }
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 30px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-    .badge--green { background: rgba(28,43,22,0.08); color: #1c2b16; }
-    .badge--red   { background: rgba(232,0,13,0.08); color: #E8000D; }
+    tbody tr:hover td { background: rgba(24,24,24,0.018); }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+    .badge--green { background: rgba(28,43,22,0.08); color: var(--forest); }
+    .badge--red   { background: rgba(196,30,30,0.08); color: var(--rf-red); }
 
-    .empty-state { padding: 40px 0; text-align: center; color: rgba(17,17,17,0.35); font-size: 13px; }
+    .empty-state { padding: 40px 0; text-align: center; color: var(--main-text-subtle); font-size: 13px; }
 
     /* ── Tab bar ── */
-    .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(17,17,17,0.1); margin-bottom: 24px; }
-    .tab { padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(17,17,17,0.4); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.2s, border-color 0.2s; }
-    .tab.active { color: #1c2b16; border-color: #1c2b16; }
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; padding-bottom: 4px; }
+    .tab {
+      padding: 11px 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--main-text-subtle); cursor: pointer; border: 1px solid rgba(24,24,24,0.1); border-radius: 999px;
+      background: rgba(24,24,24,0.02); transition: all 0.2s var(--ease-smooth);
+    }
+    .tab:hover { color: var(--main-text); border-color: rgba(24,24,24,0.18); background: rgba(24,24,24,0.04); }
+    .tab.active { color: var(--cream); border-color: var(--forest); background: var(--forest); }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    .refresh-note { font-size: 11px; color: rgba(17,17,17,0.35); margin-top: 8px; }
+    .refresh-note { font-size: 11px; color: var(--main-text-subtle); margin-top: 8px; }
 
     /* ── CMS form ── */
     .cms-section { margin-bottom: 36px; }
-    .cms-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(17,17,17,0.4); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgba(17,17,17,0.08); }
+    .cms-section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--main-text-subtle); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--grid-border); }
     .cms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     @media(max-width:640px){ .cms-grid{ grid-template-columns: 1fr; } }
     .cms-field { display: flex; flex-direction: column; gap: 5px; }
-    .cms-field label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(17,17,17,0.45); }
+    .cms-field label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--main-text-muted); }
     .cms-field input, .cms-field textarea {
-      padding: 10px 14px; border: 1px solid rgba(17,17,17,0.12); border-radius: 8px;
-      font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #111;
-      background: #fafafa; outline: none; transition: border-color 0.2s;
+      padding: 11px 14px; border: 1px solid rgba(24,24,24,0.12);
+      font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: var(--main-text);
+      background: var(--main-background-warm); outline: none; transition: border-color 0.2s, background 0.2s;
     }
-    .cms-field input:focus, .cms-field textarea:focus { border-color: #1c2b16; background: #fff; }
+    .cms-field input:focus, .cms-field textarea:focus { border-color: var(--forest); background: #fff; }
     .cms-field textarea { resize: vertical; min-height: 70px; }
     .cms-field--full { grid-column: 1 / -1; }
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 0 0 18px;
+    }
+    .preset-row__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--main-text-subtle);
+      margin-right: 4px;
+    }
+
+    .email-template-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+      gap: 20px;
+      align-items: start;
+    }
+    .email-preview-panel {
+      position: sticky;
+      top: 92px;
+      border: 1px solid var(--main-border);
+      background: linear-gradient(180deg, rgba(24,24,24,0.015), transparent 20%), var(--main-background-warm);
+      padding: 18px;
+    }
+    .email-preview-panel__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--main-text-subtle);
+      margin-bottom: 12px;
+    }
+    .email-preview-frame {
+      border: 1px solid var(--grid-border);
+      background: #fafaf8;
+      padding: 18px;
+      overflow: hidden;
+    }
+    .email-preview-mail {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .email-preview-bar {
+      height: 3px;
+      background: #C41E1E;
+      margin-bottom: 18px;
+    }
+    .email-preview-brand {
+      background: #181818;
+      border: 1px solid rgba(24,24,24,0.08);
+      text-align: center;
+      padding: 18px 24px 16px;
+      margin-bottom: 18px;
+    }
+    .email-preview-brand img {
+      display: inline-block;
+      max-width: 110px;
+      width: 100%;
+      height: auto;
+    }
+    .email-preview-brand p {
+      margin: 12px 0 0;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.46);
+    }
+    .email-preview-card {
+      background: #fff;
+      border: 1px solid rgba(24,24,24,0.08);
+    }
+    .email-preview-card__topline {
+      padding: 18px 28px;
+      border-bottom: 1px solid rgba(24,24,24,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(24,24,24,0.38);
+    }
+    .email-preview-card__topline strong {
+      color: #C41E1E;
+      font-weight: 700;
+    }
+    .email-preview-card__inner {
+      padding: 34px 28px 0;
+    }
+    .email-preview-eyebrow {
+      display: block;
+      margin-bottom: 18px;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #C41E1E;
+    }
+    .email-preview-title {
+      margin: 0;
+      font-family: 'Druk Trial', Arial Black,Arial,Helvetica,sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 0.94;
+      letter-spacing: 0.01em;
+      color: #181818;
+      white-space: pre-line;
+      text-transform: uppercase;
+    }
+    .email-preview-divider {
+      height: 1px;
+      background: rgba(24,24,24,0.08);
+      margin: 24px 0 0;
+    }
+    .email-preview-image {
+      display: none;
+      width: 100%;
+      margin-top: 24px;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: #ece8e1;
+    }
+    .email-preview-image.has-image {
+      display: block;
+    }
+    .email-preview-copy {
+      padding: 28px 28px 0;
+      font-family: 'IBM Plex Mono', Arial,Helvetica,sans-serif;
+      font-size: 14px;
+      line-height: 1.8;
+      color: rgba(24,24,24,0.62);
+      white-space: pre-line;
+    }
+    .email-preview-copy p {
+      margin: 0 0 16px;
+    }
+    .email-preview-copy p:last-child {
+      margin-bottom: 0;
+    }
+    .email-preview-cta-wrap {
+      padding: 30px 28px 0;
+    }
+    .email-preview-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 24px;
+      background: #181818;
+      color: #fff;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .email-preview-link {
+      padding: 18px 28px 0;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 10px;
+      line-height: 1.6;
+      color: rgba(24,24,24,0.34);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .email-preview-link code {
+      display: block;
+      margin-top: 6px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      border-radius: 0;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      font-size: 11px;
+      color: rgba(24,24,24,0.48);
+      word-break: break-all;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .email-preview-bottom-gap {
+      height: 34px;
+    }
+    .email-preview-bottom-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #C41E1E 0%, #C41E1E 24%, rgba(24,24,24,0.06) 24%);
+    }
+    .email-preview-footer {
+      padding: 22px 8px 0;
+      text-align: center;
+    }
+    .email-preview-footer-panel {
+      background: #181818;
+      padding: 20px 16px 18px;
+    }
+    .email-preview-signoff {
+      margin: 0 0 10px;
+    }
+    .email-preview-signoff img {
+      display: inline-block;
+      max-width: 96px;
+      width: 100%;
+      height: auto;
+    }
+    .email-preview-footer-copy,
+    .email-preview-footer-legal,
+    .email-preview-preheader {
+      font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+      line-height: 1.6;
+    }
+    .email-preview-footer-copy {
+      margin: 0 0 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.58);
+    }
+    .email-preview-footer-legal {
+      margin: 0;
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', 'Courier New',Courier,monospace;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+    }
+    .email-preview-meta {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--grid-border);
+      display: grid;
+      gap: 8px;
+    }
+    .email-preview-meta-row {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      gap: 10px;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--main-text-muted);
+    }
+    .email-preview-meta-row strong {
+      color: var(--main-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 9px;
+      padding-top: 2px;
+    }
+    .email-preview-preheader {
+      font-size: 11px;
+      color: var(--main-text-muted);
+    }
+    @media(max-width:980px) {
+      .email-template-layout {
+        grid-template-columns: 1fr;
+      }
+      .email-preview-panel {
+        position: static;
+      }
+    }
 
     /* ── Image upload slots ── */
     .img-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-    .img-slot { border: 1px solid rgba(17,17,17,0.1); border-radius: 12px; overflow: hidden; }
+    .img-slot { border: 1px solid var(--main-border); overflow: hidden; background: #fff; }
     .img-slot__preview { aspect-ratio: 4/3; background: #f0ede8; display: flex; align-items: center; justify-content: center; position: relative; }
     .img-slot__preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .img-slot__preview .placeholder { font-size: 28px; color: rgba(17,17,17,0.2); }
-    .img-slot__footer { padding: 12px; border-top: 1px solid rgba(17,17,17,0.08); }
+    .img-slot__footer { padding: 12px; border-top: 1px solid var(--grid-border); }
     .img-slot__label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #111; margin-bottom: 8px; }
     .img-slot__upload { position: relative; display: block; }
     .img-slot__upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
@@ -144,21 +671,21 @@
     .img-slot__status.err { color: #A50009; }
 
     /* ── Product sections ── */
-    .product-section { border: 1px solid rgba(17,17,17,0.1); border-radius: 16px; padding: 28px 28px 24px; margin-bottom: 24px; }
-    .product-section__head { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid rgba(17,17,17,0.07); }
-    .product-section__num { width: 34px; height: 34px; border-radius: 50%; background: #1c2b16; color: #ffeed0; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; }
-    .product-section__num--main { background: #E8000D; }
+    .product-section { border: 1px solid var(--main-border); padding: 28px 28px 24px; margin-bottom: 24px; background: linear-gradient(180deg, rgba(24,24,24,0.01), transparent 22%), #fff; }
+    .product-section__head { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--grid-border); }
+    .product-section__num { width: 36px; height: 36px; border-radius: 50%; background: var(--forest); color: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
+    .product-section__num--main { background: var(--rf-red); }
     .product-section__titles { flex: 1; }
-    .product-section__name { font-size: 15px; font-weight: 800; color: #111; }
-    .product-section__sub  { font-size: 11px; color: rgba(17,17,17,0.4); font-weight: 500; margin-top: 2px; }
+    .product-section__name { font-size: 14px; font-weight: 800; color: var(--main-text); text-transform: uppercase; letter-spacing: 0.08em; }
+    .product-section__sub  { font-size: 11px; color: var(--main-text-muted); font-weight: 500; margin-top: 4px; line-height: 1.55; }
     .product-img-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
     @media(max-width:700px){ .product-img-grid{ grid-template-columns: repeat(2, 1fr); } }
-    .product-img-slot { border: 1px solid rgba(17,17,17,0.1); border-radius: 10px; overflow: hidden; }
+    .product-img-slot { border: 1px solid var(--main-border); overflow: hidden; }
     .product-img-slot__preview { aspect-ratio: 1; background: #f5f3ef; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
     .product-img-slot__preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .product-img-slot__preview img.has-img { display: block; }
     .product-img-slot__preview .slot-placeholder { font-size: 22px; color: rgba(17,17,17,0.2); }
-    .product-img-slot__num { position: absolute; top: 6px; left: 8px; font-size: 9px; font-weight: 800; letter-spacing: 0.1em; color: rgba(17,17,17,0.3); background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 30px; }
+    .product-img-slot__num { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; letter-spacing: 0.12em; color: var(--main-text-subtle); background: rgba(255,255,255,0.86); padding: 3px 7px; border-radius: 999px; }
     .product-img-slot__footer { padding: 8px; }
     .product-img-slot__upload { position: relative; display: block; }
     .product-img-slot__upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
@@ -166,19 +693,94 @@
     .product-img-slot__status { font-size: 10px; text-align: center; margin-top: 4px; min-height: 13px; }
     .product-img-slot__status.ok  { color: #2e7d32; }
     .product-img-slot__status.err { color: #A50009; }
+    .card code {
+      padding: 1px 6px;
+      background: rgba(24,24,24,0.04);
+      border: 1px solid rgba(24,24,24,0.06);
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    @media(max-width: 980px) {
+      .header {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        padding: 14px 18px;
+      }
+      .header__eyebrow,
+      .header__right {
+        justify-self: center;
+      }
+      .header__right {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .main { padding: 24px 18px 72px; }
+      .admin-hero {
+        grid-template-columns: 1fr;
+      }
+      .admin-hero__intro,
+      .admin-hero__panel {
+        padding: 26px 22px;
+      }
+      .admin-hero__title {
+        max-width: none;
+      }
+    }
   </style>
 </head>
 <body>
+<div class="page-frame" aria-hidden="true"></div>
 
 <header class="header">
-  <div class="header__logo">LADDER<span>I</span>CE</div>
+  <div class="header__eyebrow">Campaign Control Room</div>
+  <div class="header__center">
+    <div class="header__logo">
+      <img src="/public/ladderice-logo.png" alt="Ladderice">
+    </div>
+  </div>
   <div class="header__right">
-    <span class="header__tag">Red Funding Admin</span>
+    <span class="header__tag">Twenty-Thirty Admin</span>
     <a href="/admin/logout" class="header__logout">Sign Out</a>
   </div>
 </header>
 
 <main class="main">
+
+  <section class="admin-hero">
+    <div class="admin-hero__intro">
+      <div>
+        <div class="admin-hero__kicker">Ladderice / Under The Stands</div>
+        <h1 class="admin-hero__title">Twenty-Thirty Admin</h1>
+        <p class="admin-hero__lead">
+          Manage the campaign story, product presentation, vote records, and customer follow-up from one editorial control surface. Shopify handles the purchase and receipt. This admin handles the campaign layer that sits after the sale.
+        </p>
+      </div>
+      <div class="admin-hero__meta">
+        <span class="admin-chip">Shopify Checkout</span>
+        <span class="admin-chip">Postmark Vote Flow</span>
+        <span class="admin-chip">Campaign CMS</span>
+      </div>
+    </div>
+    <aside class="admin-hero__panel">
+      <div class="admin-hero__panel-title">Operating Rhythm</div>
+      <div class="admin-hero__list">
+        <div class="admin-hero__item">
+          <div class="admin-hero__item-label">1. Orders In</div>
+          <div class="admin-hero__item-copy">Import Shopify customer orders or work from the exact customer email after checkout.</div>
+        </div>
+        <div class="admin-hero__item">
+          <div class="admin-hero__item-label">2. Campaign Layer</div>
+          <div class="admin-hero__item-copy">Update products 1-6, upload new imagery, and keep the homepage presentation synced with the drop.</div>
+        </div>
+        <div class="admin-hero__item">
+          <div class="admin-hero__item-label">3. Vote Activation</div>
+          <div class="admin-hero__item-copy">Send the post-purchase vote email from this app, then track token usage and vote participation below.</div>
+        </div>
+      </div>
+      <div class="refresh-note">Design language intentionally mirrors the campaign homepage: mono body type, white editorial surfaces, quiet borders, and restrained red accents.</div>
+    </aside>
+  </section>
 
   <!-- Stats -->
   <div class="stats" id="stats">
@@ -289,25 +891,37 @@
     <!-- ═══ EMAIL CAMPAIGN TAB ═══ -->
     <div class="tab-panel" id="tab-email">
       <p style="font-size:13px;color:rgba(17,17,17,0.55);margin-bottom:24px;line-height:1.7;">
-        Manage vote invitation emails. Upload a CSV of customer emails from Shopify, configure SMTP settings, then send vote invitation emails to customers.
+        Manage vote invitation emails. Keep Shopify for receipt emails, then send the campaign vote email from this app using Postmark SMTP.
       </p>
 
       <!-- SMTP Settings -->
       <div class="card" style="margin-bottom:24px;border:1px solid rgba(17,17,17,0.08)">
         <div class="section-title">Email Configuration</div>
         <div class="section-heading">SMTP Settings</div>
+        <p style="font-size:12px;color:rgba(17,17,17,0.5);margin:0 0 18px;line-height:1.6;">
+          Recommended Postmark setup: host <strong>smtp.postmarkapp.com</strong>, port <strong>587</strong>, and use your Postmark <strong>Server API Token</strong> as both username and password.
+        </p>
+
+        <div class="preset-row">
+          <span class="preset-row__label">SMTP Presets</span>
+          <button class="btn btn--outline" type="button" onclick="applySmtpPreset('gmail')">Apply Gmail</button>
+          <button class="btn btn--outline" type="button" onclick="applySmtpPreset('postmark')">Apply Postmark</button>
+          <button class="btn btn--outline" type="button" onclick="saveSmtpPreset('gmail')">Save Current as Gmail</button>
+          <button class="btn btn--outline" type="button" onclick="saveSmtpPreset('postmark')">Save Current as Postmark</button>
+          <span id="smtp-preset-status" style="font-size:12px;color:rgba(17,17,17,0.5)"></span>
+        </div>
 
         <div class="cms-grid" style="margin-bottom:20px">
-          <div class="cms-field"><label>SMTP Host</label><input type="text" id="email-smtp_host" placeholder="smtp.gmail.com"></div>
+          <div class="cms-field"><label>SMTP Host</label><input type="text" id="email-smtp_host" placeholder="smtp.postmarkapp.com"></div>
           <div class="cms-field"><label>SMTP Port</label><input type="number" id="email-smtp_port" placeholder="587" value="587"></div>
-          <div class="cms-field"><label>SMTP Username</label><input type="text" id="email-smtp_user" placeholder="your-email@gmail.com"></div>
-          <div class="cms-field"><label>SMTP Password</label><input type="password" id="email-smtp_pass" placeholder="app password or SMTP password"></div>
-          <div class="cms-field"><label>From Email</label><input type="email" id="email-smtp_from_email" placeholder="noreply@ladderice.co"></div>
+          <div class="cms-field"><label>SMTP Username</label><input type="text" id="email-smtp_user" placeholder="Postmark Server API Token"></div>
+          <div class="cms-field"><label>SMTP Password</label><input type="password" id="email-smtp_pass" placeholder="Postmark Server API Token"></div>
+          <div class="cms-field"><label>From Email</label><input type="email" id="email-smtp_from_email" placeholder="vote@ladderice.co"></div>
           <div class="cms-field"><label>From Name</label><input type="text" id="email-smtp_from_name" placeholder="Ladderice Campaign"></div>
           <div class="cms-field cms-field--full"><label>Campaign Website URL</label><input type="url" id="email-site_url" placeholder="https://ladderice.co"></div>
           <div class="cms-field" style="grid-column:1/3;display:flex;align-items:flex-end;gap:8px">
             <input type="checkbox" id="email-smtp_secure" style="width:18px;height:18px;cursor:pointer;margin-bottom:0" disabled>
-            <label for="email-smtp_secure" style="margin-bottom:0;cursor:pointer;color:rgba(17,17,17,0.5)">Secure connection (auto-detected: port 587 = STARTTLS, port 465 = TLS)</label>
+            <label for="email-smtp_secure" style="margin-bottom:0;cursor:pointer;color:rgba(17,17,17,0.5)">Secure connection (auto-detected: port 587 = STARTTLS, port 465 = TLS). Leave this on for Postmark.</label>
           </div>
         </div>
 
@@ -330,35 +944,90 @@
           Edit the text content of the vote invitation email. Changes take effect on the <strong>next email sent</strong>.
         </p>
 
-        <div class="cms-grid" style="margin-bottom:20px">
-          <div class="cms-field cms-field--full">
-            <label>Email Subject Line</label>
-            <input type="text" id="email-cms-subject" placeholder="Your vote is ready — Ladderice Campaign">
+        <div class="email-template-layout" style="margin-bottom:20px">
+          <div class="cms-grid">
+            <div class="cms-field cms-field--full">
+              <label>Email Subject Line</label>
+              <input type="text" id="email-cms-subject" placeholder="Your Ladderice vote link is ready">
+            </div>
+            <div class="cms-field cms-field--full">
+              <label>Preheader Text <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(preview text shown in inbox)</span></label>
+              <input type="text" id="email-cms-preheader" placeholder="Choose where the campaign profit goes.">
+            </div>
+            <div class="cms-field cms-field--full">
+              <label>Main Heading <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(use new lines for line breaks)</span></label>
+              <textarea id="email-cms-heading" rows="2" placeholder="Your Vote.&#10;Your Call." style="min-height:56px"></textarea>
+            </div>
+            <div class="cms-field cms-field--full">
+              <label>Body Text</label>
+              <textarea id="email-cms-body" rows="3" placeholder="This purchase meant more than buying a piece from the drop. It put you inside the decision.&#10;&#10;Now you get to help choose where the campaign profit goes. Pick the cause that feels most important to you and cast your vote below."></textarea>
+            </div>
+            <div class="cms-field">
+              <label>Button Text</label>
+              <input type="text" id="email-cms-cta" placeholder="Cast Your Vote">
+            </div>
+            <div class="cms-field">
+              <label>Brand / Sign-off Name</label>
+              <input type="text" id="email-cms-signoff" placeholder="Ladderice">
+            </div>
+            <div class="cms-field cms-field--full">
+              <label>Footer Text</label>
+              <input type="text" id="email-cms-footer" placeholder="You received this email because you purchased from the Ladderice campaign.">
+            </div>
           </div>
-          <div class="cms-field cms-field--full">
-            <label>Preheader Text <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(preview text shown in inbox)</span></label>
-            <input type="text" id="email-cms-preheader" placeholder="You've been selected to vote on where our campaign profit goes.">
-          </div>
-          <div class="cms-field cms-field--full">
-            <label>Main Heading <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:9px;opacity:0.6">(use new lines for line breaks)</span></label>
-            <textarea id="email-cms-heading" rows="2" placeholder="Your Vote&#10;is Ready" style="min-height:56px"></textarea>
-          </div>
-          <div class="cms-field cms-field--full">
-            <label>Body Text</label>
-            <textarea id="email-cms-body" rows="3" placeholder="Thank you for supporting the Ladderice campaign. You've been selected to vote on where our campaign profit goes — choose one of three causes that matter to you."></textarea>
-          </div>
-          <div class="cms-field">
-            <label>Button Text</label>
-            <input type="text" id="email-cms-cta" placeholder="Cast Your Vote">
-          </div>
-          <div class="cms-field">
-            <label>Brand / Sign-off Name</label>
-            <input type="text" id="email-cms-signoff" placeholder="Ladderice">
-          </div>
-          <div class="cms-field cms-field--full">
-            <label>Footer Text</label>
-            <input type="text" id="email-cms-footer" placeholder="You received this email because you purchased from the Ladderice campaign.">
-          </div>
+
+          <aside class="email-preview-panel">
+            <div class="email-preview-panel__label">Live Preview</div>
+            <div class="email-preview-frame">
+              <div class="email-preview-mail">
+                <div class="email-preview-bar"></div>
+                <div class="email-preview-brand">
+                  <img src="/public/ladderice-logo.png" alt="Ladderice">
+                  <p>ladderice / vote activation</p>
+                </div>
+                <div class="email-preview-card">
+                  <div class="email-preview-card__topline">
+                    <span>ladderice campaign</span>
+                    <strong>cast your vote</strong>
+                  </div>
+                  <div class="email-preview-card__inner">
+                    <div class="email-preview-eyebrow">ladderice / vote access</div>
+                    <h3 class="email-preview-title" id="email-preview-heading">Your Vote.
+Your Call.</h3>
+                    <div class="email-preview-divider"></div>
+                    <img class="email-preview-image" id="email-preview-image" alt="Campaign product preview">
+                  </div>
+                  <div class="email-preview-copy" id="email-preview-copy"></div>
+                  <div class="email-preview-cta-wrap">
+                    <a href="#" class="email-preview-cta" id="email-preview-cta">Cast Your Vote →</a>
+                  </div>
+                  <div class="email-preview-link">
+                    Or copy this link:
+                    <code id="email-preview-link">https://ladderice.co/?token=preview-token</code>
+                  </div>
+                  <div class="email-preview-bottom-gap"></div>
+                  <div class="email-preview-bottom-bar"></div>
+                </div>
+                <div class="email-preview-footer">
+                  <div class="email-preview-footer-panel">
+                    <p class="email-preview-signoff" id="email-preview-signoff"><img src="/public/ladderice-logo.png" alt="Ladderice"></p>
+                    <p class="email-preview-footer-copy" id="email-preview-footer">You're receiving this because you believed in the dream. Thank you.</p>
+                    <p class="email-preview-footer-legal" id="email-preview-legal"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="email-preview-meta">
+              <div class="email-preview-meta-row">
+                <strong>Subject</strong>
+                <div id="email-preview-subject">Your Ladderice vote link is ready</div>
+              </div>
+              <div class="email-preview-meta-row">
+                <strong>Preheader</strong>
+                <div class="email-preview-preheader" id="email-preview-preheader">Choose where the campaign profit goes.</div>
+              </div>
+            </div>
+          </aside>
         </div>
 
         <div style="display:flex;gap:12px;align-items:center">
@@ -453,7 +1122,7 @@
           <div class="product-section__num product-section__num--main">1</div>
           <div class="product-section__titles">
             <div class="product-section__name">Product 1 — Campaign Kit</div>
-            <div class="product-section__sub">Main product • Shown in featured carousel • Linked to Red Funding vote</div>
+            <div class="product-section__sub">Main product • Shown in featured carousel • Linked to twenty-thirty vote</div>
           </div>
           <span class="badge badge--red">Main</span>
         </div>
@@ -470,6 +1139,11 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_1_name" placeholder="The Campaign Kit"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_1_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_1_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_1_variant_id" inputmode="numeric" placeholder="45701810061498"></div>
+          <div class="cms-field"><label>Variant ID — M</label><input type="text" id="cms-product_1_variant_id_m" inputmode="numeric" placeholder="Shopify variant for M"></div>
+          <div class="cms-field"><label>Variant ID — L</label><input type="text" id="cms-product_1_variant_id_l" inputmode="numeric" placeholder="Shopify variant for L"></div>
+          <div class="cms-field"><label>Variant ID — XL</label><input type="text" id="cms-product_1_variant_id_xl" inputmode="numeric" placeholder="Shopify variant for XL"></div>
+          <div class="cms-field"><label>Variant ID — 2XL</label><input type="text" id="cms-product_1_variant_id_2xl" inputmode="numeric" placeholder="Shopify variant for 2XL"></div>
           <div class="cms-field cms-field--full"><label>Short Description (shown under title)</label><textarea id="cms-product_1_short_desc" placeholder="Limited edition jersey where 100% of net proceeds go directly to the community…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Full Description (shown on 2nd carousel slide)</label><textarea id="cms-product_1_desc" placeholder="Detailed description for the carousel slide…"></textarea></div>
         </div>
@@ -501,6 +1175,11 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_2_name" placeholder="Black — No. 07"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_2_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_2_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_2_variant_id" inputmode="numeric" placeholder="Fallback/default variant"></div>
+          <div class="cms-field"><label>Variant ID — M</label><input type="text" id="cms-product_2_variant_id_m" inputmode="numeric" placeholder="Shopify variant for M"></div>
+          <div class="cms-field"><label>Variant ID — L</label><input type="text" id="cms-product_2_variant_id_l" inputmode="numeric" placeholder="Shopify variant for L"></div>
+          <div class="cms-field"><label>Variant ID — XL</label><input type="text" id="cms-product_2_variant_id_xl" inputmode="numeric" placeholder="Shopify variant for XL"></div>
+          <div class="cms-field"><label>Variant ID — 2XL</label><input type="text" id="cms-product_2_variant_id_2xl" inputmode="numeric" placeholder="Shopify variant for 2XL"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_2_desc" placeholder="Blacked-out with red accents…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_2_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -532,6 +1211,11 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_3_name" placeholder="White — No. 10"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_3_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_3_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_3_variant_id" inputmode="numeric" placeholder="Fallback/default variant"></div>
+          <div class="cms-field"><label>Variant ID — M</label><input type="text" id="cms-product_3_variant_id_m" inputmode="numeric" placeholder="Shopify variant for M"></div>
+          <div class="cms-field"><label>Variant ID — L</label><input type="text" id="cms-product_3_variant_id_l" inputmode="numeric" placeholder="Shopify variant for L"></div>
+          <div class="cms-field"><label>Variant ID — XL</label><input type="text" id="cms-product_3_variant_id_xl" inputmode="numeric" placeholder="Shopify variant for XL"></div>
+          <div class="cms-field"><label>Variant ID — 2XL</label><input type="text" id="cms-product_3_variant_id_2xl" inputmode="numeric" placeholder="Shopify variant for 2XL"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_3_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_3_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -563,6 +1247,11 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_4_name" placeholder="Fourth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_4_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_4_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_4_variant_id" inputmode="numeric" placeholder="Fallback/default variant"></div>
+          <div class="cms-field"><label>Variant ID — M</label><input type="text" id="cms-product_4_variant_id_m" inputmode="numeric" placeholder="Shopify variant for M"></div>
+          <div class="cms-field"><label>Variant ID — L</label><input type="text" id="cms-product_4_variant_id_l" inputmode="numeric" placeholder="Shopify variant for L"></div>
+          <div class="cms-field"><label>Variant ID — XL</label><input type="text" id="cms-product_4_variant_id_xl" inputmode="numeric" placeholder="Shopify variant for XL"></div>
+          <div class="cms-field"><label>Variant ID — 2XL</label><input type="text" id="cms-product_4_variant_id_2xl" inputmode="numeric" placeholder="Shopify variant for 2XL"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_4_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_4_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -594,6 +1283,11 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_5_name" placeholder="Fifth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_5_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_5_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_5_variant_id" inputmode="numeric" placeholder="Fallback/default variant"></div>
+          <div class="cms-field"><label>Variant ID — M</label><input type="text" id="cms-product_5_variant_id_m" inputmode="numeric" placeholder="Shopify variant for M"></div>
+          <div class="cms-field"><label>Variant ID — L</label><input type="text" id="cms-product_5_variant_id_l" inputmode="numeric" placeholder="Shopify variant for L"></div>
+          <div class="cms-field"><label>Variant ID — XL</label><input type="text" id="cms-product_5_variant_id_xl" inputmode="numeric" placeholder="Shopify variant for XL"></div>
+          <div class="cms-field"><label>Variant ID — 2XL</label><input type="text" id="cms-product_5_variant_id_2xl" inputmode="numeric" placeholder="Shopify variant for 2XL"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_5_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_5_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -625,6 +1319,9 @@
           <div class="cms-field"><label>Name</label><input type="text" id="cms-product_6_name" placeholder="Sixth Jersey"></div>
           <div class="cms-field"><label>Price</label><input type="text" id="cms-product_6_price" placeholder="฿1,590"></div>
           <div class="cms-field"><label>Buy Now link</label><input type="url" id="cms-product_6_link" placeholder="https://ladderice.co/products/…"></div>
+          <div class="cms-field"><label>Shopify Variant ID</label><input type="text" id="cms-product_6_variant_id" inputmode="numeric" placeholder="Fallback/default variant"></div>
+          <div class="cms-field"><label>Variant ID — Silver</label><input type="text" id="cms-product_6_variant_id_silver" inputmode="numeric" placeholder="Shopify variant for Silver"></div>
+          <div class="cms-field"><label>Variant ID — Gold</label><input type="text" id="cms-product_6_variant_id_gold" inputmode="numeric" placeholder="Shopify variant for Gold"></div>
           <div class="cms-field cms-field--full"><label>Description</label><textarea id="cms-product_6_desc" placeholder="Jersey description…"></textarea></div>
           <div class="cms-field cms-field--full"><label>Description 2 (shown above price)</label><textarea id="cms-product_6_desc_2" placeholder="Second description text…"></textarea></div>
         </div>
@@ -1050,7 +1747,12 @@
   });
 
   // ── Products CMS ──────────────────────────────────────────────────────────
-  var PRODUCT_TEXT_KEYS = ['tag','name','price','link','short_desc','desc','desc_2'];
+  var PRODUCT_TEXT_KEYS = [
+    'tag','name','price','link','variant_id',
+    'variant_id_m','variant_id_l','variant_id_xl','variant_id_2xl',
+    'variant_id_silver','variant_id_gold',
+    'short_desc','desc','desc_2'
+  ];
 
   function loadProductSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
@@ -1139,12 +1841,14 @@
 
   function loadEmailCampaign() {
     loadEmailSettings();
+    loadSmtpPresets();
     loadTokenStats();
     loadAllTokens();
   }
 
   function loadEmailSettings() {
     fetch('/admin/settings').then(function(r){ return r.json(); }).then(function(s) {
+      window.__adminSettings = s || {};
       document.getElementById('email-smtp_host').value = s.smtp_host || '';
       document.getElementById('email-smtp_port').value = s.smtp_port || '587';
       document.getElementById('email-smtp_user').value = s.smtp_user || '';
@@ -1162,8 +1866,77 @@
       document.getElementById('email-cms-cta').value = s.email_cta_text || '';
       document.getElementById('email-cms-signoff').value = s.email_signoff || '';
       document.getElementById('email-cms-footer').value = s.email_footer_text || '';
+      updateEmailPreview();
     });
   }
+
+  function escapeHtml(text) {
+    return String(text || '').replace(/[&<>"']/g, function(ch) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch];
+    });
+  }
+
+  function getEmailPreviewValues() {
+    var siteUrl = (document.getElementById('email-site_url').value.trim() || 'https://ladderice.co').replace(/\/$/, '');
+    return {
+      subject: document.getElementById('email-cms-subject').value.trim() || 'Your Ladderice vote link is ready',
+      preheader: document.getElementById('email-cms-preheader').value.trim() || 'Choose where the campaign profit goes.',
+      heading: document.getElementById('email-cms-heading').value || 'Your Vote.\nYour Call.',
+      body: document.getElementById('email-cms-body').value.trim() || 'This purchase meant more than buying a piece from the drop. It put you inside the decision.\n\nNow you get to help choose where the campaign profit goes. Pick the cause that feels most important to you and cast your vote below.',
+      cta: document.getElementById('email-cms-cta').value.trim() || 'Cast Your Vote',
+      signoff: document.getElementById('email-cms-signoff').value.trim() || 'Ladderice',
+      footer: document.getElementById('email-cms-footer').value.trim() || 'You\'re receiving this because you believed in the dream. Thank you.',
+      voteUrl: siteUrl + '/?token=preview-token',
+      productImage: (window.__adminSettings && window.__adminSettings.product_1_img_1) ? (siteUrl + window.__adminSettings.product_1_img_1) : ''
+    };
+  }
+
+  function updateEmailPreview() {
+    var values = getEmailPreviewValues();
+    var copyHtml = '<p>Hi there,</p><p>' + escapeHtml(values.body).replace(/\n/g, '<br>') + '</p>';
+    var previewImage = document.getElementById('email-preview-image');
+
+    document.getElementById('email-preview-subject').textContent = values.subject;
+    document.getElementById('email-preview-preheader').textContent = values.preheader;
+    document.getElementById('email-preview-heading').textContent = values.heading;
+    document.getElementById('email-preview-copy').innerHTML = copyHtml;
+    document.getElementById('email-preview-cta').textContent = values.cta + ' →';
+    document.getElementById('email-preview-cta').setAttribute('href', values.voteUrl);
+    document.getElementById('email-preview-link').textContent = values.voteUrl;
+    document.getElementById('email-preview-signoff').innerHTML = '<img src="/public/ladderice-logo.png" alt="' + escapeHtml(values.signoff) + '">';
+    document.getElementById('email-preview-footer').textContent = values.footer;
+    document.getElementById('email-preview-legal').textContent = '© ' + new Date().getFullYear() + ' ' + values.signoff + '. All rights reserved.';
+
+    if (values.productImage) {
+      previewImage.src = values.productImage;
+      previewImage.classList.add('has-image');
+    } else {
+      previewImage.removeAttribute('src');
+      previewImage.classList.remove('has-image');
+    }
+  }
+
+  [
+    'email-site_url',
+    'email-cms-subject',
+    'email-cms-preheader',
+    'email-cms-heading',
+    'email-cms-body',
+    'email-cms-cta',
+    'email-cms-signoff',
+    'email-cms-footer'
+  ].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', updateEmailPreview);
+    el.addEventListener('change', updateEmailPreview);
+  });
 
   function saveEmailContent() {
     var pairs = {
@@ -1218,6 +1991,90 @@
       status.textContent = 'Network error.'; status.style.color = '#A50009';
     }).finally(function() {
       btn.disabled = false; btn.textContent = 'Save SMTP Settings';
+      updateEmailPreview();
+      setTimeout(function() { status.textContent = ''; }, 3000);
+    });
+  }
+
+  function getSmtpFormValues() {
+    return {
+      smtp_host: document.getElementById('email-smtp_host').value.trim(),
+      smtp_port: document.getElementById('email-smtp_port').value.trim(),
+      smtp_user: document.getElementById('email-smtp_user').value.trim(),
+      smtp_pass: document.getElementById('email-smtp_pass').value.trim(),
+      smtp_from_email: document.getElementById('email-smtp_from_email').value.trim(),
+      smtp_from_name: document.getElementById('email-smtp_from_name').value.trim(),
+      site_url: document.getElementById('email-site_url').value.trim(),
+      smtp_secure: document.getElementById('email-smtp_secure').checked ? '1' : '0'
+    };
+  }
+
+  function setSmtpFormValues(values) {
+    document.getElementById('email-smtp_host').value = values.smtp_host || '';
+    document.getElementById('email-smtp_port').value = values.smtp_port || '587';
+    document.getElementById('email-smtp_user').value = values.smtp_user || '';
+    document.getElementById('email-smtp_pass').value = values.smtp_pass || '';
+    document.getElementById('email-smtp_from_email').value = values.smtp_from_email || '';
+    document.getElementById('email-smtp_from_name').value = values.smtp_from_name || '';
+    document.getElementById('email-site_url').value = values.site_url || '';
+    document.getElementById('email-smtp_secure').checked = values.smtp_secure === '1' || values.smtp_secure === 'true';
+    updateEmailPreview();
+  }
+
+  function loadSmtpPresets() {
+    fetch('/admin/smtp-presets')
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        window.__smtpPresets = data.presets || {};
+      })
+      .catch(function() {
+        window.__smtpPresets = {};
+      });
+  }
+
+  function saveSmtpPreset(name) {
+    var status = document.getElementById('smtp-preset-status');
+    fetch('/admin/smtp-presets/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, values: getSmtpFormValues() })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        status.textContent = '✓ Saved preset: ' + name;
+        status.style.color = '#2e7d32';
+        loadSmtpPresets();
+      } else {
+        status.textContent = 'Error: ' + data.error;
+        status.style.color = '#A50009';
+      }
+    }).catch(function() {
+      status.textContent = 'Network error.';
+      status.style.color = '#A50009';
+    }).finally(function() {
+      setTimeout(function() { status.textContent = ''; }, 3000);
+    });
+  }
+
+  function applySmtpPreset(name) {
+    var status = document.getElementById('smtp-preset-status');
+    fetch('/admin/smtp-presets/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.ok) {
+        setSmtpFormValues(data.applied || {});
+        status.textContent = '✓ Applied preset: ' + name;
+        status.style.color = '#2e7d32';
+        loadEmailSettings();
+      } else {
+        status.textContent = 'Error: ' + data.error;
+        status.style.color = '#A50009';
+      }
+    }).catch(function() {
+      status.textContent = 'Network error.';
+      status.style.color = '#A50009';
+    }).finally(function() {
       setTimeout(function() { status.textContent = ''; }, 3000);
     });
   }

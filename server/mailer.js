@@ -40,10 +40,10 @@ async function sendVoteEmail(token, email, name) {
     const fromEmail = settings.smtp_from_email;
 
     // CMS-driven content with defaults
-    const emailSubject = settings.email_subject || 'You bought the dream. Now direct it.';
-    const emailPreheader = settings.email_preheader || 'One vote. Three causes. Your call.';
-    const emailHeading = settings.email_heading || 'Your Voice.\nYour Vote.';
-    const emailBody = settings.email_body || 'You didn\'t just buy a jersey — you bought into something bigger. A signal that football culture in Thailand deserves more. Now it\'s your turn to decide where the profit goes.\n\nThree causes. One vote. Make it count.';
+    const emailSubject = settings.email_subject || 'Your Ladderice vote link is ready';
+    const emailPreheader = settings.email_preheader || 'Choose where the campaign profit goes.';
+    const emailHeading = settings.email_heading || 'Your Vote.\nYour Call.';
+    const emailBody = settings.email_body || 'This purchase meant more than buying a piece from the drop. It put you inside the decision.\n\nNow you get to help choose where the campaign profit goes. Pick the cause that feels most important to you and cast your vote below.';
     const emailCtaText = settings.email_cta_text || 'Cast Your Vote';
     const emailFooterText = settings.email_footer_text || 'You\'re receiving this because you believed in the dream. Thank you.';
     const emailSignoff = settings.email_signoff || 'Ladderice';
@@ -57,7 +57,7 @@ async function sendVoteEmail(token, email, name) {
       ? `${siteUrl}${settings.product_1_img_1}`
       : '';
 
-    // ── HTML Email Template (ALD-inspired) ──────────────────────────
+    // ── HTML Email Template (aligned to campaign design language) ───────────
     const htmlBody = `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -70,100 +70,85 @@ async function sendVoteEmail(token, email, name) {
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
   <style>
-    /* Reset */
     body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
     table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
     img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
     body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; }
     a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; font-size: inherit !important; font-family: inherit !important; font-weight: inherit !important; line-height: inherit !important; }
 
-    /* Typography — web-safe fallbacks that echo ALD aesthetic */
     body {
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      background-color: #f5f3ef;
+      font-family: 'IBM Plex Mono', Arial, Helvetica, sans-serif;
+      background-color: #fafaf8;
       color: #181818;
     }
 
     @media only screen and (max-width: 600px) {
       .container { width: 100% !important; padding: 0 20px !important; }
-      .heading { font-size: 36px !important; line-height: 1.1 !important; }
-      .body-text { font-size: 15px !important; }
-      .cta-btn { padding: 16px 36px !important; }
-      .side-padding { padding-left: 28px !important; padding-right: 28px !important; }
+      .hero-title { font-size: 34px !important; line-height: 0.98 !important; }
+      .meta-pad { padding-left: 24px !important; padding-right: 24px !important; }
+      .body-text { font-size: 14px !important; line-height: 1.75 !important; }
+      .cta-link { display: block !important; text-align: center !important; }
     }
   </style>
 </head>
-<body style="margin:0; padding:0; background-color:#f5f3ef; font-family:Georgia,'Times New Roman',Times,serif;">
+<body style="margin:0; padding:0; background-color:#fafaf8; font-family:Arial,Helvetica,sans-serif;">
 
-  <!-- Preheader (hidden text for email preview) -->
   <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;" aria-hidden="true">
     ${escapeHtml(emailPreheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
 
-  <!-- Outer wrapper -->
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f3ef;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fafaf8;">
     <tr>
-      <td align="center" style="padding: 48px 16px;">
-
-        <!-- Inner container -->
+      <td align="center" style="padding:40px 16px;">
         <table role="presentation" class="container" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; width:100%;">
 
-          <!-- ── Top bar (thin accent line) ── -->
           <tr>
-            <td style="padding: 0 0 40px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <td style="padding:0 0 18px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#181818; border:1px solid rgba(24,24,24,0.08);">
                 <tr>
-                  <td style="height:2px; background-color:#C41E1E; font-size:0; line-height:0;">&nbsp;</td>
+                  <td style="height:3px; background-color:#C41E1E; font-size:0; line-height:0;">&nbsp;</td>
                 </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- ── Brand / Logo on dark bar ── -->
-          <tr>
-            <td style="padding: 0 0 40px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#181818;">
                 <tr>
-                  <td style="padding: 24px 32px; text-align:center;">
+                  <td class="meta-pad" style="padding:18px 28px 16px; text-align:center;">
                     <img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(emailSignoff)}" width="110" style="display:inline-block; height:auto; max-width:110px;">
+                    <p style="margin:12px 0 0; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.46);">
+                      ladderice / vote activation
+                    </p>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- ── Main card ── -->
           <tr>
             <td>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff; border:1px solid rgba(24,24,24,0.08);">
-
-                <!-- Heading area -->
                 <tr>
-                  <td class="side-padding" style="padding: 56px 48px 0;">
-                    <!-- Eyebrow -->
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <td class="meta-pad" style="padding:18px 28px; border-bottom:1px solid rgba(24,24,24,0.06);">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                       <tr>
-                        <td style="width:24px; height:1px; background-color:rgba(24,24,24,0.2);"></td>
-                        <td style="padding-left:10px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:10px; font-weight:500; letter-spacing:0.25em; text-transform:uppercase; color:rgba(24,24,24,0.35);">
-                          Cast Your Vote
+                        <td style="font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(24,24,24,0.38);">
+                          ladderice campaign
+                        </td>
+                        <td align="right" style="font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#C41E1E;">
+                          cast your vote
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
-
-                <!-- Main heading -->
                 <tr>
-                  <td class="side-padding" style="padding: 20px 48px 0;">
-                    <h1 class="heading" style="margin:0; font-family:Georgia,'Times New Roman',Times,serif; font-size:42px; font-weight:normal; line-height:1.08; letter-spacing:-0.02em; color:#181818;">
+                  <td class="meta-pad" style="padding:34px 28px 0;">
+                    <p style="margin:0 0 14px; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:#C41E1E;">
+                      ladderice / vote access
+                    </p>
+                    <h1 class="hero-title" style="margin:0; font-family:'Druk Trial','Arial Black',Arial,Helvetica,sans-serif; font-size:42px; font-weight:900; line-height:0.94; letter-spacing:0.01em; text-transform:uppercase; color:#181818;">
                       ${escapeHtml(emailHeading).replace(/\n/g, '<br>')}
                     </h1>
                   </td>
                 </tr>
-
-                <!-- Divider -->
                 <tr>
-                  <td class="side-padding" style="padding: 32px 48px 0;">
+                  <td class="meta-pad" style="padding:24px 28px 0;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                       <tr>
                         <td style="height:1px; background-color:rgba(24,24,24,0.08); font-size:0; line-height:0;">&nbsp;</td>
@@ -171,92 +156,72 @@ async function sendVoteEmail(token, email, name) {
                     </table>
                   </td>
                 </tr>
-
-                ${productImgUrl ? `<!-- Product Image -->
+                ${productImgUrl ? `
                 <tr>
-                  <td style="padding: 32px 0 0;">
-                    <img src="${escapeHtml(productImgUrl)}" alt="The Campaign Kit" width="560" style="display:block; width:100%; height:auto; max-width:560px; object-fit:cover;" class="product-img">
+                  <td style="padding:24px 0 0;">
+                    <img src="${escapeHtml(productImgUrl)}" alt="The Campaign Kit" width="560" style="display:block; width:100%; height:auto; max-width:560px; object-fit:cover;">
                   </td>
                 </tr>` : ''}
-
-                <!-- Greeting + Body -->
                 <tr>
-                  <td class="side-padding" style="padding: 32px 48px 0;">
-                    <p class="body-text" style="margin:0 0 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:15px; font-weight:300; line-height:1.75; color:rgba(24,24,24,0.55);">
+                  <td class="meta-pad body-text" style="padding:28px 28px 0; font-family:'IBM Plex Mono',Arial,Helvetica,sans-serif; font-size:14px; line-height:1.8; color:rgba(24,24,24,0.62);">
+                    <p style="margin:0 0 16px;">
                       Hi ${safeName},
                     </p>
-                    <p class="body-text" style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:15px; font-weight:300; line-height:1.75; color:rgba(24,24,24,0.55);">
+                    <p style="margin:0;">
                       ${escapeHtml(emailBody).replace(/\n/g, '<br>')}
                     </p>
                   </td>
                 </tr>
-
-                <!-- CTA Button -->
                 <tr>
-                  <td class="side-padding" style="padding: 40px 48px 0;">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <td class="meta-pad" style="padding:30px 28px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:auto;">
                       <tr>
                         <td style="background-color:#181818;">
-                          <a href="${escapeHtml(voteUrl)}" target="_blank" rel="noopener" style="display:inline-block; padding:15px 36px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#ffffff; text-decoration:none; mso-padding-alt:0;">
-                            <!--[if mso]><i style="letter-spacing:12px;mso-font-width:-100%;mso-text-raise:22pt">&nbsp;</i><![endif]-->
-                            <span style="mso-text-raise:11pt;">${escapeHtml(emailCtaText)} &nbsp;&rarr;</span>
-                            <!--[if mso]><i style="letter-spacing:12px;mso-font-width:-100%">&nbsp;</i><![endif]-->
+                          <a class="cta-link" href="${escapeHtml(voteUrl)}" target="_blank" rel="noopener" style="display:inline-block; padding:15px 28px; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#ffffff; text-decoration:none;">
+                            ${escapeHtml(emailCtaText)} &nbsp;→
                           </a>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
-
-                <!-- Link fallback -->
                 <tr>
-                  <td class="side-padding" style="padding: 20px 48px 0;">
-                    <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:11px; color:rgba(24,24,24,0.3); line-height:1.5;">
-                      Or copy this link:
+                  <td class="meta-pad" style="padding:18px 28px 0;">
+                    <p style="margin:0; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(24,24,24,0.34); line-height:1.6;">
+                      fallback link
                     </p>
-                    <p style="margin:4px 0 0; font-family:'Courier New',Courier,monospace; font-size:11px; color:rgba(24,24,24,0.4); line-height:1.5; word-break:break-all;">
+                    <p style="margin:6px 0 0; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:11px; color:rgba(24,24,24,0.48); line-height:1.6; word-break:break-all;">
                       ${escapeHtml(voteUrl)}
                     </p>
                   </td>
                 </tr>
-
-                <!-- Bottom padding -->
                 <tr>
-                  <td style="padding: 48px 0 0; font-size:0; line-height:0;">&nbsp;</td>
-                </tr>
-
-                <!-- Bottom accent line -->
-                <tr>
-                  <td>
+                  <td style="padding:34px 0 0;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="height:2px; background: linear-gradient(90deg, #C41E1E 0%, #C41E1E 30%, rgba(24,24,24,0.06) 30%); font-size:0; line-height:0;">&nbsp;</td>
-                      </tr>
+                      <tr><td style="height:3px; background:linear-gradient(90deg, #C41E1E 0%, #C41E1E 24%, rgba(24,24,24,0.06) 24%); font-size:0; line-height:0;">&nbsp;</td></tr>
                     </table>
                   </td>
                 </tr>
-
               </table>
             </td>
           </tr>
-
-          <!-- ── Footer ── -->
           <tr>
-            <td style="padding: 36px 0 0; text-align:center;">
-              <!-- Brand name -->
-              <p style="margin:0 0 12px; font-family:Georgia,'Times New Roman',Times,serif; font-size:16px; font-weight:normal; letter-spacing:-0.01em; color:#181818;">
-                ${escapeHtml(emailSignoff)}
-              </p>
-
-              <!-- Footer text -->
-              <p style="margin:0 0 8px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:11px; line-height:1.6; color:rgba(24,24,24,0.3);">
-                ${escapeHtml(emailFooterText)}
-              </p>
-
-              <!-- Copyright -->
-              <p style="margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif; font-size:10px; letter-spacing:0.08em; color:rgba(24,24,24,0.2);">
-                &copy; ${new Date().getFullYear()} ${escapeHtml(emailSignoff)}. All rights reserved.
-              </p>
+            <td style="padding:22px 8px 0; text-align:center;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#181818;">
+                <tr>
+                  <td style="padding:20px 16px 18px; text-align:center;">
+                    <p style="margin:0 0 12px;">
+                      <img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(emailSignoff)}" width="96" style="display:inline-block; height:auto; max-width:96px;">
+                    </p>
+                    <p style="margin:0 0 8px; font-family:'IBM Plex Mono',Arial,Helvetica,sans-serif; font-size:11px; line-height:1.6; color:rgba(255,255,255,0.58);">
+                      ${escapeHtml(emailFooterText)}
+                    </p>
+                    <p style="margin:0; font-family:'IBM Plex Mono', 'Courier New', Courier, monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.32);">
+                      &copy; ${new Date().getFullYear()} ${escapeHtml(emailSignoff)}. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 

@@ -11,6 +11,7 @@ const { requireAdmin } = require('../middleware/auth');
 
 const router  = express.Router();
 const upload  = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+const SMTP_PRESET_FIELDS = ['smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_from_email', 'smtp_from_name', 'site_url', 'smtp_secure'];
 
 // Ensure uploads directory exists (persisted via Docker volume at /app/data)
 const UPLOADS_DIR = path.join(__dirname, '../data/uploads');
@@ -167,6 +168,62 @@ router.post('/settings', requireAdmin, express.json(), (req, res) => {
   }
   db.setSetting(pairs);
   res.json({ ok: true });
+});
+
+router.get('/smtp-presets', requireAdmin, (req, res) => {
+  const settings = db.getAllSettings();
+  const presets = {};
+
+  Object.keys(settings).forEach((key) => {
+    const match = key.match(/^smtp_preset_([^_]+)_(.+)$/);
+    if (!match) return;
+    const name = match[1];
+    const field = match[2];
+    presets[name] = presets[name] || {};
+    presets[name][field] = settings[key];
+  });
+
+  res.json({ presets });
+});
+
+router.post('/smtp-presets/save', requireAdmin, express.json(), (req, res) => {
+  const name = String((req.body && req.body.name) || '').trim().toLowerCase();
+  const values = req.body && req.body.values;
+
+  if (!name || !/^[a-z0-9_-]+$/.test(name)) {
+    return res.status(400).json({ ok: false, error: 'Preset name must use letters, numbers, hyphens, or underscores.' });
+  }
+  if (!values || typeof values !== 'object' || Array.isArray(values)) {
+    return res.status(400).json({ ok: false, error: 'Preset values are required.' });
+  }
+
+  const pairs = {};
+  SMTP_PRESET_FIELDS.forEach((field) => {
+    pairs[`smtp_preset_${name}_${field}`] = values[field] || '';
+  });
+  db.setSetting(pairs);
+  res.json({ ok: true });
+});
+
+router.post('/smtp-presets/apply', requireAdmin, express.json(), (req, res) => {
+  const name = String((req.body && req.body.name) || '').trim().toLowerCase();
+  if (!name) return res.status(400).json({ ok: false, error: 'Preset name is required.' });
+
+  const settings = db.getAllSettings();
+  const pairs = {};
+  SMTP_PRESET_FIELDS.forEach((field) => {
+    const key = `smtp_preset_${name}_${field}`;
+    if (Object.prototype.hasOwnProperty.call(settings, key)) {
+      pairs[field] = settings[key];
+    }
+  });
+
+  if (Object.keys(pairs).length === 0) {
+    return res.status(404).json({ ok: false, error: 'Preset not found.' });
+  }
+
+  db.setSetting(pairs);
+  res.json({ ok: true, applied: pairs });
 });
 
 // ── POST /admin/upload-image ──────────────────────────────────────────────────

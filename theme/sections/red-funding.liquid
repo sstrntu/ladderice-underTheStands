@@ -1,7 +1,7 @@
 {{ 'section-red-funding.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign campaign_title    = section.settings.campaign_title | default: 'Red Funding'
+  assign campaign_title    = section.settings.campaign_title | default: 'Twenty-Thirty'
   assign campaign_subtitle = section.settings.campaign_subtitle | default: 'Every jersey sold funds the future. You choose where the profit goes.'
   assign featured_product  = section.settings.featured_product
   assign featured_collection = section.settings.featured_collection
@@ -82,7 +82,7 @@
     <div class="rf-marquee-band__inner">
       {%- for i in (1..10) -%}
         <span>Campaign Jersey</span><span class="rf-marquee-sep">✦</span>
-        <span>Red Funding</span><span class="rf-marquee-sep">✦</span>
+        <span>Twenty-Thirty</span><span class="rf-marquee-sep">✦</span>
         <span>Vote for Change</span><span class="rf-marquee-sep">✦</span>
       {%- endfor -%}
     </div>
@@ -654,7 +654,7 @@
 
 {% schema %}
 {
-  "name": "Red Funding",
+  "name": "Twenty-Thirty",
   "tag": "section",
   "class": "red-funding-section",
   "settings": [
@@ -666,7 +666,7 @@
       "type": "text",
       "id": "campaign_title",
       "label": "Campaign Title",
-      "default": "Red Funding"
+      "default": "Twenty-Thirty"
     },
     {
       "type": "textarea",
@@ -763,7 +763,7 @@
   ],
   "presets": [
     {
-      "name": "Red Funding",
+      "name": "Twenty-Thirty",
       "blocks": [
         {
           "type": "charity",

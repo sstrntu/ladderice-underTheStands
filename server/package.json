@@ -1,7 +1,7 @@
 {
   "name": "ladderice-vote-server",
   "version": "1.0.0",
-  "description": "Red Funding vote validation + admin backend",
+  "description": "Twenty-Thirty vote validation + admin backend",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -17,6 +17,9 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 // ── Initialize SMTP settings from .env if not in database ──────────────────
 (function initializeSettings() {
   const currentSettings = db.getAllSettings();
+  const postmarkToken = process.env.POSTMARK_SERVER_TOKEN || process.env.POSTMARK_SMTP_TOKEN;
+  const postmarkHost = process.env.POSTMARK_SMTP_HOST || 'smtp.postmarkapp.com';
+  const postmarkPort = process.env.POSTMARK_SMTP_PORT || '587';
   const envSettings = {
     smtp_host: process.env.SMTP_HOST,
     smtp_port: process.env.SMTP_PORT,
@@ -27,6 +30,15 @@ const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
     site_url: process.env.SITE_URL,
     smtp_secure: '1',
   };
+
+  if (postmarkToken) {
+    if (!envSettings.smtp_host) envSettings.smtp_host = postmarkHost;
+    if (!envSettings.smtp_port) envSettings.smtp_port = postmarkPort;
+    if (!envSettings.smtp_user) envSettings.smtp_user = postmarkToken;
+    if (!envSettings.smtp_pass) envSettings.smtp_pass = postmarkToken;
+    if (!envSettings.smtp_from_email) envSettings.smtp_from_email = process.env.POSTMARK_FROM_EMAIL;
+    if (!envSettings.smtp_from_name) envSettings.smtp_from_name = process.env.POSTMARK_FROM_NAME;
+  }
 
   const toUpdate = {};
   Object.keys(envSettings).forEach(key => {
@@ -88,7 +100,7 @@ app.use((req, res) => res.status(404).json({ error: 'Not found' }));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n  Red Funding server running at http://localhost:${PORT}`);
+  console.log(`\n  Twenty-Thirty server running at http://localhost:${PORT}`);
   console.log(`  Admin panel:  http://localhost:${PORT}/admin`);
   console.log(`  API counts:   http://localhost:${PORT}/api/counts\n`);
 });

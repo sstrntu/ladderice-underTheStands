@@ -395,6 +395,81 @@
       text-transform: uppercase;
     }
     .rf-featured__desc { font-family: var(--font-stack-body); font-size: 14px; font-weight: 300; line-height: 1.85; color: var(--main-text-muted); margin: 0 0 28px; }
+    .rf-size-picker {
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+    .rf-size-picker__options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .rf-size-picker__option {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 46px;
+      width: 46px;
+      height: 46px;
+      padding: 0 14px;
+      border-radius: 50%;
+      border: 1px solid var(--main-borders);
+      background: var(--main-background-warm);
+      color: var(--main-text);
+      font-family: var(--font-stack-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s var(--ease-smooth), color 0.25s var(--ease-smooth), border-color 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth);
+    }
+    .rf-size-picker__option:hover {
+      border-color: var(--main-text);
+      transform: translateY(-1px);
+    }
+    .rf-size-picker__option.is-active {
+      background: var(--main-text);
+      color: #fff;
+      border-color: var(--main-text);
+    }
+    .rf-size-picker__option[data-size="silver"],
+    .rf-size-picker__option[data-size="gold"] {
+      width: auto;
+      min-width: 72px;
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 999px;
+      letter-spacing: 0.06em;
+    }
+    .rf-size-picker__option[data-size="silver"] {
+      background: linear-gradient(0deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7)), #d7d7d7;
+      border-color: #d0d0d0;
+      color: rgba(24,24,24,0.72);
+    }
+    .rf-size-picker__option[data-size="gold"] {
+      background: linear-gradient(0deg, rgba(255,255,255,0.7), rgba(255,255,255,0.7)), #d8b24a;
+      border-color: #d4c18c;
+      color: rgba(24,24,24,0.72);
+    }
+    .rf-size-picker__option[data-size="silver"].is-active {
+      background: #979797;
+      border-color: #757575;
+      color: #111;
+    }
+    .rf-size-picker__option[data-size="gold"].is-active {
+      background: #c78f08;
+      border-color: #9a6f00;
+      color: #111;
+    }
+    .rf-featured__actions {
+      display: flex;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
 
     .rf-notice {
       display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px;
@@ -409,7 +484,7 @@
     /* Buy button — ALD style bordered */
     .rf-hero-buy-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 20px; padding: 14px 28px;
+      margin-top: 0; padding: 14px 28px;
       background: transparent;
       color: var(--main-text);
       border: 1px solid var(--main-text);
@@ -1142,8 +1217,9 @@
 
     .rf-jersey-row__price-btn-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-end;
+      justify-content: flex-start;
+      flex-wrap: wrap;
       gap: 10px;
       width: 100%;
       margin: 0 auto;
@@ -1155,6 +1231,11 @@
       color: var(--main-text); margin-bottom: 0;
     }
     .rf-jersey-row__price:empty { display: none; }
+    .rf-jersey-row__size {
+      width: auto;
+      max-width: none;
+      margin: 0;
+    }
 
     .rf-jersey-row__btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -1412,9 +1493,20 @@
             <span class="rf-notice-arrow">&rarr;</span>
             <p>Bought from <strong>ladderice.co</strong>? You've earned a voice. Check your email — your <strong>personal voting link</strong> is waiting.</p>
           </div>
-          <a id="p1-buy-btn" href="https://ladderice.co" target="_blank" rel="noopener" class="rf-hero-buy-btn" style="margin-top:20px;display:inline-flex;">
-            Buy Now <span class="btn-arrow">&rarr;</span>
-          </a>
+          <div class="rf-featured__actions">
+            <div class="rf-size-picker">
+              <div id="p1-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select size">
+                <button type="button" class="rf-size-picker__option is-active" data-size="m" aria-pressed="true">M</button>
+                <button type="button" class="rf-size-picker__option" data-size="l" aria-pressed="false">L</button>
+                <button type="button" class="rf-size-picker__option" data-size="xl" aria-pressed="false">XL</button>
+                <button type="button" class="rf-size-picker__option" data-size="2xl" aria-pressed="false">2XL</button>
+              </div>
+            </div>
+            <div class="rf-jersey-row__price" id="p1-price"></div>
+            <a id="p1-buy-btn" href="https://ladderice.co" target="_blank" rel="noopener" class="rf-hero-buy-btn" style="display:inline-flex;">
+              Buy Now <span class="btn-arrow">&rarr;</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -1594,6 +1686,14 @@
                 <h3 class="rf-jersey-row__name" id="jersey-2-name">Black — No. 07</h3>
                 <p class="rf-jersey-row__desc2" id="jersey-2-desc2"></p>
                 <div class="rf-jersey-row__price-btn-row">
+                  <div class="rf-jersey-row__size">
+                    <div id="jersey-2-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select size">
+                      <button type="button" class="rf-size-picker__option is-active" data-size="m" aria-pressed="true">M</button>
+                      <button type="button" class="rf-size-picker__option" data-size="l" aria-pressed="false">L</button>
+                      <button type="button" class="rf-size-picker__option" data-size="xl" aria-pressed="false">XL</button>
+                      <button type="button" class="rf-size-picker__option" data-size="2xl" aria-pressed="false">2XL</button>
+                    </div>
+                  </div>
                   <div class="rf-jersey-row__price" id="jersey-2-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
                 </div>
@@ -1634,6 +1734,14 @@
                 <h3 class="rf-jersey-row__name" id="jersey-3-name">Third Jersey</h3>
                 <p class="rf-jersey-row__desc2" id="jersey-3-desc2"></p>
                 <div class="rf-jersey-row__price-btn-row">
+                  <div class="rf-jersey-row__size">
+                    <div id="jersey-3-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select size">
+                      <button type="button" class="rf-size-picker__option is-active" data-size="m" aria-pressed="true">M</button>
+                      <button type="button" class="rf-size-picker__option" data-size="l" aria-pressed="false">L</button>
+                      <button type="button" class="rf-size-picker__option" data-size="xl" aria-pressed="false">XL</button>
+                      <button type="button" class="rf-size-picker__option" data-size="2xl" aria-pressed="false">2XL</button>
+                    </div>
+                  </div>
                   <div class="rf-jersey-row__price" id="jersey-3-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
                 </div>
@@ -1674,6 +1782,14 @@
                 <h3 class="rf-jersey-row__name" id="jersey-4-name">Fourth Jersey</h3>
                 <p class="rf-jersey-row__desc2" id="jersey-4-desc2"></p>
                 <div class="rf-jersey-row__price-btn-row">
+                  <div class="rf-jersey-row__size">
+                    <div id="jersey-4-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select size">
+                      <button type="button" class="rf-size-picker__option is-active" data-size="m" aria-pressed="true">M</button>
+                      <button type="button" class="rf-size-picker__option" data-size="l" aria-pressed="false">L</button>
+                      <button type="button" class="rf-size-picker__option" data-size="xl" aria-pressed="false">XL</button>
+                      <button type="button" class="rf-size-picker__option" data-size="2xl" aria-pressed="false">2XL</button>
+                    </div>
+                  </div>
                   <div class="rf-jersey-row__price" id="jersey-4-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
                 </div>
@@ -1714,6 +1830,14 @@
                 <h3 class="rf-jersey-row__name" id="jersey-5-name">Fifth Jersey</h3>
                 <p class="rf-jersey-row__desc2" id="jersey-5-desc2"></p>
                 <div class="rf-jersey-row__price-btn-row">
+                  <div class="rf-jersey-row__size">
+                    <div id="jersey-5-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select size">
+                      <button type="button" class="rf-size-picker__option is-active" data-size="m" aria-pressed="true">M</button>
+                      <button type="button" class="rf-size-picker__option" data-size="l" aria-pressed="false">L</button>
+                      <button type="button" class="rf-size-picker__option" data-size="xl" aria-pressed="false">XL</button>
+                      <button type="button" class="rf-size-picker__option" data-size="2xl" aria-pressed="false">2XL</button>
+                    </div>
+                  </div>
                   <div class="rf-jersey-row__price" id="jersey-5-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
                 </div>
@@ -1754,6 +1878,12 @@
                 <h3 class="rf-jersey-row__name" id="jersey-6-name">Sixth Jersey</h3>
                 <p class="rf-jersey-row__desc2" id="jersey-6-desc2"></p>
                 <div class="rf-jersey-row__price-btn-row">
+                  <div class="rf-jersey-row__size">
+                    <div id="jersey-6-size" class="rf-size-picker__options" role="radiogroup" aria-label="Select option">
+                      <button type="button" class="rf-size-picker__option is-active" data-size="silver" aria-pressed="true">Silver</button>
+                      <button type="button" class="rf-size-picker__option" data-size="gold" aria-pressed="false">Gold</button>
+                    </div>
+                  </div>
                   <div class="rf-jersey-row__price" id="jersey-6-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
                 </div>
@@ -2458,14 +2588,89 @@
           }
         });
 
+        function buildShopifyCheckoutUrl(storeDomain, variantId) {
+          var cleanDomain = (storeDomain || '').trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+          var cleanVariantId = String(variantId || '').trim();
+          if (!cleanDomain || !/^\d+$/.test(cleanVariantId)) return '';
+          return 'https://' + cleanDomain + '/cart/' + cleanVariantId + ':1';
+        }
+
+        function getStorefrontDomain(preferredDomain, fallbackLink) {
+          var cleanPreferred = (preferredDomain || '').trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+          if (cleanPreferred) return cleanPreferred;
+          if (!fallbackLink) return '';
+          try {
+            var parsed = new URL(fallbackLink, window.location.origin);
+            return parsed.hostname;
+          } catch (error) {
+            return '';
+          }
+        }
+
+        function getProductVariantId(settings, productNumber, sizeKey) {
+          var sizedVariantId = settings['product_' + productNumber + '_variant_id_' + sizeKey];
+          if (sizedVariantId) return sizedVariantId;
+          return settings['product_' + productNumber + '_variant_id'] || '';
+        }
+
+        function getSelectedSize(sizePickerEl) {
+          if (!sizePickerEl) return 'm';
+          var activeButton = sizePickerEl.querySelector('.rf-size-picker__option.is-active');
+          return activeButton ? activeButton.dataset.size : 'm';
+        }
+
+        function bindSizePicker(sizePickerEl, onChange) {
+          if (!sizePickerEl || sizePickerEl.dataset.bound) return;
+          sizePickerEl.addEventListener('click', function(event) {
+            var button = event.target.closest('.rf-size-picker__option');
+            if (!button || !sizePickerEl.contains(button)) return;
+            sizePickerEl.querySelectorAll('.rf-size-picker__option').forEach(function(optionButton) {
+              var isActive = optionButton === button;
+              optionButton.classList.toggle('is-active', isActive);
+              optionButton.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            });
+            if (onChange) onChange();
+          });
+          sizePickerEl.dataset.bound = '1';
+        }
+
+        function updateProductBuyLink(settings, productNumber, linkEl, sizeSelectEl, fallbackLink, storeDomain, fallbackVariantId) {
+          if (!linkEl) return;
+          var sizeKey = getSelectedSize(sizeSelectEl);
+          var variantId = getProductVariantId(settings, productNumber, sizeKey) || fallbackVariantId || '';
+          var checkoutUrl = buildShopifyCheckoutUrl(getStorefrontDomain(storeDomain, fallbackLink), variantId);
+          if (checkoutUrl) {
+            linkEl.href = checkoutUrl;
+            linkEl.classList.remove('is-disabled');
+            linkEl.removeAttribute('aria-disabled');
+          } else if (fallbackLink) {
+            linkEl.href = fallbackLink;
+            linkEl.classList.remove('is-disabled');
+            linkEl.removeAttribute('aria-disabled');
+          } else {
+            linkEl.href = '#';
+            linkEl.classList.add('is-disabled');
+            linkEl.setAttribute('aria-disabled', 'true');
+          }
+        }
+
         // ── Product 1 — Featured carousel + info ────────────────────────────
         set('p1-tag',  s.product_1_tag);
         set('p1-name', s.product_1_name);
         setHtml('p1-short-desc', s.product_1_short_desc);
         setHtml('p1-desc', s.product_1_desc);
-        if (s.product_1_link) {
-          var p1buy = document.getElementById('p1-buy-btn');
-          if (p1buy) p1buy.href = s.product_1_link;
+        if (s.product_1_price) {
+          set('p1-price', formatTHB(s.product_1_price));
+        } else {
+          set('p1-price', '');
+        }
+        var p1buy = document.getElementById('p1-buy-btn');
+        var p1Size = document.getElementById('p1-size');
+        if (p1buy) {
+          updateProductBuyLink(s, 1, p1buy, p1Size, s.product_1_link, 'ladderice.co', '45701810061498');
+          bindSizePicker(p1Size, function() {
+            updateProductBuyLink(s, 1, p1buy, p1Size, s.product_1_link, 'ladderice.co', '45701810061498');
+          });
         }
 
         // Carousel: update images, inject desc slide after first image, show/hide slots
@@ -2562,7 +2767,13 @@
             if (priceEl) priceEl.textContent = formatted;
           }
           if (linkEl) {
-            if (s['product_' + n + '_link']) {
+            var sizeSelectEl = document.getElementById('jersey-' + n + '-size');
+            if (n <= 6) {
+              updateProductBuyLink(s, n, linkEl, sizeSelectEl, s['product_' + n + '_link'], 'ladderice.co', '');
+              bindSizePicker(sizeSelectEl, function() {
+                updateProductBuyLink(s, n, linkEl, sizeSelectEl, s['product_' + n + '_link'], 'ladderice.co', '');
+              });
+            } else if (s['product_' + n + '_link']) {
               linkEl.href = s['product_' + n + '_link'];
               linkEl.classList.remove('is-disabled');
               linkEl.removeAttribute('aria-disabled');
@@ -2657,7 +2868,7 @@
       .catch(function () {});
   })();
 
-  // ── Date ticker ────────────────────────────────────────────────────────
+  // ── Top ticker ─────────────────────────────────────────────────────────
   (function () {
     var el = document.getElementById('site-ticker-text');
     if (!el) return;
