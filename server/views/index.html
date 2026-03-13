@@ -2876,7 +2876,15 @@
             desc2El.innerHTML = '';
           }
 
-          if (s['product_' + n + '_price']) {
+          var updateVariantPrice = function() {};
+          if (n === 6) {
+            updateVariantPrice = function() {
+              var sizeKey = getSelectedSize(document.getElementById('jersey-6-size'));
+              var variantPrice = s['product_6_price_' + sizeKey] || s['product_6_price'];
+              if (priceEl) priceEl.textContent = variantPrice ? formatTHB(variantPrice) : '';
+            };
+            updateVariantPrice();
+          } else if (s['product_' + n + '_price']) {
             var formatted = formatTHB(s['product_' + n + '_price']);
             if (priceEl) priceEl.textContent = formatted;
           }
@@ -2886,6 +2894,7 @@
               updateProductBuyLink(s, n, linkEl, sizeSelectEl, s['product_' + n + '_link'], 'ladderice.co', '');
               bindSizePicker(sizeSelectEl, function() {
                 updateProductBuyLink(s, n, linkEl, sizeSelectEl, s['product_' + n + '_link'], 'ladderice.co', '');
+                updateVariantPrice();
               });
             } else if (s['product_' + n + '_link']) {
               linkEl.href = s['product_' + n + '_link'];
