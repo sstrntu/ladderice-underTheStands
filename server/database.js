@@ -219,6 +219,26 @@ function getTokenStats() {
   return { total, sent, used };
 }
 
+/** Delete a single vote by id. */
+function deleteVote(id) {
+  db.prepare(`DELETE FROM votes WHERE id = ?`).run(id);
+}
+
+/** Delete all votes. */
+function deleteAllVotes() {
+  db.prepare(`DELETE FROM votes`).run();
+}
+
+/** Delete a single token by token string. */
+function deleteToken(token) {
+  db.prepare(`DELETE FROM vote_tokens WHERE token = ?`).run(token);
+}
+
+/** Delete all tokens. */
+function deleteAllTokens() {
+  db.prepare(`DELETE FROM vote_tokens`).run();
+}
+
 module.exports = {
   upsertOrders,
   findOrder,
@@ -227,6 +247,8 @@ module.exports = {
   getExistingVote,
   getVoteCounts,
   getAllVotes,
+  deleteVote,
+  deleteAllVotes,
   getAllSettings,
   setSetting,
   createToken,
@@ -235,4 +257,6 @@ module.exports = {
   markEmailSent,
   getAllTokens,
   getTokenStats,
+  deleteToken,
+  deleteAllTokens,
 };

@@ -400,6 +400,38 @@ router.post('/manual-token', requireAdmin, express.json(), (req, res) => {
   res.json({ ok: true, token, email });
 });
 
+// ── DELETE /admin/votes/:id ───────────────────────────────────────────────────
+
+router.delete('/votes/:id', requireAdmin, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ ok: false, error: 'Invalid vote id.' });
+  db.deleteVote(id);
+  res.json({ ok: true });
+});
+
+// ── POST /admin/votes/delete-all ──────────────────────────────────────────────
+
+router.post('/votes/delete-all', requireAdmin, (req, res) => {
+  db.deleteAllVotes();
+  res.json({ ok: true });
+});
+
+// ── DELETE /admin/tokens/:token ───────────────────────────────────────────────
+
+router.delete('/tokens/:token', requireAdmin, (req, res) => {
+  const token = req.params.token;
+  if (!token) return res.status(400).json({ ok: false, error: 'Token required.' });
+  db.deleteToken(token);
+  res.json({ ok: true });
+});
+
+// ── POST /admin/tokens/delete-all ─────────────────────────────────────────────
+
+router.post('/tokens/delete-all', requireAdmin, (req, res) => {
+  db.deleteAllTokens();
+  res.json({ ok: true });
+});
+
 // ── POST /admin/send-test-email ────────────────────────────────────────────
 // Send a test email to verify SMTP settings
 // Body: { email }

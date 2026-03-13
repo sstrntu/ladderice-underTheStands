@@ -871,9 +871,10 @@
       <div id="vote-bars">
         <div class="empty-state">Loading vote data…</div>
       </div>
-      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <a href="/admin/votes/export" class="btn btn--outline">Download Votes CSV</a>
         <button class="btn btn--outline" onclick="loadAll()">Refresh</button>
+        <button class="btn btn--outline" style="color:var(--rf-red);border-color:rgba(196,30,30,0.25)" onclick="deleteAllVotes()">Reset All Votes</button>
       </div>
       <p class="refresh-note">Votes update in real time. Refresh to see latest.</p>
     </div>
@@ -892,8 +893,8 @@
     <div class="tab-panel" id="tab-history">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>#</th><th>Order</th><th>Voter</th><th>Email</th><th>Voted For</th><th>Date</th></tr></thead>
-          <tbody id="votes-body"><tr><td colspan="6" class="empty-state">Loading…</td></tr></tbody>
+          <thead><tr><th>#</th><th>Order</th><th>Voter</th><th>Email</th><th>Voted For</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="votes-body"><tr><td colspan="7" class="empty-state">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -1101,7 +1102,10 @@ Your Call.</h3>
       <!-- Tokens Table -->
       <div class="card">
         <div class="section-title">Token Management</div>
-        <div class="section-heading">Active Tokens</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px">
+          <div class="section-heading" style="margin-bottom:0">Active Tokens</div>
+          <button class="btn btn--outline" style="font-size:10px;color:var(--rf-red);border-color:rgba(196,30,30,0.25)" onclick="deleteAllTokens()">Delete All Tokens</button>
+        </div>
 
         <div style="margin-bottom:20px;display:flex;gap:12px">
           <input type="text" id="email-manual-email" placeholder="customer@example.com" style="flex:1;padding:10px 14px;border:1px solid rgba(17,17,17,0.12);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:13px">
@@ -1605,7 +1609,7 @@ Your Call.</h3>
   function loadVotes() {
     fetch('/admin/votes').then(function(r){ return r.json(); }).then(function(votes) {
       if (!votes.length) {
-        document.getElementById('votes-body').innerHTML = '<tr><td colspan="6" class="empty-state">No votes yet.</td></tr>';
+        document.getElementById('votes-body').innerHTML = '<tr><td colspan="7" class="empty-state">No votes yet.</td></tr>';
         return;
       }
       document.getElementById('votes-body').innerHTML = votes.map(function(v, i) {
@@ -1616,6 +1620,7 @@ Your Call.</h3>
           '<td style="color:rgba(17,17,17,.55)">' + (v.email || '—') + '</td>' +
           '<td><span class="badge badge--red">' + (CHARITY_NAMES[v.charity_id] || v.charity_name) + '</span></td>' +
           '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(v.voted_at) + '</td>' +
+          '<td><button class="btn btn--outline" style="font-size:10px;padding:6px 10px;color:var(--rf-red);border-color:rgba(196,30,30,0.25)" onclick="deleteVote(' + v.id + ')">Delete</button></td>' +
         '</tr>';
       }).join('');
     });
@@ -2211,7 +2216,7 @@ Your Call.</h3>
           '<td style="color:rgba(17,17,17,.35);font-size:11px">' + formatDate(t.created_at) + '</td>' +
           '<td><span class="badge ' + (t.email_sent ? 'badge--green">✓' : 'badge--red">✗') + '</span></td>' +
           '<td><span class="badge ' + (t.used ? 'badge--red">✓' : 'badge--green">—') + '</span></td>' +
-          '<td><button class="btn btn--outline" style="font-size:10px;padding:6px 10px" onclick="resendTokenEmail(\'' + t.token + '\')">Resend</button></td>' +
+          '<td style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn--outline" style="font-size:10px;padding:6px 10px" onclick="resendTokenEmail(\'' + t.token + '\')">Resend</button><button class="btn btn--outline" style="font-size:10px;padding:6px 10px;color:var(--rf-red);border-color:rgba(196,30,30,0.25)" onclick="deleteToken(\'' + t.token + '\')">Delete</button></td>' +
         '</tr>';
       }).join('');
     });
@@ -2242,6 +2247,46 @@ Your Call.</h3>
       btn.disabled = false; btn.textContent = 'Send Vote Emails (Unsent Only)';
       setTimeout(function() { status.textContent = ''; }, 5000);
     });
+  }
+
+  function deleteVote(id) {
+    if (!confirm('Delete this vote? This cannot be undone.')) return;
+    fetch('/admin/votes/' + id, { method: 'DELETE' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) { loadVotes(); loadAll(); }
+        else alert('Error: ' + data.error);
+      });
+  }
+
+  function deleteAllVotes() {
+    if (!confirm('Reset ALL votes? This cannot be undone.')) return;
+    fetch('/admin/votes/delete-all', { method: 'POST' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) { loadVotes(); loadAll(); }
+        else alert('Error: ' + data.error);
+      });
+  }
+
+  function deleteToken(token) {
+    if (!confirm('Delete this token? The user will lose voting access.')) return;
+    fetch('/admin/tokens/' + token, { method: 'DELETE' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) { loadAllTokens(); loadEmailCampaign(); }
+        else alert('Error: ' + data.error);
+      });
+  }
+
+  function deleteAllTokens() {
+    if (!confirm('Delete ALL tokens? All voting links will be invalidated.')) return;
+    fetch('/admin/tokens/delete-all', { method: 'POST' })
+      .then(function(r){ return r.json(); })
+      .then(function(data) {
+        if (data.ok) { loadAllTokens(); loadEmailCampaign(); }
+        else alert('Error: ' + data.error);
+      });
   }
 
   function resendTokenEmail(token) {
