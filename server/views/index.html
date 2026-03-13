@@ -604,6 +604,101 @@
     /* ══════════════════════════════════════
        CAST YOUR VOTE
     ══════════════════════════════════════ */
+    /* ── Mechanics / How It Works ── */
+    .rf-mechanics {
+      background: #ffffff;
+      color: var(--main-text);
+      border-bottom: 1px solid var(--main-borders);
+      position: relative;
+      overflow: hidden;
+    }
+    .rf-mechanics::after { content: none; }
+    .rf-mechanics__inner { position: relative; z-index: 1; }
+    .rf-mechanics__mark {
+      position: absolute;
+      right: 14vw;
+      top: 5%;
+      width: min(40vw, 500px);
+      opacity: var(--mechanics-logo-opacity, 0.07);
+      transform: scale(var(--mechanics-logo-scale, 0.72));
+      transform-origin: center top;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition: opacity 0.1s linear, transform 0.1s linear;
+    }
+    .rf-mechanics.is-scrolling .rf-mechanics__mark {
+      animation: rf-mechanics-vibrate 0.22s steps(2, end) infinite;
+    }
+    @keyframes rf-mechanics-vibrate {
+      0%   { transform: translate3d(-0.4px, 0.6px, 0) scale(var(--mechanics-logo-scale)) rotate(-0.35deg); }
+      25%  { transform: translate3d(0.6px, -0.3px, 0) scale(var(--mechanics-logo-scale)) rotate(0.2deg); }
+      50%  { transform: translate3d(-0.7px, -0.5px, 0) scale(var(--mechanics-logo-scale)) rotate(-0.15deg); }
+      75%  { transform: translate3d(0.5px, 0.4px, 0) scale(var(--mechanics-logo-scale)) rotate(0.25deg); }
+      100% { transform: translate3d(-0.4px, 0.6px, 0) scale(var(--mechanics-logo-scale)) rotate(-0.35deg); }
+    }
+    .rf-mechanics__inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 80px 7vw;
+    }
+    @media(max-width:768px){ .rf-mechanics__inner{ padding: 60px 24px; } }
+    .rf-mechanics__eyebrow {
+      font-size: 9px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--main-text-subtle); margin-bottom: 16px;
+    }
+    .rf-mechanics__heading {
+      font-family: 'Druk Trial', sans-serif;
+      font-size: clamp(32px, 4vw, 54px); font-weight: 900;
+      letter-spacing: 0.01em; line-height: 1.05; margin: 0 0 16px;
+      color: var(--main-text); text-transform: uppercase;
+    }
+    .rf-mechanics__heading em { font-style: italic; color: var(--rf-red); }
+    .rf-mechanics__sub {
+      display: flex; flex-direction: column; gap: 6px;
+      max-width: 52ch; margin: 0 0 48px;
+    }
+    .rf-mechanics__sub strong {
+      font-size: clamp(15px, 1.4vw, 18px); font-weight: 600;
+      color: var(--main-text); letter-spacing: -0.01em; line-height: 1.3;
+    }
+    .rf-mechanics__sub span {
+      font-size: 13px; color: var(--main-text-subtle); line-height: 1.7; font-weight: 400;
+    }
+    .rf-mechanics__stages {
+      display: flex; flex-direction: column; gap: 0;
+      border: 1px solid var(--main-borders);
+    }
+    .rf-mechanics__stage {
+      display: flex; gap: 28px; align-items: flex-start;
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--main-borders);
+      opacity: 0.38;
+    }
+    .rf-mechanics__stage:last-child { border-bottom: none; }
+    .rf-mechanics__stage--active { opacity: 1; background: rgba(196,30,30,0.03); }
+    @media(max-width:600px){ .rf-mechanics__stage{ padding: 22px 20px; gap: 18px; } }
+    .rf-mechanics__stage-num {
+      font-family: var(--font-stack-headings); font-size: 28px; font-weight: 500;
+      color: rgba(17,17,17,0.12); letter-spacing: -0.03em; flex-shrink: 0; line-height: 1;
+      padding-top: 2px; min-width: 36px;
+    }
+    .rf-mechanics__stage--active .rf-mechanics__stage-num { color: var(--rf-red); }
+    .rf-mechanics__stage-label {
+      font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--main-text-subtle); margin-bottom: 6px;
+    }
+    .rf-mechanics__stage--active .rf-mechanics__stage-label { color: var(--rf-red); }
+    .rf-mechanics__stage-title {
+      font-size: 15px; font-weight: 600; color: var(--main-text); margin-bottom: 5px; letter-spacing: 0.01em;
+    }
+    .rf-mechanics__stage-desc {
+      font-size: 12px; color: var(--main-text-subtle); line-height: 1.6;
+    }
+    .rf-mechanics__note {
+      font-size: 11px; color: var(--main-text-subtle); margin: 20px 0 0;
+      letter-spacing: 0.04em; line-height: 1.6;
+    }
+
     .rf-vote-section {
       --rf-vote-mark-scale: 0.42;
       position: relative;
@@ -611,20 +706,7 @@
       background: #ffffff;
       overflow: hidden;
     }
-    .rf-vote-section::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url('/public/ldrc30-t.png') left calc(50% - 165px) top 35px / min(44vw, 560px) auto no-repeat;
-      opacity: 1;
-      filter: none;
-      transform: scale(var(--rf-vote-mark-scale));
-      transform-origin: left calc(50% - 165px) top 35px;
-      pointer-events: none;
-      z-index: 1;
-      will-change: transform;
-      transition: transform 0.08s linear;
-    }
+    .rf-vote-section::after { content: none; }
     .rf-vote-section::before {
       content: '';
       position: absolute;
@@ -641,24 +723,18 @@
       z-index: 2;
       max-width: 1280px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    @media(max-width:900px){ .rf-vote-section__inner{ grid-template-columns: 1fr; min-height: auto; } }
 
     .rf-vote-section__left {
-      padding: 108px 6vw 88px;
-      display: flex; flex-direction: column; justify-content: center;
-      position: sticky; top: 0; height: 100vh;
+      padding: 96px 6vw 52px;
+      display: flex;
+      flex-direction: column;
       background: transparent;
     }
     @media(max-width:900px){
-      .rf-vote-section::after {
-        background: url('/public/ldrc30-t.png') right 0px top 80px / min(55vw, 280px) auto no-repeat;
-        transform-origin: right 0px top 80px;
-      }
-      .rf-vote-section__left{ position:static; height:auto; padding:72px 24px 40px; border-bottom:1px solid var(--grid-borders); background:none; }
+      .rf-vote-section__left{ padding: 64px 24px 36px; }
     }
 
     .rf-vote-section__eyebrow {
@@ -683,8 +759,8 @@
     .rf-vote-section__heading {
       font-family: var(--font-stack-display);
       font-weight: 500;
-      font-size: clamp(34px, 4.3vw, 58px);
-      line-height: 1.3;
+      font-size: clamp(28px, 3.8vw, 52px);
+      line-height: 1.15;
       letter-spacing: -0.02em;
       color: var(--main-text);
       margin: 0 0 28px;
@@ -698,23 +774,24 @@
       font-weight: 300;
       line-height: 1.8;
       color: var(--main-text-muted);
-      max-width: 420px;
+      max-width: 560px;
       margin: 0 0 44px;
     }
     .rf-vote-section__stat {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
       gap: 0;
       padding-top: 28px;
       border-top: 1px solid var(--grid-borders);
+      max-width: 560px;
     }
     .rf-vote-section__stat-item {
       display: flex; flex-direction: column; gap: 8px;
-      padding-right: 24px;
+      padding-right: 32px;
       border-right: 1px solid var(--grid-borders);
+      align-items: center;
+      text-align: center;
     }
-    .rf-vote-section__stat-item:first-child { padding-right: 24px; }
-    .rf-vote-section__stat-item:not(:first-child) { padding-left: 24px; }
+    .rf-vote-section__stat-item:not(:first-child) { padding-left: 32px; }
     .rf-vote-section__stat-item:last-child { border-right: none; }
     .rf-vote-section__stat-num {
       font-family: var(--font-stack-headings);
@@ -734,13 +811,12 @@
     }
 
     .rf-vote-section__right {
-      padding: 96px 6vw 88px;
+      padding: 0 6vw 96px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       background: transparent;
     }
-    @media(max-width:900px){ .rf-vote-section__right{ padding: 46px 24px 64px; } }
+    @media(max-width:900px){ .rf-vote-section__right{ padding: 0 24px 64px; } }
 
     .rf-gate__note {
       font-size: 11px;
@@ -750,15 +826,16 @@
       transition: color 0.3s;
     }
 
-    .rf-charities { display: grid; gap: 14px; }
+    .rf-charities { display: grid; gap: 0; border-top: 1px solid var(--main-borders); }
 
     .rf-charity {
       position: relative;
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 16px;
-      padding: 18px;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 20px;
+      padding: 28px 18px;
+      border-bottom: 1px solid var(--main-borders);
       border: none;
       background: transparent;
       transition: border-color 0.22s, background 0.22s, transform 0.22s var(--ease-spring), box-shadow 0.22s;
@@ -813,8 +890,9 @@
     .rf-charity.selected .rf-radio { border-color: var(--rf-red); }
     .rf-charity.selected .rf-radio::after { transform: scale(1); }
 
-    .rf-charity__body { min-width: 0; }
-    .rf-charity__top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+    .rf-charity__body { min-width: 0; display: flex; flex-direction: column; }
+    .rf-charity__top { margin-bottom: 12px; }
+    .rf-charity .rf-vote-btn { align-self: center; }
     .rf-charity__icon {
       width: 56px;
       height: 56px;
@@ -855,19 +933,18 @@
     }
     .rf-charity__name {
       font-family: var(--font-stack-headings);
-      font-size: clamp(14px, 1.4vw, 18px);
+      font-size: clamp(14px, 1.4vw, 17px);
       font-weight: 500;
       color: var(--main-text);
-      margin: 0 0 4px;
+      margin: 0 0 8px;
       letter-spacing: -0.01em;
       line-height: 1.3;
     }
     .rf-charity__desc {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--main-text-muted);
       margin: 0;
-      line-height: 1.55;
-      max-width: 46ch;
+      line-height: 1.7;
     }
 
     .rf-bar-track {
@@ -934,8 +1011,6 @@
     .rf-charity.voted .rf-vote-btn-check { display: block; }
 
     @media(max-width:1100px){
-      .rf-vote-section__left,
-      .rf-vote-section__right { padding-left: 4.5vw; padding-right: 4.5vw; }
       .rf-charity__name { font-size: 20px; }
     }
     @media(max-width:640px){
@@ -1516,13 +1591,50 @@
     </div>
   </div>
 
+  <!-- ── HOW IT WORKS ── -->
+  <div class="rf-mechanics rf-section-fade">
+    <img class="rf-mechanics__mark" src="/public/ldrc30-t.png" alt="" aria-hidden="true">
+    <div class="rf-mechanics__inner">
+      <div class="rf-mechanics__eyebrow">How It Works</div>
+      <h2 class="rf-mechanics__heading">Your vote runs in <em>three stages.</em></h2>
+      <p class="rf-mechanics__sub"><strong>Not a simple pick-one poll.</strong><span>Each stage narrows your decision — so by the end, you know exactly where your money goes and why.</span></p>
+      <div class="rf-mechanics__stages">
+        <div class="rf-mechanics__stage rf-mechanics__stage--active">
+          <div class="rf-mechanics__stage-num">01</div>
+          <div class="rf-mechanics__stage-body">
+            <div class="rf-mechanics__stage-label">Now &mdash; On This Page</div>
+            <div class="rf-mechanics__stage-title">Choose a Direction</div>
+            <div class="rf-mechanics__stage-desc">Pick the cause you want the campaign profit to support. One jersey, one vote.</div>
+          </div>
+        </div>
+        <div class="rf-mechanics__stage">
+          <div class="rf-mechanics__stage-num">02</div>
+          <div class="rf-mechanics__stage-body">
+            <div class="rf-mechanics__stage-label">Via Email &mdash; After Stage 1 Closes</div>
+            <div class="rf-mechanics__stage-title">Choose an Approach</div>
+            <div class="rf-mechanics__stage-desc">Based on the winning cause, you'll vote on the specific approach — how the money should actually be spent.</div>
+          </div>
+        </div>
+        <div class="rf-mechanics__stage">
+          <div class="rf-mechanics__stage-num">03</div>
+          <div class="rf-mechanics__stage-body">
+            <div class="rf-mechanics__stage-label">Via Email &mdash; After Stage 2 Closes</div>
+            <div class="rf-mechanics__stage-title">Choose a Region</div>
+            <div class="rf-mechanics__stage-desc">Finally, you'll vote on where in Thailand the impact happens first.</div>
+          </div>
+        </div>
+      </div>
+      <p class="rf-mechanics__note">Stages 2 and 3 will be sent to your email. Make sure you cast your Stage 1 vote below to stay in the loop.</p>
+    </div>
+  </div>
+
   <!-- ── CAST YOUR VOTE ── -->
   <div class="rf-vote-section rf-section-fade" id="rf-vote-section">
     <div class="rf-vote-section__inner">
 
       <div class="rf-vote-section__left">
-        <div class="rf-vote-section__eyebrow">Cast Your Vote</div>
-        <h2 class="rf-vote-section__heading" id="cms-vote-heading">You bought in.<br>Now<br><em>speak up.</em></h2>
+        <div class="rf-vote-section__eyebrow">Stage 1 &mdash; Cast Your Vote</div>
+        <h2 class="rf-vote-section__heading" id="cms-vote-heading">You bought in. Now <em>speak up.</em></h2>
         <p class="rf-vote-section__body" id="cms-vote-body">One jersey. One vote. Three causes. This is your moment to decide where the money lands.</p>
         <div class="rf-vote-section__stat">
           <div class="rf-vote-section__stat-item">
@@ -1549,16 +1661,6 @@
             <div class="rf-radio"></div>
             <div class="rf-charity__body">
               <div class="rf-charity__top">
-                <div class="rf-charity__icon" id="cms-charity-1-icon" aria-hidden="true">
-                  <img src="" alt="">
-                  <span class="rf-charity__icon-placeholder">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="3.5" y="5" width="17" height="14" rx="1.5"></rect>
-                      <path d="M7.5 15l3.2-3.4 2.3 2.2 3-3.1"></path>
-                      <circle cx="9" cy="9" r="1.3"></circle>
-                    </svg>
-                  </span>
-                </div>
                 <div>
                   <div class="rf-charity__name" id="cms-charity-1-name">Youth Sports Fund</div>
                   <div class="rf-charity__desc" id="cms-charity-1-desc">Providing equipment and coaching to kids who can't afford it.</div>
@@ -1580,16 +1682,6 @@
             <div class="rf-radio"></div>
             <div class="rf-charity__body">
               <div class="rf-charity__top">
-                <div class="rf-charity__icon" id="cms-charity-2-icon" aria-hidden="true">
-                  <img src="" alt="">
-                  <span class="rf-charity__icon-placeholder">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="3.5" y="5" width="17" height="14" rx="1.5"></rect>
-                      <path d="M7.5 15l3.2-3.4 2.3 2.2 3-3.1"></path>
-                      <circle cx="9" cy="9" r="1.3"></circle>
-                    </svg>
-                  </span>
-                </div>
                 <div>
                   <div class="rf-charity__name" id="cms-charity-2-name">Food Security Network</div>
                   <div class="rf-charity__desc" id="cms-charity-2-desc">Fighting hunger in local communities through food banks and education.</div>
@@ -1611,16 +1703,6 @@
             <div class="rf-radio"></div>
             <div class="rf-charity__body">
               <div class="rf-charity__top">
-                <div class="rf-charity__icon" id="cms-charity-3-icon" aria-hidden="true">
-                  <img src="" alt="">
-                  <span class="rf-charity__icon-placeholder">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="3.5" y="5" width="17" height="14" rx="1.5"></rect>
-                      <path d="M7.5 15l3.2-3.4 2.3 2.2 3-3.1"></path>
-                      <circle cx="9" cy="9" r="1.3"></circle>
-                    </svg>
-                  </span>
-                </div>
                 <div>
                   <div class="rf-charity__name" id="cms-charity-3-name">Mental Health in Sport</div>
                   <div class="rf-charity__desc" id="cms-charity-3-desc">Supporting athletes with open conversations and free mental health resources.</div>
@@ -1700,8 +1782,8 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-2-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
-                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
+                <p class="rf-ship-note">Ships within 6 weeks</p>
               </div>
             </div>
           </div>
@@ -1749,8 +1831,8 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-3-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
-                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
+                <p class="rf-ship-note">Ships within 6 weeks</p>
               </div>
             </div>
           </div>
@@ -1798,8 +1880,8 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-4-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
-                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
+                <p class="rf-ship-note">Ships within 6 weeks</p>
               </div>
             </div>
           </div>
@@ -1847,7 +1929,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-5-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
-                  <p class="rf-ship-note">Ships within 6 weeks</p>
+                  <p class="rf-ship-note" style="flex-basis:100%;margin-top:0">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
@@ -1894,8 +1976,8 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-6-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
-                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
+                <p class="rf-ship-note">Ships within 6 weeks</p>
               </div>
             </div>
           </div>
@@ -2051,6 +2133,29 @@
     window.addEventListener('scroll', updateVoteMarkScale, { passive: true });
     window.addEventListener('resize', updateVoteMarkScale);
     updateVoteMarkScale();
+  })();
+
+  // ── How It Works logo reveal + zoom + vibrate ────────────
+  (function() {
+    var mechanicsEl = document.querySelector('.rf-mechanics');
+    if (!mechanicsEl) return;
+    var scrolling = false, scrollTimer;
+    function updateMechanicsLogo() {
+      var rect = mechanicsEl.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh * 0.65)));
+      var opacity = 0.07 + progress * 0.58;
+      var scale  = 0.72 + progress * 0.36; // 0.72 → 1.08
+      mechanicsEl.style.setProperty('--mechanics-logo-opacity', opacity.toFixed(3));
+      mechanicsEl.style.setProperty('--mechanics-logo-scale',   scale.toFixed(3));
+      // vibrate while scrolling
+      mechanicsEl.classList.add('is-scrolling');
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() { mechanicsEl.classList.remove('is-scrolling'); }, 150);
+    }
+    window.addEventListener('scroll', updateMechanicsLogo, { passive: true });
+    window.addEventListener('resize', updateMechanicsLogo);
+    updateMechanicsLogo();
   })();
 
   // ── Manifesto scroll-highlight ─────────────────────────
