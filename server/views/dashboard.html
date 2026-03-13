@@ -693,6 +693,16 @@
     .product-img-slot__status { font-size: 10px; text-align: center; margin-top: 4px; min-height: 13px; }
     .product-img-slot__status.ok  { color: #2e7d32; }
     .product-img-slot__status.err { color: #A50009; }
+    .charity-icon-field { display: flex; flex-direction: column; gap: 6px; }
+    .charity-icon-upload-row { display: flex; align-items: center; gap: 12px; }
+    .charity-icon-upload { position: relative; display: inline-block; }
+    .charity-icon-upload input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+    .charity-icon-upload .btn { font-size: 12px; padding: 8px 16px; white-space: nowrap; }
+    .charity-icon-status { font-size: 10px; color: rgba(17,17,17,0.4); min-height: 13px; }
+    .charity-icon-status.ok  { color: #2e7d32; }
+    .charity-icon-status.err { color: #A50009; }
+    .charity-icon-url-row { display: flex; align-items: center; gap: 10px; }
+    .charity-icon-url-label { font-size: 11px; color: var(--main-text-muted); white-space: nowrap; }
     .card code {
       padding: 1px 6px;
       background: rgba(24,24,24,0.04);
@@ -1391,9 +1401,22 @@ Your Call.</h3>
       <div class="cms-section">
         <div class="cms-section-title">Charity / Cause 1</div>
         <div class="cms-grid">
-          <div class="cms-field">
-            <label>Icon Image URL (optional)</label>
-            <input type="text" id="cms-charity_1_icon" placeholder="/uploads/cause-1.png or https://...">
+          <div class="cms-field cms-field--full">
+            <label>Icon Image</label>
+            <div class="charity-icon-field">
+              <div class="charity-icon-upload-row">
+                <label class="charity-icon-upload">
+                  <input type="file" accept="image/*" data-charity="1">
+                  <span class="btn btn--outline">&#8593; Upload Image</span>
+                </label>
+                <div class="charity-icon-preview-wrap"><img id="charity-1-icon-preview" src="" alt="" style="display:none;width:40px;height:40px;object-fit:contain;border:1px solid var(--grid-border);padding:4px;"></div>
+              </div>
+              <div class="charity-icon-status" id="charity-1-icon-status"></div>
+              <div class="charity-icon-url-row">
+                <span class="charity-icon-url-label">or paste URL</span>
+                <input type="text" id="cms-charity_1_icon" placeholder="/uploads/cause-1.png or https://...">
+              </div>
+            </div>
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -1409,9 +1432,22 @@ Your Call.</h3>
       <div class="cms-section">
         <div class="cms-section-title">Charity / Cause 2</div>
         <div class="cms-grid">
-          <div class="cms-field">
-            <label>Icon Image URL (optional)</label>
-            <input type="text" id="cms-charity_2_icon" placeholder="/uploads/cause-2.png or https://...">
+          <div class="cms-field cms-field--full">
+            <label>Icon Image</label>
+            <div class="charity-icon-field">
+              <div class="charity-icon-upload-row">
+                <label class="charity-icon-upload">
+                  <input type="file" accept="image/*" data-charity="2">
+                  <span class="btn btn--outline">&#8593; Upload Image</span>
+                </label>
+                <div class="charity-icon-preview-wrap"><img id="charity-2-icon-preview" src="" alt="" style="display:none;width:40px;height:40px;object-fit:contain;border:1px solid var(--grid-border);padding:4px;"></div>
+              </div>
+              <div class="charity-icon-status" id="charity-2-icon-status"></div>
+              <div class="charity-icon-url-row">
+                <span class="charity-icon-url-label">or paste URL</span>
+                <input type="text" id="cms-charity_2_icon" placeholder="/uploads/cause-2.png or https://...">
+              </div>
+            </div>
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -1427,9 +1463,22 @@ Your Call.</h3>
       <div class="cms-section">
         <div class="cms-section-title">Charity / Cause 3</div>
         <div class="cms-grid">
-          <div class="cms-field">
-            <label>Icon Image URL (optional)</label>
-            <input type="text" id="cms-charity_3_icon" placeholder="/uploads/cause-3.png or https://...">
+          <div class="cms-field cms-field--full">
+            <label>Icon Image</label>
+            <div class="charity-icon-field">
+              <div class="charity-icon-upload-row">
+                <label class="charity-icon-upload">
+                  <input type="file" accept="image/*" data-charity="3">
+                  <span class="btn btn--outline">&#8593; Upload Image</span>
+                </label>
+                <div class="charity-icon-preview-wrap"><img id="charity-3-icon-preview" src="" alt="" style="display:none;width:40px;height:40px;object-fit:contain;border:1px solid var(--grid-border);padding:4px;"></div>
+              </div>
+              <div class="charity-icon-status" id="charity-3-icon-status"></div>
+              <div class="charity-icon-url-row">
+                <span class="charity-icon-url-label">or paste URL</span>
+                <input type="text" id="cms-charity_3_icon" placeholder="/uploads/cause-3.png or https://...">
+              </div>
+            </div>
           </div>
           <div class="cms-field">
             <label>Name</label>
@@ -1690,6 +1739,13 @@ Your Call.</h3>
           if (img) { img.src = s.logo_img; img.style.display = 'block'; }
         }
       }
+      [1,2,3].forEach(function(n) {
+        var url = s['charity_' + n + '_icon'];
+        if (url) {
+          var prev = document.getElementById('charity-' + n + '-icon-preview');
+          if (prev) { prev.src = url; prev.style.display = 'block'; }
+        }
+      });
     });
   }
 
@@ -1825,6 +1881,37 @@ Your Call.</h3>
         .catch(function() {
           if (statusEl) { statusEl.textContent = 'Upload failed.'; statusEl.className = 'product-img-slot__status err'; }
         });
+    });
+  });
+
+  // ── Charity icon upload ───────────────────────────────────────────────────
+  document.querySelectorAll('.charity-icon-upload input[type=file]').forEach(function(input) {
+    input.addEventListener('change', function() {
+      var file = input.files[0];
+      if (!file) return;
+      var n = input.dataset.charity;
+      var statusEl = document.getElementById('charity-' + n + '-icon-status');
+      var urlInput = document.getElementById('cms-charity_' + n + '_icon');
+      var prevImg  = document.getElementById('charity-' + n + '-icon-preview');
+      statusEl.textContent = 'Uploading…'; statusEl.className = 'charity-icon-status';
+
+      var fd = new FormData();
+      fd.append('image', file);
+      fd.append('slot', 'charity_' + n + '_icon');
+
+      fetch('/admin/upload-image', { method: 'POST', body: fd })
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+          if (data.ok) {
+            statusEl.textContent = '✓ Uploaded'; statusEl.className = 'charity-icon-status ok';
+            urlInput.value = data.url;
+            prevImg.src = data.url + '?t=' + Date.now();
+            prevImg.style.display = 'block';
+          } else {
+            statusEl.textContent = 'Error: ' + data.error; statusEl.className = 'charity-icon-status err';
+          }
+        })
+        .catch(function() { statusEl.textContent = 'Upload failed.'; statusEl.className = 'charity-icon-status err'; });
     });
   });
 
