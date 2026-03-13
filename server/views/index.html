@@ -580,7 +580,7 @@
     }
 
     /* Financial cards */
-    .rf-financials { display: flex; align-items: stretch; border: 1px solid var(--main-borders); border-radius: 0; overflow: hidden; margin-bottom: 80px; }
+    .rf-financials { display: flex; align-items: stretch; border: 1px solid var(--main-borders); border-radius: 0; overflow: hidden; margin-bottom: 8px; }
     @media(max-width:900px){ .rf-financials{flex-direction:column} .rf-fin-sep{padding:4px 0} }
 
     .rf-fin-card { flex: 1; padding: 48px 40px; border-right: 1px solid var(--main-borders); }
@@ -599,6 +599,7 @@
     .rf-fin-card__bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--rf-red-dark), var(--rf-red)); transition: width 1.3s var(--ease-smooth) 0.3s; }
     .rf-fin-card__bar-fill.animate { width: var(--fill, 0%); }
     .rf-fin-card__pct { display: block; font-size: 11px; font-weight: 500; color: var(--rf-red); margin-top: 8px; }
+    .rf-financials__disclaimer { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; color: var(--main-text-subtle); text-align: right; padding: 0; margin: 6px 0 0; }
 
     /* ══════════════════════════════════════
        CAST YOUR VOTE
@@ -1231,6 +1232,7 @@
       color: var(--main-text); margin-bottom: 0;
     }
     .rf-jersey-row__price:empty { display: none; }
+    .rf-ship-note { font-size: 11px; letter-spacing: 0.08em; color: var(--main-text-subtle); width: 100%; margin-top: 4px; }
     .rf-jersey-row__size {
       width: auto;
       max-width: none;
@@ -1457,6 +1459,7 @@
           <span class="rf-fin-card__pct" id="cms-fin-pct">65% of revenue</span>
         </div>
       </div>
+      <p class="rf-financials__disclaimer">* For explanation purposes only</p>
 
     </div>
   </div>
@@ -1491,7 +1494,7 @@
           <span id="p1-desc" hidden></span>
           <div class="rf-notice">
             <span class="rf-notice-arrow">&rarr;</span>
-            <p>Bought from <strong>ladderice.co</strong>? You've earned a voice. Check your email — your <strong>personal voting link</strong> is waiting.</p>
+            <p>Got <strong>the jersey</strong>? You've earned a voice. Check your email within 48 hours — your <strong>personal voting link</strong> is waiting.</p>
           </div>
           <div class="rf-featured__actions">
             <div class="rf-size-picker">
@@ -1506,6 +1509,7 @@
             <a id="p1-buy-btn" href="https://ladderice.co" target="_blank" rel="noopener" class="rf-hero-buy-btn" style="display:inline-flex;">
               Buy Now <span class="btn-arrow">&rarr;</span>
             </a>
+            <p class="rf-ship-note">Ships within 6 weeks</p>
           </div>
         </div>
       </div>
@@ -1696,6 +1700,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-2-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-2-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
@@ -1744,6 +1749,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-3-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-3-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
@@ -1792,6 +1798,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-4-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-4-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
@@ -1840,6 +1847,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-5-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-5-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
@@ -1886,6 +1894,7 @@
                   </div>
                   <div class="rf-jersey-row__price" id="jersey-6-price"></div>
                   <a class="rf-jersey-row__btn is-disabled" id="jersey-6-link" href="#" target="_blank" rel="noopener" aria-disabled="true">Buy Now <span class="rf-jersey-row__btn-arrow">&rarr;</span></a>
+                  <p class="rf-ship-note">Ships within 6 weeks</p>
                 </div>
               </div>
             </div>
