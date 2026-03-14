@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ladderice</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SYTBRLN973"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SYTBRLN973');
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
@@ -111,7 +120,6 @@
     .site-ticker.is-solid .site-ticker__text {
       color: var(--main-text-subtle);
     }
-
     @media (max-width: 768px) {
       .site-ticker {
         padding: 7px 20px;
@@ -121,6 +129,7 @@
         letter-spacing: 0.14em;
       }
     }
+
     /* ══════════════════════════════════════
        ANTI CORRUPTION — CAMPAIGN HERO
     ══════════════════════════════════════ */
@@ -281,7 +290,7 @@
       justify-content: center;
       gap: 16px;
       width: 100%;
-      margin: 0;
+      margin: 8px 0 12px;
     }
     .rf-manifesto__timer-block {
       display: flex;
@@ -365,7 +374,7 @@
       }
       .rf-manifesto__wrap {
         min-height: calc(100vh - 86px);
-        padding: 108px 24px 40px;
+        padding: 88px 24px 40px;
       }
       .rf-manifesto__canvas-wrap {
         flex-basis: min(34vh, 280px);
@@ -385,7 +394,7 @@
         gap: 10px;
         width: 100%;
         max-width: 304px;
-        margin: 0 auto;
+        margin: -22px auto 18px;
       }
       .rf-manifesto__timer-block {
         min-width: 56px;

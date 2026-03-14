@@ -2,50 +2,49 @@
 
 ## Server
 - **Droplet IP:** 128.199.126.236
-- **Port:** 3003
+- **Port:** `3002`
 - **URLs:**
-  - Campaign page: http://128.199.126.236:3003
-  - Admin panel: http://128.199.126.236:3003/admin
+  - Campaign page: http://128.199.126.236:3002
+  - Admin panel: http://128.199.126.236:3002/admin
 
 ## Prerequisites
 - Docker and Docker Compose installed on the server
 
-## Setup
+## Checkout
+- `/root/uts-main`
 
-### 1. Create `server/.env`
-Copy `.env.example` and fill in real values:
+## Environment File
+
+### `/root/uts-main/server/.env`
 
 ```
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=<your-password>
 SESSION_SECRET=<generate with: openssl rand -hex 32>
-PORT=3003
-ALLOWED_ORIGIN=http://128.199.126.236:3003
+PORT=3001
+ALLOWED_ORIGIN=https://ladderice.co
 ```
 
-### 2. Start the container
+## Start / Rebuild
 
 ```bash
-docker compose up -d --build
+cd /root/uts-main && docker compose -p uts-main up -d --build
 ```
 
-## Managing the Container
+## Manage Container
 
 ```bash
-# View logs
-docker compose logs -f
+# Logs
+cd /root/uts-main && docker compose -p uts-main logs -f
 
 # Stop
-docker compose down
+cd /root/uts-main && docker compose -p uts-main down
 
 # Restart
-docker compose restart
-
-# Rebuild and restart after code changes
-docker compose up -d --build
+cd /root/uts-main && docker compose -p uts-main restart
 ```
 
 ## Notes
-- The app runs on **3003**.
-- The SQLite database is persisted at `server/data/` via a Docker volume mount.
+- Container listens on port `3001`, published as host port `3002`.
+- SQLite database persists in `server/data/`.
 - The container restarts automatically unless manually stopped (`restart: unless-stopped`).
